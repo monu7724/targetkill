@@ -1,0 +1,85 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/UpgradeUI.gd" id="1_u3s4d"]
+
+[node name="UpgradeUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u3s4d")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.12, 0.15, 1)
+
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="CoinsLabel" type="Label" parent="Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Coins: 1000"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="WeaponTitle" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Weapon Name"
+horizontal_alignment = 1
+
+[node name="DamageBtn" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Upgrade Damage"
+
+[node name="MagBtn" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Upgrade Mag"
+
+[node name="ReloadBtn" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Upgrade Reload"
+
+[node name="BackButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "BACK"
+
+[connection signal="pressed" from="Panel/VBoxContainer/DamageBtn" to="." method="_on_upgrade_pressed" binds= ["damage"]]
+[connection signal="pressed" from="Panel/VBoxContainer/MagBtn" to="." method="_on_upgrade_pressed" binds= ["mag"]]
+[connection signal="pressed" from="Panel/VBoxContainer/ReloadBtn" to="." method="_on_upgrade_pressed" binds= ["reload"]]
+[connection signal="pressed" from="Panel/VBoxContainer/BackButton" to="." method="_on_back_pressed"]

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "pistol"
+display_name = "USP-45"
+base_damage = 25.0
+base_fire_rate = 0.25
+base_mag_size = 12
+base_reload_time = 1.5
+upgrade_cost_damage = 50
+upgrade_cost_mag = 40
+upgrade_cost_reload = 60

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "rifle"
+display_name = "M4A1 Sentinel"
+base_damage = 22.0
+base_fire_rate = 0.12
+base_mag_size = 30
+base_reload_time = 2.8
+upgrade_cost_damage = 120
+upgrade_cost_mag = 100
+upgrade_cost_reload = 110

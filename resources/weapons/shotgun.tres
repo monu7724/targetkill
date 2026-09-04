@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "shotgun"
+display_name = "Remington 870"
+base_damage = 95.0
+base_fire_rate = 0.8
+base_mag_size = 6
+base_reload_time = 3.5
+upgrade_cost_damage = 180
+upgrade_cost_mag = 150
+upgrade_cost_reload = 160

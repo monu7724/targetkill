@@ -1,0 +1,78 @@
+extends Node3D
+
+@export var zombie_scene: PackedScene
+@export var spawn_points: Array[Node3D]
+@export var wave_delay: float = 5.0
+
+var mission: MissionData
+var current_wave: int = 0
+var zombies_to_spawn: int = 0
+var zombies_alive: int = 0
+
+func _ready():
+	mission = MissionManager.current_mission
+	if not mission:
+		# Default for testing
+		mission = load("res://resources/missions/mission_01.tres")
+	
+	start_next_wave()
+
+func start_next_wave():
+	current_wave += 1
+	
+	# Determine wave composition from mission data
+	zombies_to_spawn = 5 + (current_wave * 2)
+	if mission.objective_type == MissionData.ObjectiveType.KILL_COUNT:
+		# Limit total spawn if objective is kill count
+		var remaining = mission.target_count - MissionManager.kill_count
+		zombies_to_spawn = min(zombies_to_spawn, remaining)
+		
+	if zombies_to_spawn <= 0 and mission.objective_type == MissionData.ObjectiveType.KILL_COUNT:
+		return
+
+	print("Starting Wave: ", current_wave)
+	spawn_wave()
+
+func spawn_wave():
+	for i in range(zombies_to_spawn):
+		spawn_zombie()
+		await get_tree().create_timer(1.5).timeout
+
+func spawn_zombie():
+	if spawn_points.is_empty():
+		return
+		
+	var spawn_point = spawn_points.pick_random()
+	var zombie = zombie_scene.instantiate()
+	
+	# Select archetype based on mission config
+	zombie.archetype = _pick_archetype()
+	
+	zombie.global_position = spawn_point.global_position
+	add_child(zombie)
+	
+	zombies_alive += 1
+	zombie.tree_exited.connect(_on_zombie_death)
+
+func _pick_archetype() -> String:
+	var rand = randf()
+	var cumulative_weight = 0.0
+	for entry in mission.spawn_config:
+		cumulative_weight += entry.weight
+		if rand <= cumulative_weight:
+			return entry.type
+	return "normal"
+
+func _on_zombie_death():
+	zombies_alive -= 1
+	if zombies_alive <= 0:
+		MissionManager.on_wave_completed()
+		if mission.objective_type == MissionData.ObjectiveType.SURVIVE_WAVES:
+			if current_wave < mission.wave_count:
+				await get_tree().create_timer(wave_delay).timeout
+				start_next_wave()
+		else:
+			# For kill count, keep spawning until objective met
+			if MissionManager.kill_count < mission.target_count:
+				await get_tree().create_timer(wave_delay).timeout
+				start_next_wave()

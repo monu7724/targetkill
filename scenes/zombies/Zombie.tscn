@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/zombies/Zombie.gd" id="1_y4r2w"]
+[ext_resource type="Script" path="res://scripts/HealthComponent.gd" id="2_z3s4q"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
+radius = 0.4
+height = 1.8
+
+[node name="Zombie" type="CharacterBody3D" groups=["zombies"]]
+collision_layer = 2
+script = ExtResource("1_y4r2w")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_1")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.5
+target_desired_distance = 0.5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_z3s4q")
+max_health = 50.0
+
+[node name="SfxGrowl" type="AudioStreamPlayer3D" parent="."]
+max_distance = 15.0
+
+[node name="SfxAttack" type="AudioStreamPlayer3D" parent="."]
+max_distance = 5.0
+
+[node name="SfxDeath" type="AudioStreamPlayer3D" parent="."]
+max_distance = 10.0
+
+[node name="SfxTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="SfxTimer" to="." method="_on_sfx_timer_timeout"]

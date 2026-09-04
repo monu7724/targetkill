@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/MissionData.gd" id="1_m1s2d"]
+
+[resource]
+script = ExtResource("1_m1s2d")
+mission_id = "mission_02"
+display_name = "Dark Street"
+description = "The infection is spreading. Faster variants spotted."
+objective_type = 0
+target_count = 20
+wave_count = 1
+reward_coins = 100
+unlock_requirement_id = "mission_01"
+spawn_config = [{"type": "normal", "weight": 0.7}, {"type": "fast", "weight": 0.3}]

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/MissionData.gd" id="1_m1s2d"]
+
+[resource]
+script = ExtResource("1_m1s2d")
+mission_id = "mission_01"
+display_name = "First Contact"
+description = "Clear the perimeter. Eliminate the first wave of undead."
+objective_type = 0
+target_count = 10
+wave_count = 1
+reward_coins = 50
+unlock_requirement_id = ""
+spawn_config = [{"type": "normal", "weight": 1.0}]
