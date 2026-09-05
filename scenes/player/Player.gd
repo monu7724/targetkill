@@ -254,13 +254,13 @@ func _physics_process(delta):
 	
 	# First person arm & weapon bobbing
 	var bob = sin(time * bob_speed) * bob_amount * (1.5 if velocity.length() > 0.1 else 0.3)
-	weapon_manager.position.y = lerp(weapon_manager.position.y, -0.22 + bob, 0.1)
+	weapon_manager.position.y = lerp(weapon_manager.position.y, -0.18 + bob, 0.1)
 	weapon_manager.rotation.x = lerp(weapon_manager.rotation.x, 0.0, 5.0 * delta)
 	weapon_manager.rotation.y = lerp(weapon_manager.rotation.y, 0.0, 5.0 * delta)
 	
 	if fps_arms:
-		fps_arms.position.y = lerp(fps_arms.position.y, -0.22 + bob, 0.1)
-		fps_arms.position.z = lerp(fps_arms.position.z, -0.35, 5.0 * delta)
+		fps_arms.position.y = lerp(fps_arms.position.y, -0.18 + bob, 0.1)
+		fps_arms.position.z = lerp(fps_arms.position.z, -0.42, 5.0 * delta)
 		fps_arms.rotation.x = lerp(fps_arms.rotation.x, 0.0, 5.0 * delta)
 		fps_arms.rotation.y = lerp(fps_arms.rotation.y, 0.0, 5.0 * delta)
 	
