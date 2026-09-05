@@ -60,7 +60,7 @@ func _play_impact_audio(type: String, pos: Vector3):
 	var p = AudioStreamPlayer3D.new()
 	p.stream = audio_flesh if type == "blood" else audio_concrete
 	p.max_distance = 25.0
-	p.global_position = pos
 	add_child(p)
+	p.global_position = pos
 	p.finished.connect(func(): p.queue_free())
 	p.play()

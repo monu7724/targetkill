@@ -47,6 +47,7 @@ func _init():
 	var z = z_scene.instantiate()
 	z.archetype = "normal"
 	ap.add_child(z)
+	z.health_component.current_health = 200.0
 	z.global_position = Vector3(0, 0, -6.0)
 	await process_frame
 	var skel: Skeleton3D = z.find_child("Skeleton3D", true, false)
