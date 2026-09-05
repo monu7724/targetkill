@@ -316,7 +316,6 @@ func _test_production_architecture():
 	var has_heavy = zd.spawn_queue.has("heavy")
 	record_test("Zombie Director", has_fast and has_heavy, "Tension curve verified: Escalates with fast and heavy variants")
 	zd.queue_free()
-	dummy_mission.unreference()
 	
 	# 5. VFX object pooling
 	var vfx_mgr = VFXManager.new()

@@ -38,7 +38,10 @@ func setup_medium_quality():
 	var vp = get_viewport()
 	if vp:
 		vp.msaa_3d = Viewport.MSAA_2X
-		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+		if RenderingServer.get_rendering_device() != null:
+			vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+		else:
+			vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 		vp.use_hdr_2d = true
 		vp.scaling_3d_scale = 1.0
 	_update_environment(true, false, true)
@@ -47,7 +50,10 @@ func setup_high_quality():
 	var vp = get_viewport()
 	if vp:
 		vp.msaa_3d = Viewport.MSAA_4X
-		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+		if RenderingServer.get_rendering_device() != null:
+			vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+		else:
+			vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 		vp.use_hdr_2d = true
 		vp.scaling_3d_scale = 1.0
 	_update_environment(true, true, true)

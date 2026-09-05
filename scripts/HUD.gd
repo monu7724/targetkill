@@ -23,10 +23,12 @@ extends CanvasLayer
 @onready var pause_menu = $PauseMenu
 @onready var resume_btn = $PauseMenu/Panel/VBox/ResumeBtn
 @onready var restart_btn = $PauseMenu/Panel/VBox/RestartBtn
+@onready var settings_btn = $PauseMenu/Panel/VBox/SettingsBtn
 @onready var exit_btn = $PauseMenu/Panel/VBox/ExitBtn
 
 var player = null
 var look_touch_id: int = -1
+var fire_touch_id: int = -1
 var is_game_over: bool = false
 var hitmarker_timer: SceneTreeTimer = null
 
@@ -47,6 +49,12 @@ func _ready():
 			mission_mgr.mission_completed.connect(_on_game_over)
 		if not mission_mgr.mission_failed.is_connected(_on_game_over):
 			mission_mgr.mission_failed.connect(_on_game_over)
+			
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		event_bus.objective_updated.connect(func(title, _desc, prog, target):
+			update_objective(title, "Zombies Remaining: %d" % max(0, target - prog))
+		)
 
 func _connect_controls():
 	if virtual_joystick and player:
@@ -56,23 +64,20 @@ func _connect_controls():
 		)
 		
 	if fire_button:
-		fire_button.button_down.connect(func():
-			if player and player.has_method("start_fire"):
-				player.start_fire()
-		)
-		fire_button.button_up.connect(func():
-			if player and player.has_method("stop_fire"):
-				player.stop_fire()
-		)
+		fire_button.gui_input.connect(_on_fire_button_input)
 		
 	if reload_button:
 		reload_button.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
 			if player and player.has_method("_trigger_reload"):
 				player._trigger_reload()
 		)
 		
 	if switch_button:
 		switch_button.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
 			if player and player.has_method("switch_weapon"):
 				player.switch_weapon()
 		)
@@ -81,20 +86,55 @@ func _connect_controls():
 		look_area.gui_input.connect(_on_look_area_input)
 		
 	if pause_button:
-		pause_button.pressed.connect(toggle_pause)
+		pause_button.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
+			toggle_pause()
+		)
+
+func _on_fire_button_input(event: InputEvent):
+	if is_game_over: return
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			if fire_touch_id == -1:
+				fire_touch_id = event.index
+				if player and player.has_method("start_fire"):
+					player.start_fire()
+		else:
+			if event.index == fire_touch_id or event.is_canceled():
+				fire_touch_id = -1
+				if player and player.has_method("stop_fire"):
+					player.stop_fire()
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if player and player.has_method("start_fire"):
+					player.start_fire()
+			else:
+				if player and player.has_method("stop_fire"):
+					player.stop_fire()
+			get_viewport().set_input_as_handled()
 
 func _on_look_area_input(event: InputEvent):
 	if is_game_over or not player or not player.has_method("rotate_camera"):
 		return
 		
+	var joy_id = virtual_joystick.touch_index if virtual_joystick else -1
 	if event is InputEventScreenTouch:
+		# Strictly ignore touches belonging to joystick or fire
+		if event.index == fire_touch_id or event.index == joy_id:
+			return
 		if event.pressed:
 			if look_touch_id == -1:
 				look_touch_id = event.index
 		else:
-			if event.index == look_touch_id:
+			if event.index == look_touch_id or event.is_canceled():
 				look_touch_id = -1
 	elif event is InputEventScreenDrag:
+		# Strictly ensure this drag is NOT from fire or joystick
+		if event.index == fire_touch_id or event.index == joy_id:
+			return
 		if look_touch_id == -1:
 			look_touch_id = event.index
 		if event.index == look_touch_id:
@@ -103,9 +143,13 @@ func _on_look_area_input(event: InputEvent):
 		player.rotate_camera(event.relative.x, event.relative.y)
 
 func _unhandled_input(event: InputEvent):
-	if event is InputEventScreenTouch and not event.pressed:
+	if event is InputEventScreenTouch and (not event.pressed or event.is_canceled()):
 		if event.index == look_touch_id:
 			look_touch_id = -1
+		if event.index == fire_touch_id:
+			fire_touch_id = -1
+			if player and player.has_method("stop_fire"):
+				player.stop_fire()
 
 func show_hitmarker(is_headshot: bool = false):
 	if not hitmarker:
@@ -123,11 +167,29 @@ func show_hitmarker(is_headshot: bool = false):
 
 func _connect_pause_menu():
 	if resume_btn:
-		resume_btn.pressed.connect(toggle_pause)
+		resume_btn.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
+			toggle_pause()
+		)
 	if restart_btn:
-		restart_btn.pressed.connect(_on_restart_pressed)
+		restart_btn.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
+			_on_restart_pressed()
+		)
+	if settings_btn:
+		settings_btn.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
+			_on_settings_pressed()
+		)
 	if exit_btn:
-		exit_btn.pressed.connect(_on_exit_pressed)
+		exit_btn.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
+			_on_exit_pressed()
+		)
 
 func toggle_pause():
 	if is_game_over:
@@ -146,6 +208,7 @@ func toggle_pause():
 		pause_menu.visible = is_paused
 		
 	look_touch_id = -1
+	fire_touch_id = -1
 
 func _on_game_over(_m = null):
 	is_game_over = true
@@ -154,6 +217,7 @@ func _on_game_over(_m = null):
 	if pause_button:
 		pause_button.disabled = true
 	look_touch_id = -1
+	fire_touch_id = -1
 	if virtual_joystick:
 		virtual_joystick.visible = false
 	if fire_button:
@@ -177,6 +241,15 @@ func _on_restart_pressed():
 		mission_mgr.start_mission(mission_mgr.current_mission)
 	else:
 		get_tree().reload_current_scene()
+
+func _on_settings_pressed():
+	var game_state_mgr = get_node_or_null("/root/GameStateManager")
+	if game_state_mgr:
+		game_state_mgr.resume_game()
+		game_state_mgr.change_state(game_state_mgr.State.SETTINGS)
+	else:
+		get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/UI/SettingsUI.tscn")
 
 func _on_exit_pressed():
 	var game_state_mgr = get_node_or_null("/root/GameStateManager")

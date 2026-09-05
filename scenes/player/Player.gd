@@ -51,6 +51,8 @@ func _ready():
 	if anim_player and anim_player.has_animation("idle"):
 		anim_player.play("idle")
 	await get_tree().process_frame
+	if not is_inside_tree() or is_queued_for_deletion():
+		return
 	_update_hud()
 	
 	var save_mgr = get_node_or_null("/root/SaveManager")
@@ -60,12 +62,12 @@ func _ready():
 	if game_state_mgr:
 		game_state_mgr.change_state(game_state_mgr.State.GAMEPLAY)
 		
-	if hud:
+	if hud and is_instance_valid(hud):
 		hud.update_health(current_health, max_health)
 		if save_mgr and save_mgr.data.has("coins"):
 			hud.update_coins(save_mgr.data.coins)
 			
-	if mission_mgr and mission_mgr.current_mission:
+	if mission_mgr and mission_mgr.current_mission and hud and is_instance_valid(hud):
 		hud.update_objective(mission_mgr.current_mission.display_name, "Eliminate " + str(mission_mgr.current_mission.target_count) + " Zombies")
 		if not mission_mgr.mission_completed.is_connected(_on_mission_completed):
 			mission_mgr.mission_completed.connect(_on_mission_completed)
@@ -77,7 +79,7 @@ func _extract_mesh_from_scene(packed_scene: PackedScene) -> Mesh:
 	var result_mesh: Mesh = null
 	if not mesh_nodes.is_empty() and mesh_nodes[0].mesh:
 		result_mesh = mesh_nodes[0].mesh
-	inst.queue_free()
+	inst.free()
 	return result_mesh
 
 func _init_character_models():
@@ -127,9 +129,17 @@ func _init_weapons():
 
 func _apply_active_weapon():
 	for i in range(weapons.size()):
-		weapons[i].visible = (i == current_weapon_index)
-		if i == current_weapon_index:
+		var is_active = (i == current_weapon_index)
+		weapons[i].visible = is_active
+		if not is_active:
+			if weapons[i].has_method("cancel_reload"):
+				weapons[i].cancel_reload()
+		else:
 			weapons[i].apply_upgrades()
+			if weapons[i].current_ammo > 0 and not weapons[i].is_reloading:
+				weapons[i].can_shoot = true
+	if fps_arms:
+		fps_arms.position.y -= 0.035
 	_update_hud()
 
 func switch_weapon():

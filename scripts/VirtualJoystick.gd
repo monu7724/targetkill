@@ -39,11 +39,14 @@ func _gui_input(event: InputEvent):
 			touch_index = event.index
 			is_active = true
 			_update_joystick(event.position)
-		elif not event.pressed and event.index == touch_index:
+			accept_event()
+		elif (not event.pressed or event.is_canceled()) and event.index == touch_index:
 			_reset_joystick()
+			accept_event()
 			
 	elif event is InputEventScreenDrag and event.index == touch_index:
 		_update_joystick(event.position)
+		accept_event()
 		
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -55,6 +58,14 @@ func _gui_input(event: InputEvent):
 				
 	elif event is InputEventMouseMotion and is_active:
 		_update_joystick(event.position)
+
+func _input(event: InputEvent):
+	if touch_index != -1:
+		if event is InputEventScreenDrag and event.index == touch_index:
+			var local_pos = get_global_transform().affine_inverse() * event.position
+			_update_joystick(local_pos)
+		elif event is InputEventScreenTouch and (not event.pressed or event.is_canceled()) and event.index == touch_index:
+			_reset_joystick()
 
 func _update_joystick(pos: Vector2):
 	var diff = pos - joystick_center

@@ -10,21 +10,24 @@ var is_loading: bool = false
 var loading_ui_layer: CanvasLayer = null
 var progress_bar: ProgressBar = null
 var mission_title_lbl: Label = null
+var mission_sub_lbl: Label = null
 var location_lbl: Label = null
-var objective_lbl: Label = null
 var tip_lbl: Label = null
+var percent_lbl: Label = null
 
 var tips = [
+	"Keep moving. They are attracted to noise.",
 	"Aim for the head to inflict 2.5x critical damage.",
 	"Keep distance from Heavy Workers; their attacks stagger.",
 	"Use the Shotgun in tight spaces for massive stopping power.",
 	"Reload before engaging a new horde wave.",
-	"Upgrade weapon magazine size to reduce downtime."
+	"Upgrade weapon magazine size to reduce reload frequency."
 ]
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_create_loading_ui()
+	print("[%d ms] [BOOT:07] LoadingManager ready." % Time.get_ticks_msec())
 
 func _create_loading_ui():
 	loading_ui_layer = CanvasLayer.new()
@@ -34,64 +37,80 @@ func _create_loading_ui():
 	
 	var bg = ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.04, 0.06, 0.09, 0.98)
+	bg.color = Color(0.04, 0.05, 0.07, 0.98)
 	loading_ui_layer.add_child(bg)
 	
 	var container = VBoxContainer.new()
 	container.set_anchors_preset(Control.PRESET_CENTER)
-	container.custom_minimum_size = Vector2(700, 360)
-	container.offset_left = -350
-	container.offset_top = -180
+	container.custom_minimum_size = Vector2(720, 400)
+	container.offset_left = -360
+	container.offset_top = -200
 	container.alignment = BoxContainer.ALIGNMENT_CENTER
-	container.add_theme_constant_override("separation", 16)
+	container.add_theme_constant_override("separation", 14)
 	loading_ui_layer.add_child(container)
+	
+	var brand_lbl = Label.new()
+	brand_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	brand_lbl.text = "SECTOR ZERO: LOCKDOWN"
+	brand_lbl.add_theme_font_size_override("font_size", 34)
+	brand_lbl.add_theme_color_override("font_color", Color(1.0, 0.78, 0.25))
+	container.add_child(brand_lbl)
 	
 	mission_title_lbl = Label.new()
 	mission_title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mission_title_lbl.text = "OPERATION: SECTOR ZERO"
-	mission_title_lbl.add_theme_font_size_override("font_size", 32)
-	mission_title_lbl.add_theme_color_override("font_color", Color(1.0, 0.78, 0.28))
+	mission_title_lbl.text = "MISSION 01"
+	mission_title_lbl.add_theme_font_size_override("font_size", 22)
+	mission_title_lbl.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
 	container.add_child(mission_title_lbl)
+	
+	mission_sub_lbl = Label.new()
+	mission_sub_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	mission_sub_lbl.text = "FIRST CONTACT"
+	mission_sub_lbl.add_theme_font_size_override("font_size", 18)
+	mission_sub_lbl.add_theme_color_override("font_color", Color(0.7, 0.8, 0.9))
+	container.add_child(mission_sub_lbl)
 	
 	location_lbl = Label.new()
 	location_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	location_lbl.text = "LOCATION: DEPLOYMENT ZONE"
-	location_lbl.add_theme_font_size_override("font_size", 18)
-	location_lbl.add_theme_color_override("font_color", Color(0.65, 0.75, 0.85))
+	location_lbl.text = "AIRPORT TERMINAL"
+	location_lbl.add_theme_font_size_override("font_size", 16)
+	location_lbl.add_theme_color_override("font_color", Color(0.55, 0.65, 0.75))
 	container.add_child(location_lbl)
 	
-	objective_lbl = Label.new()
-	objective_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	objective_lbl.text = "OBJECTIVE: SECURE PERIMETER"
-	objective_lbl.add_theme_font_size_override("font_size", 20)
-	objective_lbl.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
-	container.add_child(objective_lbl)
-	
 	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 20)
+	spacer.custom_minimum_size = Vector2(0, 16)
 	container.add_child(spacer)
 	
 	progress_bar = ProgressBar.new()
-	progress_bar.custom_minimum_size = Vector2(600, 24)
+	progress_bar.custom_minimum_size = Vector2(620, 24)
 	progress_bar.min_value = 0.0
 	progress_bar.max_value = 1.0
 	progress_bar.value = 0.0
-	progress_bar.show_percentage = true
+	progress_bar.show_percentage = false
 	container.add_child(progress_bar)
+	
+	percent_lbl = Label.new()
+	percent_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	percent_lbl.text = "Loading... 0%"
+	percent_lbl.add_theme_font_size_override("font_size", 14)
+	percent_lbl.add_theme_color_override("font_color", Color(0.8, 0.85, 0.9))
+	container.add_child(percent_lbl)
 	
 	tip_lbl = Label.new()
 	tip_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tip_lbl.text = "TIP: Aim for the head to inflict 2.5x critical damage."
-	tip_lbl.add_theme_font_size_override("font_size", 15)
-	tip_lbl.add_theme_color_override("font_color", Color(0.55, 0.62, 0.7))
+	tip_lbl.text = "Tip: Keep moving. They are attracted to noise."
+	tip_lbl.add_theme_font_size_override("font_size", 14)
+	tip_lbl.add_theme_color_override("font_color", Color(0.6, 0.65, 0.7))
 	container.add_child(tip_lbl)
 
 func load_scene_async(scene_path: String, mission_data: MissionData = null):
 	if is_loading:
-		printerr("[LoadingManager] Load already in progress")
+		print("[%d ms] [LOADING] Warning: Load already in progress for %s" % [Time.get_ticks_msec(), target_scene_path])
 		return
 		
-	# Save game progress before transition (Section 32)
+	var start_time = Time.get_ticks_msec()
+	print("[%d ms] [LOADING] Starting async load for: %s" % [start_time, scene_path])
+	
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if save_mgr and save_mgr.has_method("save_game"):
 		save_mgr.save_game()
@@ -105,16 +124,17 @@ func load_scene_async(scene_path: String, mission_data: MissionData = null):
 	
 	# Update Loading Screen UI
 	if mission_data:
-		mission_title_lbl.text = mission_data.display_name.to_upper()
-		location_lbl.text = "LOCATION: " + mission_data.scene_path.get_file().get_basename().to_upper()
-		objective_lbl.text = "OBJECTIVE: " + mission_data.description
+		mission_title_lbl.text = mission_data.mission_id.to_upper().replace("_", " ")
+		mission_sub_lbl.text = mission_data.display_name.to_upper()
+		location_lbl.text = mission_data.scene_path.get_file().get_basename().to_upper().replace("_", " ")
 	else:
-		mission_title_lbl.text = "SECTOR ZERO: LOCKDOWN"
-		location_lbl.text = "LOCATION: " + scene_path.get_file().get_basename().to_upper()
-		objective_lbl.text = "OBJECTIVE: SURVIVE"
+		mission_title_lbl.text = "SECTOR ZERO"
+		mission_sub_lbl.text = "TACTICAL DEPLOYMENT"
+		location_lbl.text = scene_path.get_file().get_basename().to_upper().replace("_", " ")
 		
-	tip_lbl.text = "TIP: " + tips.pick_random()
+	tip_lbl.text = "Tip: " + tips.pick_random()
 	progress_bar.value = 0.0
+	percent_lbl.text = "Loading... 0%"
 	loading_ui_layer.visible = true
 	
 	loading_started.emit(scene_path)
@@ -122,53 +142,91 @@ func load_scene_async(scene_path: String, mission_data: MissionData = null):
 	# Request threaded load
 	var err = ResourceLoader.load_threaded_request(scene_path)
 	if err != OK:
-		_handle_load_failure("ResourceLoader request failed with code: " + str(err))
+		print("[%d ms] [LOADING] Threaded request failed (%d), falling back to synchronous load" % [Time.get_ticks_msec(), err])
+		_fallback_synchronous_load(scene_path, start_time)
 		return
 		
-	_poll_loading()
+	_run_poll_loop(start_time)
 
-func _poll_loading():
-	var progress_arr = []
-	var status = ResourceLoader.load_threaded_get_status(target_scene_path, progress_arr)
+func _run_poll_loop(start_time: int):
+	var poll_elapsed: float = 0.0
+	var timeout_limit: float = 8.0 # Strict 8-second safety timeout
 	
-	match status:
-		ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-			var p = progress_arr[0] if not progress_arr.is_empty() else 0.5
-			progress_bar.value = p
-			loading_progress.emit(p)
-			await get_tree().create_timer(0.04).timeout
-			_poll_loading()
-			
-		ResourceLoader.THREAD_LOAD_LOADED:
-			progress_bar.value = 1.0
-			loading_progress.emit(1.0)
-			await get_tree().create_timer(0.15).timeout # Brief smooth finish
-			
-			var packed_scene = ResourceLoader.load_threaded_get(target_scene_path)
-			if packed_scene:
-				get_tree().change_scene_to_packed(packed_scene)
-				loading_completed.emit(target_scene_path)
-			else:
-				_handle_load_failure("Loaded resource is null or corrupted")
+	while is_loading:
+		var progress_arr = []
+		var status = ResourceLoader.load_threaded_get_status(target_scene_path, progress_arr)
+		
+		match status:
+			ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+				var p = progress_arr[0] if not progress_arr.is_empty() else 0.5
+				progress_bar.value = p
+				percent_lbl.text = "Loading: %d%%" % int(p * 100)
+				loading_progress.emit(p)
+				
+				# Wait 1 frame (with process_always=true so pause state never hangs this!)
+				await get_tree().create_timer(0.04, true).timeout
+				poll_elapsed += 0.04
+				
+				if poll_elapsed >= timeout_limit:
+					print("[%d ms] [LOADING] Threaded load timeout reached (%.1fs). Triggering synchronous fallback..." % [Time.get_ticks_msec(), poll_elapsed])
+					_fallback_synchronous_load(target_scene_path, start_time)
+					return
+					
+			ResourceLoader.THREAD_LOAD_LOADED:
+				progress_bar.value = 1.0
+				percent_lbl.text = "Loading: 100%"
+				loading_progress.emit(1.0)
+				
+				# Brief smooth transition delay (with process_always=true)
+				await get_tree().create_timer(0.12, true).timeout
+				
+				var packed_scene = ResourceLoader.load_threaded_get(target_scene_path)
+				if packed_scene is PackedScene:
+					get_tree().change_scene_to_packed(packed_scene)
+					var elapsed = Time.get_ticks_msec() - start_time
+					print("[%d ms] [LOADING] SUCCESS: Loaded %s in %d ms." % [Time.get_ticks_msec(), target_scene_path, elapsed])
+					loading_completed.emit(target_scene_path)
+				else:
+					_fallback_synchronous_load(target_scene_path, start_time)
+					return
+					
+				loading_ui_layer.visible = false
+				is_loading = false
 				return
 				
-			loading_ui_layer.visible = false
-			is_loading = false
-			
-		ResourceLoader.THREAD_LOAD_FAILED, ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
-			_handle_load_failure("Threaded load failed for: " + target_scene_path)
+			ResourceLoader.THREAD_LOAD_FAILED, ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+				print("[%d ms] [LOADING] Threaded load error (%d). Triggering fallback..." % [Time.get_ticks_msec(), status])
+				_fallback_synchronous_load(target_scene_path, start_time)
+				return
+
+func _fallback_synchronous_load(scene_path: String, start_time: int):
+	print("[%d ms] [LOADING] Executing synchronous fallback for: %s" % [Time.get_ticks_msec(), scene_path])
+	progress_bar.value = 0.95
+	percent_lbl.text = "Finalizing..."
+	
+	var scene = load(scene_path)
+	if scene is PackedScene:
+		get_tree().change_scene_to_packed(scene)
+		var elapsed = Time.get_ticks_msec() - start_time
+		print("[%d ms] [LOADING] SUCCESS (Fallback): Loaded in %d ms." % [Time.get_ticks_msec(), elapsed])
+		loading_completed.emit(scene_path)
+		loading_ui_layer.visible = false
+		is_loading = false
+	else:
+		_handle_load_failure("Unable to load scene resource: " + scene_path)
 
 func _handle_load_failure(reason: String):
-	printerr("[LoadingManager Error] ", reason)
+	printerr("[%d ms] [LOADING:FAILURE] %s" % [Time.get_ticks_msec(), reason])
 	is_loading = false
 	loading_failed.emit(reason)
 	
-	# Display error feedback to user (Section 32)
 	mission_title_lbl.text = "UNABLE TO LOAD MISSION"
-	objective_lbl.text = "Error encountered. Returning to Mission Select..."
+	mission_sub_lbl.text = "RETURNING TO BASE"
+	location_lbl.text = reason
 	progress_bar.value = 0.0
+	percent_lbl.text = "Error"
 	
-	await get_tree().create_timer(1.8).timeout
+	await get_tree().create_timer(1.8, true).timeout
 	loading_ui_layer.visible = false
 	
 	var game_state_mgr = get_node_or_null("/root/GameStateManager")

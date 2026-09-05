@@ -11,6 +11,7 @@ func _ready():
 	var audio_mgr = get_node_or_null("/root/AudioManager")
 	if audio_mgr:
 		audio_mgr.play_location_ambience("airport")
+	print("[%d ms] [MAIN_MENU] MainMenu ready." % Time.get_ticks_msec())
 
 func _process(delta):
 	if tap_count > 0:
@@ -43,7 +44,13 @@ func _on_quit_button_pressed():
 
 # Hidden diagnostics tap trigger (Section 31)
 func _on_version_label_gui_input(event):
+	var pressed = false
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		pressed = true
+	elif event is InputEventScreenTouch and event.pressed:
+		pressed = true
+		
+	if pressed:
 		tap_count += 1
 		tap_reset_timer = 2.0
 		if tap_count >= 5:

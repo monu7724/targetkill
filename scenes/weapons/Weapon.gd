@@ -180,6 +180,9 @@ func _fire_projectiles():
 		var hud_node = get_tree().get_first_node_in_group("hud")
 		if hud_node and hud_node.has_method("show_hitmarker"):
 			hud_node.show_hitmarker(had_headshot)
+		var event_bus = get_node_or_null("/root/EventBus")
+		if event_bus:
+			event_bus.damage_dealt.emit(damage, had_headshot, "head" if had_headshot else "body", null)
 
 func _spawn_impact(type: String, pos: Vector3, normal: Vector3):
 	if not impact_pool:
@@ -187,21 +190,34 @@ func _spawn_impact(type: String, pos: Vector3, normal: Vector3):
 	if impact_pool:
 		impact_pool.spawn_impact(type, pos, normal)
 
+var reload_timer: SceneTreeTimer = null
+
 func reload():
 	if is_reloading or current_ammo == max_ammo:
 		return
 		
 	is_reloading = true
 	sfx_reload.play()
-	await get_tree().create_timer(reload_time).timeout
-	current_ammo = max_ammo
-	is_reloading = false
-	ammo_changed.emit(current_ammo, max_ammo)
-	weapon_reloaded.emit()
-	
-	var event_bus = get_node_or_null("/root/EventBus")
-	if event_bus:
-		event_bus.weapon_reloaded.emit(weapon_data.weapon_id if weapon_data else "")
+	var cur_timer = get_tree().create_timer(reload_time)
+	reload_timer = cur_timer
+	await cur_timer.timeout
+	if reload_timer == cur_timer and is_reloading:
+		current_ammo = max_ammo
+		is_reloading = false
+		reload_timer = null
+		ammo_changed.emit(current_ammo, max_ammo)
+		weapon_reloaded.emit()
+		
+		var event_bus = get_node_or_null("/root/EventBus")
+		if event_bus:
+			event_bus.weapon_reloaded.emit(weapon_data.weapon_id if weapon_data else "")
+
+func cancel_reload():
+	if is_reloading:
+		is_reloading = false
+		reload_timer = null
+		if sfx_reload and sfx_reload.playing:
+			sfx_reload.stop()
 
 func muzzle_flash_fx():
 	if muzzle_light:

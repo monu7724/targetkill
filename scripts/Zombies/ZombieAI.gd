@@ -169,9 +169,12 @@ func _on_health_changed(hp):
 		if hud and hud.has_method("update_boss_health"):
 			hud.update_boss_health(hp)
 
+var last_hit_was_headshot: bool = false
+
 func take_damage(amount: float, is_headshot: bool = false, hit_dir: Vector3 = Vector3.ZERO):
 	if is_dead:
 		return
+	last_hit_was_headshot = is_headshot
 	health_component.take_damage(amount)
 	if is_dead:
 		return
@@ -347,7 +350,7 @@ func _on_died():
 		
 	var event_bus = get_node_or_null("/root/EventBus")
 	if event_bus:
-		event_bus.enemy_killed.emit(archetype, false, global_position)
+		event_bus.enemy_killed.emit(archetype, last_hit_was_headshot, global_position)
 		
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if save_mgr:

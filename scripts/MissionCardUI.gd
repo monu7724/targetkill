@@ -19,7 +19,18 @@ func setup(data: MissionData):
 	
 	play_button.disabled = not is_unlocked
 	if not is_unlocked:
-		modulate = Color(0.5, 0.5, 0.5, 1.0)
+		modulate = Color(0.5, 0.5, 0.5, 0.8)
+		play_button.text = "LOCKED"
+	else:
+		var is_completed = SaveManager.is_mission_completed(data.mission_id)
+		if is_completed:
+			modulate = Color(1.0, 1.0, 1.0, 1.0)
+			play_button.text = "COMPLETED"
+		else:
+			modulate = Color(1.0, 1.0, 1.0, 1.0)
+			play_button.text = "DEPLOY"
 
 func _on_play_button_pressed():
+	var audio_mgr = get_node_or_null("/root/AudioManager")
+	if audio_mgr: audio_mgr.play_ui_click()
 	MissionManager.start_mission(mission_data)

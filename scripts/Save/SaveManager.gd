@@ -27,7 +27,9 @@ var data = {
 }
 
 func _ready():
+	var t0 = Time.get_ticks_msec()
 	load_game()
+	print("[%d ms] [BOOT:01] SaveManager initialized in %d ms (Coins: %d, Completed: %s)" % [Time.get_ticks_msec(), Time.get_ticks_msec() - t0, data.coins, str(data.completed_missions)])
 
 func save_game():
 	# Atomic Save Process: Write to .tmp first, then atomically replace

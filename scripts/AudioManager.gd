@@ -9,9 +9,12 @@ var sounds = {
 	"ui_click": preload("res://audio/ui/sfx_ui_click.wav"),
 	"victory": preload("res://audio/ui/sfx_victory.wav"),
 	"defeat": preload("res://audio/ui/sfx_defeat.wav"),
-	"footstep": preload("res://audio/player/sfx_footstep.wav"),
-	"ambience_airport": preload("res://audio/ambience/sfx_ambience_airport.wav"),
-	"ambience_metro": preload("res://audio/ambience/sfx_ambience_metro.wav")
+	"footstep": preload("res://audio/player/sfx_footstep.wav")
+}
+
+var ambience_paths = {
+	"ambience_airport": "res://audio/ambience/sfx_ambience_airport.wav",
+	"ambience_metro": "res://audio/ambience/sfx_ambience_metro.wav"
 }
 
 var bg_player: AudioStreamPlayer = null
@@ -23,6 +26,7 @@ func _ready():
 	bg_player = AudioStreamPlayer.new()
 	bg_player.bus = "Master"
 	add_child(bg_player)
+	print("[%d ms] [BOOT:03] AudioManager ready." % Time.get_ticks_msec())
 
 func play_sfx(sound_name: String):
 	if sounds.has(sound_name):
@@ -69,15 +73,17 @@ func play_location_ambience(location_name: String):
 	elif "train" in location_name.to_lower():
 		key = "ambience_metro"
 		
-	if current_ambience_key != key and sounds.has(key):
+	if current_ambience_key != key and ambience_paths.has(key):
 		current_ambience_key = key
 		if not bg_player:
 			bg_player = AudioStreamPlayer.new()
 			bg_player.bus = "Master"
 			add_child(bg_player)
-		bg_player.stream = sounds[key]
-		bg_player.volume_db = linear_to_db(ambience_volume)
-		bg_player.play()
+		var s = load(ambience_paths[key])
+		if s:
+			bg_player.stream = s
+			bg_player.volume_db = linear_to_db(ambience_volume)
+			bg_player.play()
 
 func duck_ambience(factor: float, duration: float):
 	if not bg_player: return

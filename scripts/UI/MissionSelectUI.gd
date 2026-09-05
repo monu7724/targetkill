@@ -16,6 +16,7 @@ func _ready():
 	if game_state_mgr:
 		game_state_mgr.change_state(game_state_mgr.State.MISSION_SELECT)
 	populate_missions()
+	print("[%d ms] [MISSION_SELECT] MissionSelect ready." % Time.get_ticks_msec())
 
 func populate_missions():
 	for child in mission_list.get_children():

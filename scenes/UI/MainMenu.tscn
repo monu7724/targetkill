@@ -65,6 +65,26 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "QUIT"
 
+[node name="VersionLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -42.0
+offset_right = -24.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 0
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 0.8)
+theme_override_font_sizes/font_size = 14
+text = "v1.0.0 | Sector Zero"
+horizontal_alignment = 2
+
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="gui_input" from="VersionLabel" to="." method="_on_version_label_gui_input"]
