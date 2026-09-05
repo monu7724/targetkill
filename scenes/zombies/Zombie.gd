@@ -25,7 +25,7 @@ var attack_timer: float = 1.0
 
 var archetype_data = {
 	"normal": {
-		"mesh": "res://models/zombies/zombie_normal.obj",
+		"mesh": "res://assets/3d/zombies/zombie_normal.glb",
 		"material": "res://resources/materials/mat_zombie_normal.tres",
 		"hp": 50.0,
 		"speed": 2.2,
@@ -34,7 +34,7 @@ var archetype_data = {
 		"reward": 10
 	},
 	"fast": {
-		"mesh": "res://models/zombies/zombie_fast.obj",
+		"mesh": "res://assets/3d/zombies/zombie_fast.glb",
 		"material": "res://resources/materials/mat_zombie_fast.tres",
 		"hp": 30.0,
 		"speed": 4.2,
@@ -43,7 +43,7 @@ var archetype_data = {
 		"reward": 15
 	},
 	"heavy": {
-		"mesh": "res://models/zombies/zombie_heavy.obj",
+		"mesh": "res://assets/3d/zombies/zombie_heavy.glb",
 		"material": "res://resources/materials/mat_zombie_heavy.tres",
 		"hp": 160.0,
 		"speed": 1.4,
@@ -52,7 +52,7 @@ var archetype_data = {
 		"reward": 25
 	},
 	"boss": {
-		"mesh": "res://models/zombies/zombie_boss.obj",
+		"mesh": "res://assets/3d/zombies/zombie_boss.glb",
 		"material": "res://resources/materials/mat_zombie_boss.tres",
 		"hp": 500.0,
 		"speed": 1.8,
@@ -70,13 +70,29 @@ func _ready():
 	sfx_timer.start(randf_range(3.0, 6.0))
 	_apply_archetype()
 
+func _extract_mesh_from_scene(packed_scene: PackedScene) -> Mesh:
+	if not packed_scene: return null
+	var inst = packed_scene.instantiate()
+	var mesh_nodes = inst.find_children("*", "MeshInstance3D", true, false)
+	var result_mesh: Mesh = null
+	if not mesh_nodes.is_empty() and mesh_nodes[0].mesh:
+		result_mesh = mesh_nodes[0].mesh
+	inst.queue_free()
+	return result_mesh
+
 func _apply_archetype():
 	var cfg = archetype_data.get(archetype, archetype_data["normal"])
 	if mesh_instance:
-		var m_res = load(cfg.mesh)
-		var mat_res = load(cfg.material)
-		mesh_instance.mesh = m_res
-		mesh_instance.material_override = mat_res
+		var res = load(cfg.mesh)
+		if res is PackedScene:
+			var m = _extract_mesh_from_scene(res)
+			if m:
+				mesh_instance.mesh = m
+				mesh_instance.material_override = null
+		elif res is Mesh:
+			var mat_res = load(cfg.material)
+			mesh_instance.mesh = res
+			mesh_instance.material_override = mat_res
 	
 	scale = cfg.scale
 	move_speed = cfg.speed

@@ -31,14 +31,15 @@ var is_firing: bool = false
 
 var weapon_prefab: PackedScene = preload("res://scenes/weapons/Weapon.tscn")
 var weapon_configs = [
-	{"id": "pistol", "path": "res://resources/weapons/pistol.tres", "model": "res://models/weapons/pistol.obj"},
-	{"id": "rifle", "path": "res://resources/weapons/rifle.tres", "model": "res://models/weapons/rifle.obj"},
-	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://models/weapons/shotgun.obj"}
+	{"id": "pistol", "path": "res://resources/weapons/pistol.tres", "model": "res://assets/3d/weapons/pistol.glb"},
+	{"id": "rifle", "path": "res://resources/weapons/rifle.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://assets/3d/weapons/shotgun.glb"}
 ]
 var weapons: Array = []
 var current_weapon_index: int = 0
 
 func _ready():
+	_init_character_models()
 	_init_weapons()
 	anim_player.play("idle")
 	await get_tree().process_frame
@@ -51,6 +52,33 @@ func _ready():
 		hud.update_objective(MissionManager.current_mission.display_name, "Eliminate " + str(MissionManager.current_mission.target_count) + " Zombies")
 		if not MissionManager.mission_completed.is_connected(_on_mission_completed):
 			MissionManager.mission_completed.connect(_on_mission_completed)
+
+func _extract_mesh_from_scene(packed_scene: PackedScene) -> Mesh:
+	if not packed_scene: return null
+	var inst = packed_scene.instantiate()
+	var mesh_nodes = inst.find_children("*", "MeshInstance3D", true, false)
+	var result_mesh: Mesh = null
+	if not mesh_nodes.is_empty() and mesh_nodes[0].mesh:
+		result_mesh = mesh_nodes[0].mesh
+	inst.queue_free()
+	return result_mesh
+
+func _init_character_models():
+	if has_node("PlayerBody/MeshInstance3D"):
+		var soldier_res = load("res://assets/3d/characters/player_soldier.glb")
+		if soldier_res is PackedScene:
+			var sm = _extract_mesh_from_scene(soldier_res)
+			if sm:
+				$PlayerBody/MeshInstance3D.mesh = sm
+				$PlayerBody/MeshInstance3D.material_override = null
+
+	if fps_arms and fps_arms.has_node("MeshInstance3D"):
+		var arms_res = load("res://assets/3d/weapons/fps_arms.glb")
+		if arms_res is PackedScene:
+			var am = _extract_mesh_from_scene(arms_res)
+			if am:
+				fps_arms.get_node("MeshInstance3D").mesh = am
+				fps_arms.get_node("MeshInstance3D").material_override = null
 
 func _init_weapons():
 	for child in weapon_manager.get_children():
@@ -65,10 +93,14 @@ func _init_weapons():
 		
 		# Set 3D model on weapon
 		if w.has_node("MeshInstance3D"):
-			var mesh_res = load(cfg.model)
-			var mat_res = preload("res://resources/materials/mat_weapon.tres")
-			w.get_node("MeshInstance3D").mesh = mesh_res
-			w.get_node("MeshInstance3D").material_override = mat_res
+			var model_res = load(cfg.model)
+			if model_res is PackedScene:
+				var wm = _extract_mesh_from_scene(model_res)
+				if wm:
+					w.get_node("MeshInstance3D").mesh = wm
+					w.get_node("MeshInstance3D").material_override = null
+			elif model_res is Mesh:
+				w.get_node("MeshInstance3D").mesh = model_res
 			
 		w.ammo_changed.connect(func(_c, _m): _update_hud())
 		weapons.append(w)

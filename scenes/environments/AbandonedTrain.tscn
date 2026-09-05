@@ -10,6 +10,7 @@
 [ext_resource type="Material" path="res://resources/materials/mat_train.tres" id="8_mtrn"]
 [ext_resource type="ArrayMesh" path="res://models/environment/train/train_carriage.obj" id="9_mcar"]
 [ext_resource type="AudioStream" path="res://audio/ambience/sfx_ambience_metro.wav" id="10_samb"]
+[ext_resource type="PackedScene" path="res://assets/3d/environments/train_carriage.glb" id="11_glb_trn"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_trn"]
 vertices = PackedVector3Array(-12, 0, -14, -12, 0, 14, 12, 0, 14, 12, 0, -14)
@@ -96,3 +97,6 @@ impact_scenes = {
 stream = ExtResource("10_samb")
 volume_db = -6.0
 autoplay = true
+
+[node name="TrainCarriageGLB" parent="." instance=ExtResource("11_glb_trn")]
+

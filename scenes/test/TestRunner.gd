@@ -170,15 +170,16 @@ func _test_zombie_variants_and_combat():
 func _test_environments():
 	print("\n--- TEST SUITE 4: REALISTIC ENVIRONMENTS ---")
 	var envs = {
-		"Airport environment": "res://scenes/environments/AirportTerminal.tscn",
-		"Railway environment": "res://scenes/environments/RailwayStation.tscn",
-		"Train environment": "res://scenes/environments/AbandonedTrain.tscn",
-		"Industrial environment": "res://scenes/environments/DarkIndustrial.tscn",
-		"Final Lockdown": "res://scenes/environments/FinalLockdown.tscn"
+		"Airport environment": {"scene": "res://scenes/environments/AirportTerminal.tscn", "glb": "AirportTerminalGLB"},
+		"Railway environment": {"scene": "res://scenes/environments/RailwayStation.tscn", "glb": "RailwayStationGLB"},
+		"Train environment": {"scene": "res://scenes/environments/AbandonedTrain.tscn", "glb": "TrainCarriageGLB"},
+		"Industrial environment": {"scene": "res://scenes/environments/DarkIndustrial.tscn", "glb": "DarkIndustrialGLB"},
+		"Final Lockdown": {"scene": "res://scenes/environments/FinalLockdown.tscn", "glb": "BossArenaGLB"}
 	}
 	
 	for name in envs.keys():
-		var scene_path = envs[name]
+		var entry = envs[name]
+		var scene_path = entry.scene
 		var scene = load(scene_path)
 		var ok = scene != null
 		if ok:
@@ -186,9 +187,10 @@ func _test_environments():
 			var has_ground = inst.find_child("Ground", true, false) != null
 			var has_light = inst.find_child("DirectionalLight3D", true, false) != null
 			var has_spawner = inst.find_child("ZombieSpawner", true, false) != null
-			ok = has_ground and has_light and has_spawner
+			var has_glb = inst.find_child(entry.glb, true, false) != null
+			ok = has_ground and has_light and has_spawner and has_glb
 			inst.queue_free()
-		record_test(name, ok, "Scene: " + scene_path)
+		record_test(name, ok, "Scene: %s, GLB Node: %s" % [scene_path, entry.glb])
 		
 	record_test("Lighting", true, "DirectionalLight3D, Omni emergency beacons, mobile fog, Quality profiles")
 	record_test("Materials/textures", true, "PBR materials with Albedo, Roughness, Metallic, Normal, Emission")

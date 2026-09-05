@@ -10,6 +10,7 @@
 [ext_resource type="Material" path="res://resources/materials/mat_airport_floor.tres" id="8_mflr"]
 [ext_resource type="ArrayMesh" path="res://models/environment/airport/terminal_pillar.obj" id="9_mpil"]
 [ext_resource type="AudioStream" path="res://audio/ambience/sfx_ambience_airport.wav" id="10_samb"]
+[ext_resource type="PackedScene" path="res://assets/3d/environments/boss_arena.glb" id="11_glb_boss"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_lck"]
 vertices = PackedVector3Array(-22, 0, -22, -22, 0, 22, 22, 0, 22, 22, 0, -22)
@@ -101,3 +102,6 @@ impact_scenes = {
 stream = ExtResource("10_samb")
 volume_db = -4.0
 autoplay = true
+
+[node name="BossArenaGLB" parent="." instance=ExtResource("11_glb_boss")]
+
