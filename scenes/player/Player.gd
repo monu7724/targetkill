@@ -35,6 +35,7 @@ var max_health: float = 100.0
 var current_health: float = 100.0
 var is_dead: bool = false
 var is_firing: bool = false
+var is_tactical_reloading: bool = false
 
 var weapon_prefab: PackedScene = preload("res://scenes/weapons/Weapon.tscn")
 var weapon_configs = [
@@ -149,8 +150,13 @@ func _apply_active_weapon():
 			weapons[i].apply_upgrades()
 			if weapons[i].current_ammo > 0 and not weapons[i].is_reloading:
 				weapons[i].can_shoot = true
-	if fps_arms:
-		fps_arms.position.y -= 0.035
+	if fps_arms and weapon_manager:
+		fps_arms.position.y = -0.36
+		weapon_manager.position.y = -0.36
+		var tw = create_tween()
+		tw.set_parallel(true)
+		tw.tween_property(fps_arms, "position:y", -0.18, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_property(weapon_manager, "position:y", -0.18, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	_update_hud()
 
 func switch_weapon():
@@ -225,8 +231,9 @@ func _trigger_reload():
 	if is_dead: return
 	var weapon = get_current_weapon()
 	if weapon and not weapon.is_reloading:
+		var r_time = weapon.reload_time if "reload_time" in weapon else 1.5
 		weapon.reload()
-		_reload_arms()
+		_reload_arms(r_time)
 		_update_hud()
 
 func _recoil_arms(factor: float = 1.0):
@@ -234,9 +241,28 @@ func _recoil_arms(factor: float = 1.0):
 		fps_arms.position.z += 0.04 * factor
 		fps_arms.rotation.x += deg_to_rad(3.0 * factor)
 
-func _reload_arms():
-	if fps_arms:
-		fps_arms.position.y -= 0.05
+func _reload_arms(duration: float = 1.5):
+	if not fps_arms or not weapon_manager: return
+	is_tactical_reloading = true
+	var tw = create_tween()
+	# Phase 1: drop and cant left
+	tw.tween_property(weapon_manager, "position:y", -0.28, duration * 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(weapon_manager, "rotation:z", deg_to_rad(14.0), duration * 0.25)
+	tw.parallel().tween_property(fps_arms, "position:y", -0.28, duration * 0.25)
+	tw.parallel().tween_property(fps_arms, "rotation:z", deg_to_rad(14.0), duration * 0.25)
+	
+	# Phase 2: mag insertion jerk
+	tw.tween_interval(duration * 0.35)
+	tw.tween_property(weapon_manager, "position:y", -0.25, 0.08)
+	tw.parallel().tween_property(fps_arms, "position:y", -0.25, 0.08)
+	
+	# Phase 3: return to ready
+	tw.tween_interval(duration * 0.15)
+	tw.tween_property(weapon_manager, "position:y", -0.18, duration * 0.25).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(weapon_manager, "rotation:z", 0.0, duration * 0.25)
+	tw.parallel().tween_property(fps_arms, "position:y", -0.18, duration * 0.25)
+	tw.parallel().tween_property(fps_arms, "rotation:z", 0.0, duration * 0.25)
+	tw.tween_callback(func(): is_tactical_reloading = false)
 
 func _physics_process(delta):
 	if is_dead: return
@@ -296,21 +322,31 @@ func _physics_process(delta):
 	global_position.x = clamp(global_position.x, -move_limit, move_limit)
 	global_position.z = clamp(global_position.z, -move_limit, move_limit)
 	
-	# Subtle breathing & movement bobbing
+	# Figure-8 Lissajous breathing & walk sway
 	var vel_ratio = clamp(velocity.length() / move_speed, 0.0, 1.0)
-	var breath = sin(time * breathing_speed) * breathing_amount
-	var bob = sin(time * bob_speed) * bob_amount * (1.5 * vel_ratio if is_moving else 0.25)
-	var target_bob_y = -0.18 + breath + bob
+	var breath_x = sin(time * breathing_speed * 0.7) * breathing_amount * 0.7
+	var breath_y = sin(time * breathing_speed * 1.4) * breathing_amount
+	var walk_bob_x = cos(time * bob_speed * 0.5) * bob_amount * 0.6 * vel_ratio
+	var walk_bob_y = sin(time * bob_speed) * bob_amount * (1.4 * vel_ratio if is_moving else 0.2)
 	
-	weapon_manager.position.y = lerp(weapon_manager.position.y, target_bob_y, 0.12)
-	weapon_manager.rotation.x = lerp(weapon_manager.rotation.x, 0.0, 5.0 * delta)
-	weapon_manager.rotation.y = lerp(weapon_manager.rotation.y, 0.0, 5.0 * delta)
+	var target_bob_x = 0.18 + breath_x + walk_bob_x
+	var target_bob_y = -0.18 + breath_y + walk_bob_y
+	var target_roll = -deg_to_rad(virtual_move.x * 2.5)
 	
-	if fps_arms:
-		fps_arms.position.y = lerp(fps_arms.position.y, target_bob_y, 0.12)
-		fps_arms.position.z = lerp(fps_arms.position.z, -0.42, 5.0 * delta)
-		fps_arms.rotation.x = lerp(fps_arms.rotation.x, 0.0, 5.0 * delta)
-		fps_arms.rotation.y = lerp(fps_arms.rotation.y, 0.0, 5.0 * delta)
+	if not is_tactical_reloading:
+		weapon_manager.position.x = lerp(weapon_manager.position.x, target_bob_x, 0.15)
+		weapon_manager.position.y = lerp(weapon_manager.position.y, target_bob_y, 0.15)
+		weapon_manager.rotation.x = lerp(weapon_manager.rotation.x, 0.0, 5.0 * delta)
+		weapon_manager.rotation.y = lerp(weapon_manager.rotation.y, 0.0, 5.0 * delta)
+		weapon_manager.rotation.z = lerp(weapon_manager.rotation.z, target_roll, 8.0 * delta)
+		
+		if fps_arms:
+			fps_arms.position.x = lerp(fps_arms.position.x, target_bob_x, 0.15)
+			fps_arms.position.y = lerp(fps_arms.position.y, target_bob_y, 0.15)
+			fps_arms.position.z = lerp(fps_arms.position.z, -0.42, 5.0 * delta)
+			fps_arms.rotation.x = lerp(fps_arms.rotation.x, 0.0, 5.0 * delta)
+			fps_arms.rotation.y = lerp(fps_arms.rotation.y, 0.0, 5.0 * delta)
+			fps_arms.rotation.z = lerp(fps_arms.rotation.z, target_roll, 8.0 * delta)
 	
 	# Camera shake recovery
 	if shake_intensity > 0:

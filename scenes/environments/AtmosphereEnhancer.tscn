@@ -1,0 +1,79 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/World/AtmosphereEnhancer.gd" id="1_a3e4h"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dust"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.95, 0.8, 0.55)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_dust"]
+material = SubResource("StandardMaterial3D_dust")
+size = Vector2(0.04, 0.04)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fan"]
+albedo_color = Color(0.2, 0.22, 0.25, 1)
+metallic = 0.8
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_blade"]
+material = SubResource("StandardMaterial3D_fan")
+size = Vector3(0.18, 0.02, 1.4)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hub"]
+material = SubResource("StandardMaterial3D_fan")
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.15
+
+[node name="AtmosphereEnhancer" type="Node3D"]
+script = ExtResource("1_a3e4h")
+
+[node name="SunlightDust" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+amount = 36
+lifetime = 5.0
+preprocess = 2.0
+mesh = SubResource("QuadMesh_dust")
+emission_shape = 3
+emission_box_extents = Vector3(14, 3.5, 14)
+gravity = Vector3(0.04, -0.05, 0.02)
+initial_velocity_min = 0.05
+initial_velocity_max = 0.15
+
+[node name="IndustrialFan" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.8, 0)
+
+[node name="Hub" type="MeshInstance3D" parent="IndustrialFan"]
+mesh = SubResource("CylinderMesh_hub")
+
+[node name="Blades" type="Node3D" parent="IndustrialFan"]
+
+[node name="Blade1" type="MeshInstance3D" parent="IndustrialFan/Blades"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
+mesh = SubResource("BoxMesh_blade")
+
+[node name="Blade2" type="MeshInstance3D" parent="IndustrialFan/Blades"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.7, 0, 0)
+mesh = SubResource("BoxMesh_blade")
+
+[node name="Blade3" type="MeshInstance3D" parent="IndustrialFan/Blades"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -0.7)
+mesh = SubResource("BoxMesh_blade")
+
+[node name="Blade4" type="MeshInstance3D" parent="IndustrialFan/Blades"]
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -0.7, 0, 0)
+mesh = SubResource("BoxMesh_blade")
+
+[node name="AlertStrobe" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 4.5, -4)
+
+[node name="StrobeLight" type="OmniLight3D" parent="AlertStrobe"]
+light_color = Color(1, 0.65, 0.12, 1)
+light_energy = 1.8
+omni_range = 14.0

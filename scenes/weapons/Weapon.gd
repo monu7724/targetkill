@@ -234,14 +234,16 @@ func muzzle_flash_fx():
 		muzzle_flash.hide()
 
 func apply_recoil():
-	position.z = 0.08 * recoil_kick
-	position.y = 0.015 * recoil_kick
+	position.z = 0.085 * recoil_kick
+	position.y = 0.018 * recoil_kick
 	rotation.x = deg_to_rad(recoil_rotation * recoil_kick)
+	rotation.z = deg_to_rad(randf_range(-1.4, 1.4) * recoil_kick)
 	
 func _process(delta):
-	position.z = lerp(position.z, 0.0, 10.0 * delta)
-	position.y = lerp(position.y, 0.0, 10.0 * delta)
-	rotation.x = lerp(rotation.x, 0.0, 10.0 * delta)
+	position.z = lerp(position.z, 0.0, 12.0 * delta)
+	position.y = lerp(position.y, 0.0, 12.0 * delta)
+	rotation.x = lerp(rotation.x, 0.0, 12.0 * delta)
+	rotation.z = lerp(rotation.z, 0.0, 12.0 * delta)
 
 func _on_fire_timer_timeout():
 	can_shoot = true

@@ -180,12 +180,21 @@ func take_damage(amount: float, is_headshot: bool = false, hit_dir: Vector3 = Ve
 		return
 		
 	# Hurt reactions
-	if is_headshot and (active_anim_player and active_anim_player.has_animation("headshot_reaction")):
-		_play_anim("headshot_reaction")
+	if is_headshot:
+		if active_anim_player and active_anim_player.has_animation("headshot_reaction"):
+			_play_anim("headshot_reaction")
+		elif active_anim_player and active_anim_player.has_animation("stagger"):
+			_play_anim("stagger")
+		if model_instance:
+			model_instance.rotation.x = -deg_to_rad(32.0)
+			model_instance.position.y += 0.05
 		ai_state = AIState.STAGGER
-		stagger_timer = 0.4
-	elif amount > 25.0 and (active_anim_player and active_anim_player.has_animation("stagger")):
-		_play_anim("stagger")
+		stagger_timer = 0.45
+	elif amount > 25.0:
+		if active_anim_player and active_anim_player.has_animation("stagger"):
+			_play_anim("stagger")
+		if model_instance:
+			model_instance.rotation.y += deg_to_rad(randf_range(-22.0, 22.0))
 		ai_state = AIState.STAGGER
 		stagger_timer = 0.55
 	elif hit_dir != Vector3.ZERO:
@@ -236,6 +245,10 @@ func _physics_process(delta):
 		stagger_timer -= delta
 		velocity = velocity.move_toward(Vector3.ZERO, 6.0 * delta)
 		move_and_slide()
+		if model_instance:
+			model_instance.rotation.x = lerp(model_instance.rotation.x, 0.0, 5.0 * delta)
+			model_instance.rotation.y = lerp(model_instance.rotation.y, 0.0, 5.0 * delta)
+			model_instance.position.y = lerp(model_instance.position.y, 0.0, 5.0 * delta)
 		if stagger_timer <= 0:
 			ai_state = AIState.CHASE
 		return
@@ -290,6 +303,13 @@ func _handle_chase(dist_to_player: float, delta: float):
 	var walk_anim = "run" if archetype == "fast" else ("heavy_walk" if archetype == "heavy" else "walk")
 	if active_anim_player and active_anim_player.current_animation != walk_anim:
 		_play_anim(walk_anim)
+		
+	# Organic humanoid shambling gait
+	if model_instance:
+		var wobble = sin(Time.get_ticks_msec() * 0.007) * 0.05
+		var pitch_hitch = (sin(Time.get_ticks_msec() * 0.014) * 0.5 + 0.5) * 0.04
+		model_instance.rotation.z = lerp(model_instance.rotation.z, wobble, 10.0 * delta)
+		model_instance.rotation.x = lerp(model_instance.rotation.x, pitch_hitch, 10.0 * delta)
 
 func _handle_attack(dist_to_player: float, _delta: float):
 	velocity = Vector3.ZERO
@@ -345,6 +365,10 @@ func _on_died():
 	velocity = Vector3.ZERO
 	
 	_play_anim("death")
+	if model_instance:
+		var tw = create_tween()
+		tw.tween_property(model_instance, "position:y", -0.4, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(model_instance, "rotation:x", deg_to_rad(75.0), 0.55).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	if sfx_death:
 		sfx_death.play()
 		

@@ -12,6 +12,7 @@
 [ext_resource type="ArrayMesh" path="res://models/environment/station/station_bench.obj" id="10_mbch"]
 [ext_resource type="AudioStream" path="res://audio/ambience/sfx_ambience_metro.wav" id="11_samb"]
 [ext_resource type="PackedScene" path="res://assets/3d/environments/railway_station.glb" id="12_glb_stn"]
+[ext_resource type="PackedScene" path="res://scenes/environments/AtmosphereEnhancer.tscn" id="13_atmo"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_stn"]
 vertices = PackedVector3Array(-16, 0, -16, -16, 0, 16, 16, 0, 16, 16, 0, -16)
@@ -121,4 +122,5 @@ volume_db = -6.0
 autoplay = true
 
 [node name="RailwayStationGLB" parent="." instance=ExtResource("12_glb_stn")]
+[node name="AtmosphereEnhancer" parent="." instance=ExtResource("13_atmo")]
 

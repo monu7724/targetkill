@@ -11,6 +11,7 @@
 [ext_resource type="ArrayMesh" path="res://models/environment/industrial/dumpster.obj" id="9_mdump"]
 [ext_resource type="ArrayMesh" path="res://models/environment/industrial/street_lamp.obj" id="10_mlamp"]
 [ext_resource type="PackedScene" path="res://assets/3d/environments/industrial_street.glb" id="11_glb_ind"]
+[ext_resource type="PackedScene" path="res://scenes/environments/AtmosphereEnhancer.tscn" id="12_atmo"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ind"]
 vertices = PackedVector3Array(-20, 0, -20, -20, 0, 20, 20, 0, 20, 20, 0, -20)
@@ -118,4 +119,5 @@ impact_scenes = {
 [node name="ResultUI" parent="." instance=ExtResource("7_r001")]
 
 [node name="DarkIndustrialGLB" parent="." instance=ExtResource("11_glb_ind")]
+[node name="AtmosphereEnhancer" parent="." instance=ExtResource("12_atmo")]
 

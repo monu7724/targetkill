@@ -11,6 +11,7 @@
 [ext_resource type="ArrayMesh" path="res://models/environment/airport/terminal_pillar.obj" id="9_mpil"]
 [ext_resource type="AudioStream" path="res://audio/ambience/sfx_ambience_airport.wav" id="10_samb"]
 [ext_resource type="PackedScene" path="res://assets/3d/environments/boss_arena.glb" id="11_glb_boss"]
+[ext_resource type="PackedScene" path="res://scenes/environments/AtmosphereEnhancer.tscn" id="12_atmo"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_lck"]
 vertices = PackedVector3Array(-22, 0, -22, -22, 0, 22, 22, 0, 22, 22, 0, -22)
@@ -117,4 +118,5 @@ volume_db = -4.0
 autoplay = true
 
 [node name="BossArenaGLB" parent="." instance=ExtResource("11_glb_boss")]
+[node name="AtmosphereEnhancer" parent="." instance=ExtResource("12_atmo")]
 
