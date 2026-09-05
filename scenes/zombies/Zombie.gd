@@ -13,11 +13,13 @@ extends CharacterBody3D
 @export var attack_damage: float = 10.0
 @export var reward_on_kill: int = 10
 @export var archetype: String = "normal"
+@export var attack_interval: float = 1.0
 
 var player = null
 var is_dead: bool = false
 var path_update_timer: float = 0.0
 var path_update_interval: float = 0.5 # Update path every 0.5s
+var attack_timer: float = 0.0
 
 func _ready():
 	health_component.died.connect(_on_died)
@@ -58,6 +60,7 @@ func _physics_process(delta):
 		return
 		
 	var target_pos = player.global_position
+	attack_timer -= delta
 	
 	# Optimize pathfinding updates
 	path_update_timer -= delta
@@ -86,14 +89,16 @@ func _physics_process(delta):
 			anim_player.play("walk")
 
 func _attack():
+	if attack_timer > 0.0:
+		return
+	
+	attack_timer = attack_interval
 	if not anim_player.is_playing() or anim_player.current_animation != "attack":
 		anim_player.play("attack")
 		sfx_attack.play()
-
-func take_damage(amount: float):
-	if is_dead:
-		return
-	health_component.take_damage(amount)
+	
+	if player and player.has_method("take_damage"):
+		player.take_damage(attack_damage)
 	if anim_player.current_animation != "attack":
 		anim_player.play("hit_react")
 
@@ -105,7 +110,10 @@ func _on_died():
 	collision_layer = 0
 	collision_mask = 0
 	
-	MissionManager.on_zombie_killed()
+	if archetype == "boss":
+		MissionManager.on_boss_killed()
+	else:
+		MissionManager.on_zombie_killed()
 	SaveManager.add_coins(reward_on_kill)
 	
 	await get_tree().create_timer(3.0).timeout

@@ -20,14 +20,23 @@ func _ready():
 func start_next_wave():
 	current_wave += 1
 	
-	# Determine wave composition from mission data
+	if mission and mission.objective_type == MissionData.ObjectiveType.BOSS_KILL:
+		zombies_to_spawn = max(1, mission.target_count)
+		print("Boss Encounter: ", current_wave)
+		spawn_wave()
+		return
+	
+	# Scale wave difficulty for a stronger survival loop
 	zombies_to_spawn = 5 + (current_wave * 2)
-	if mission.objective_type == MissionData.ObjectiveType.KILL_COUNT:
-		# Limit total spawn if objective is kill count
+	if current_wave >= 3:
+		zombies_to_spawn += 2
+	if current_wave >= 5:
+		zombies_to_spawn += 3
+	if mission and mission.objective_type == MissionData.ObjectiveType.KILL_COUNT:
 		var remaining = mission.target_count - MissionManager.kill_count
 		zombies_to_spawn = min(zombies_to_spawn, remaining)
 		
-	if zombies_to_spawn <= 0 and mission.objective_type == MissionData.ObjectiveType.KILL_COUNT:
+	if zombies_to_spawn <= 0 and mission and mission.objective_type == MissionData.ObjectiveType.KILL_COUNT:
 		return
 
 	print("Starting Wave: ", current_wave)
@@ -57,10 +66,18 @@ func spawn_zombie():
 func _pick_archetype() -> String:
 	var rand = randf()
 	var cumulative_weight = 0.0
-	for entry in mission.spawn_config:
-		cumulative_weight += entry.weight
-		if rand <= cumulative_weight:
-			return entry.type
+	if mission and not mission.spawn_config.is_empty():
+		for entry in mission.spawn_config:
+			cumulative_weight += entry.weight
+			if rand <= cumulative_weight:
+				return entry.type
+	
+	if current_wave >= 5 and randf() < 0.2:
+		return "boss"
+	if current_wave >= 3 and randf() < 0.35:
+		return "heavy"
+	if current_wave >= 2 and randf() < 0.3:
+		return "fast"
 	return "normal"
 
 func _on_zombie_death():

@@ -11,11 +11,17 @@ extends Node3D
 @export var sway_amount: float = 0.05
 @export var bob_amount: float = 0.02
 @export var bob_speed: float = 8.0
+@export var move_speed: float = 5.5
+@export var move_limit: float = 8.5
 
 var mouse_captured: bool = false
 var shake_intensity: float = 0.0
 var shake_fade: float = 5.0
 var time: float = 0.0
+
+var max_health: float = 100.0
+var current_health: float = 100.0
+var is_dead: bool = false
 
 func _input(event):
 	var rot_y = 0.0
@@ -45,6 +51,24 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("reload"):
 		_trigger_reload()
+	
+	var move_input = Vector3.ZERO
+	if Input.is_action_pressed("move_forward"):
+		move_input.z -= 1
+	if Input.is_action_pressed("move_backward"):
+		move_input.z += 1
+	if Input.is_action_pressed("move_left"):
+		move_input.x -= 1
+	if Input.is_action_pressed("move_right"):
+		move_input.x += 1
+	
+	if move_input.length() > 0.01:
+		move_input = move_input.normalized()
+		var local_move = global_transform.basis * move_input
+		var next_pos = global_position + local_move * move_speed * delta
+		next_pos.x = clamp(next_pos.x, -move_limit, move_limit)
+		next_pos.z = clamp(next_pos.z, -move_limit, move_limit)
+		global_position = next_pos
 	
 	# Reset weapon sway
 	weapon_manager.rotation.x = lerp(weapon_manager.rotation.x, 0.0, 0.1)
@@ -88,5 +112,21 @@ func _ready():
 	# Update HUD initially
 	await get_tree().process_frame
 	_update_hud()
+	if hud:
+		hud.update_health(current_health / max_health * 100.0)
 	if MissionManager.current_mission:
 		hud.update_objective(MissionManager.current_mission.display_name)
+
+func take_damage(amount: float):
+	if is_dead:
+		return
+	current_health = max(0.0, current_health - amount)
+	if hud:
+		hud.update_health(current_health / max_health * 100.0)
+	if current_health <= 0:
+		is_dead = true
+		if MissionManager.current_mission:
+			MissionManager.finish_mission(false)
+		else:
+			if hud:
+				hud.update_objective("You were overrun")

@@ -7,16 +7,22 @@ signal mission_failed(mission: MissionData)
 var current_mission: MissionData = null
 var kill_count: int = 0
 var wave_count: int = 0
+var boss_kill_count: int = 0
 
 func start_mission(mission: MissionData):
 	current_mission = mission
 	kill_count = 0
 	wave_count = 0
+	boss_kill_count = 0
 	mission_started.emit(mission)
 	get_tree().change_scene_to_file("res://scenes/environments/UrbanStreet.tscn")
 
 func on_zombie_killed():
 	kill_count += 1
+	check_objective()
+
+func on_boss_killed():
+	boss_kill_count += 1
 	check_objective()
 
 func on_wave_completed():
@@ -34,11 +40,16 @@ func check_objective():
 		MissionData.ObjectiveType.SURVIVE_WAVES:
 			if wave_count >= current_mission.wave_count:
 				completed = true
+		MissionData.ObjectiveType.BOSS_KILL:
+			if boss_kill_count >= current_mission.target_count:
+				completed = true
 	
 	if completed:
 		finish_mission(true)
 
 func finish_mission(success: bool):
+	if not current_mission:
+		return
 	if success:
 		SaveManager.add_coins(current_mission.reward_coins)
 		SaveManager.complete_mission(current_mission.mission_id)

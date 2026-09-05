@@ -5,6 +5,8 @@ extends CanvasLayer
 @onready var objective_label = $Control/ObjectiveLabel
 @onready var boss_health_bar = $Control/BossHealthBar
 @onready var boss_name_label = $Control/BossHealthBar/BossName
+@onready var coins_label = $Control/CoinsLabel
+@onready var wave_label = $Control/WaveLabel
 
 func _ready():
 	# Connect to relevant signals if any, or let scripts call these methods
@@ -18,6 +20,14 @@ func update_ammo(current: int, total: int):
 
 func update_objective(text: String):
 	objective_label.text = text
+
+func update_coins(value: int):
+	if coins_label:
+		coins_label.text = "Coins: " + str(value)
+
+func update_wave(value: int):
+	if wave_label:
+		wave_label.text = "Wave: " + str(value)
 
 func show_boss_health(name: String, max_hp: float):
 	boss_health_bar.max_value = max_hp
