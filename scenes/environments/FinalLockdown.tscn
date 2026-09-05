@@ -22,15 +22,27 @@ size = Vector3(44, 0.2, 44)
 [sub_resource type="PlaneMesh" id="PlaneMesh_flr"]
 size = Vector2(44, 44)
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_day"]
+sky_top_color = Color(0.35, 0.58, 0.88, 1)
+sky_horizon_color = Color(0.68, 0.78, 0.90, 1)
+ground_bottom_color = Color(0.22, 0.25, 0.28, 1)
+ground_horizon_color = Color(0.62, 0.72, 0.82, 1)
+sun_angle_max = 30.0
+
+[sub_resource type="Sky" id="Sky_day"]
+sky_material = SubResource("ProceduralSkyMaterial_day")
+
 [sub_resource type="Environment" id="Environment_lck"]
-background_mode = 1
-background_color = Color(0.12, 0.06, 0.06, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.65, 0.45, 0.45, 1)
-ambient_light_energy = 1.2
+background_mode = 2
+sky = SubResource("Sky_day")
+ambient_light_source = 3
+ambient_light_color = Color(0.72, 0.82, 0.95, 1)
+ambient_light_energy = 0.9
+tonemap_mode = 2
+tonemap_white = 1.0
 fog_enabled = true
-fog_light_color = Color(0.30, 0.15, 0.15, 1)
-fog_density = 0.006
+fog_light_color = Color(0.72, 0.82, 0.94, 1)
+fog_density = 0.002
 
 [node name="FinalLockdown" type="Node3D"]
 
@@ -38,10 +50,11 @@ fog_density = 0.006
 environment = SubResource("Environment_lck")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 15, 0)
-light_color = Color(1, 0.5, 0.4, 1)
-light_energy = 1.2
+transform = Transform3D(0.866, -0.287, 0.409, 0, 0.819, 0.574, -0.5, -0.497, 0.709, 0, 20, 0)
+light_color = Color(1.0, 0.97, 0.90, 1)
+light_energy = 2.4
 shadow_enabled = true
+shadow_bias = 0.04
 
 [node name="AlarmStrobe" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)

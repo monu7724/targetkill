@@ -2,3 +2,5 @@
 *.apk
 *.idsig
 tools/blender/generated/
+__pycache__/
+*.pyc

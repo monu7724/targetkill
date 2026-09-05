@@ -88,7 +88,8 @@ func shoot():
 			if point.y > collider.global_position.y + 1.2:
 				final_damage *= 2.0
 				is_headshot = true
-			collider.take_damage(final_damage)
+			var hit_dir = (point - global_position).normalized()
+			collider.take_damage(final_damage, is_headshot, hit_dir)
 			type = "blood"
 			
 			var hud_node = get_tree().get_first_node_in_group("hud")

@@ -395,7 +395,7 @@ def build_realistic_railway_station():
     print("\n--- BUILDING REALISTIC RAILWAY / METRO STATION CONCOURSE ---")
     clear_scene()
     
-    m_platform = create_mat("Mat_StationPlatform", (0.50, 0.52, 0.55, 1.0), roughness=0.75)
+    m_platform = create_mat("Mat_StationPlatform", (0.72, 0.74, 0.76, 1.0), roughness=0.65)
     m_tactile = create_mat("Mat_TactilePaving", (0.85, 0.72, 0.15, 1.0), roughness=0.60) # Yellow tactile warning pavers
     m_rail = create_mat("Mat_SteelRail", (0.35, 0.38, 0.42, 1.0), metallic=0.90, roughness=0.25)
     m_sleepers = create_mat("Mat_WoodSleepers", (0.22, 0.18, 0.14, 1.0), roughness=0.85)
@@ -494,8 +494,8 @@ def build_realistic_industrial_street():
     print("\n--- BUILDING REALISTIC INDUSTRIAL STREET ---")
     clear_scene()
     
-    m_asphalt = create_mat("Mat_AsphaltRoad", (0.14, 0.15, 0.16, 1.0), roughness=0.85)
-    m_sidewalk = create_mat("Mat_ConcreteSidewalk", (0.45, 0.46, 0.48, 1.0), roughness=0.80)
+    m_asphalt = create_mat("Mat_AsphaltRoad", (0.35, 0.36, 0.38, 1.0), roughness=0.80)
+    m_sidewalk = create_mat("Mat_ConcreteSidewalk", (0.70, 0.72, 0.74, 1.0), roughness=0.70)
     m_warehouse = create_mat("Mat_CorrugatedMetal", (0.35, 0.38, 0.42, 1.0), metallic=0.75, roughness=0.45)
     m_dumpster = create_mat("Mat_CommercialDumpster", (0.12, 0.32, 0.18, 1.0), roughness=0.65)
     m_lamp = create_mat("Mat_StreetLampLight", (1.0, 0.85, 0.45, 1.0), emission=(1.0, 0.85, 0.45, 1.0), emission_strength=4.5)
@@ -534,7 +534,7 @@ def build_realistic_boss_arena():
     print("\n--- BUILDING REALISTIC QUARANTINE BOSS ARENA ---")
     clear_scene()
     
-    m_floor = create_mat("Mat_ArenaFloor", (0.35, 0.36, 0.38, 1.0), roughness=0.65)
+    m_floor = create_mat("Mat_ArenaFloor", (0.65, 0.68, 0.70, 1.0), roughness=0.45)
     m_hazard = create_mat("Mat_HazardStripe", (0.95, 0.82, 0.10, 1.0), roughness=0.55) # Yellow hazard border
     m_wall = create_mat("Mat_ReinforcedContainment", (0.25, 0.26, 0.28, 1.0), metallic=0.65, roughness=0.45)
     m_catwalk = create_mat("Mat_SteelCatwalk", (0.18, 0.20, 0.22, 1.0), metallic=0.88, roughness=0.30)
