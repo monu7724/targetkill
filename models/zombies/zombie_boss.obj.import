@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cvkb3wqyj14a5"
+path="res://.godot/imported/zombie_boss.obj-abc290091c05f66e7793c4aa61b33b04.mesh"
+
+[deps]
+
+files=["res://.godot/imported/zombie_boss.obj-abc290091c05f66e7793c4aa61b33b04.mesh"]
+
+source_file="res://models/zombies/zombie_boss.obj"
+dest_files=["res://.godot/imported/zombie_boss.obj-abc290091c05f66e7793c4aa61b33b04.mesh", "res://.godot/imported/zombie_boss.obj-abc290091c05f66e7793c4aa61b33b04.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

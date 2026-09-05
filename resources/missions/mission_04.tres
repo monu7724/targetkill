@@ -11,5 +11,6 @@ objective_type = 0
 target_count = 40
 wave_count = 1
 reward_coins = 350
+scene_path = "res://scenes/environments/AbandonedTrain.tscn"
 unlock_requirement_id = "mission_03"
 spawn_config = [{"type": "normal", "weight": 0.4}, {"type": "fast", "weight": 0.4}, {"type": "heavy", "weight": 0.2}]

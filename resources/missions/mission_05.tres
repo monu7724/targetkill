@@ -11,5 +11,6 @@ objective_type = 2
 target_count = 1
 wave_count = 1
 reward_coins = 1000
+scene_path = "res://scenes/environments/FinalLockdown.tscn"
 unlock_requirement_id = "mission_04"
 spawn_config = [{"type": "boss", "weight": 1.0}]

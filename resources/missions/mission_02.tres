@@ -11,5 +11,6 @@ objective_type = 0
 target_count = 20
 wave_count = 1
 reward_coins = 100
+scene_path = "res://scenes/environments/DarkIndustrial.tscn"
 unlock_requirement_id = "mission_01"
 spawn_config = [{"type": "normal", "weight": 0.7}, {"type": "fast", "weight": 0.3}]

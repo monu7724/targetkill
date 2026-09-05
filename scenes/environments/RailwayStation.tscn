@@ -1,0 +1,107 @@
+[gd_scene load_steps=17 format=3 uid="uid://railway001station"]
+
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="1_p001"]
+[ext_resource type="Script" path="res://scripts/GameManager.gd" id="2_g001"]
+[ext_resource type="PackedScene" path="res://scenes/zombies/Zombie.tscn" id="3_z001"]
+[ext_resource type="Script" path="res://scripts/ImpactPool.gd" id="4_i001"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/ImpactEffect.tscn" id="5_ie01"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/BloodEffect.tscn" id="6_be01"]
+[ext_resource type="PackedScene" path="res://scenes/UI/ResultUI.tscn" id="7_r001"]
+[ext_resource type="Material" path="res://resources/materials/mat_station_platform.tres" id="8_mplat"]
+[ext_resource type="ArrayMesh" path="res://models/environment/station/train_tracks.obj" id="9_mtrk"]
+[ext_resource type="ArrayMesh" path="res://models/environment/station/station_bench.obj" id="10_mbch"]
+[ext_resource type="AudioStream" path="res://audio/ambience/sfx_ambience_metro.wav" id="11_samb"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_stn"]
+vertices = PackedVector3Array(-16, 0, -16, -16, 0, 16, 16, 0, 16, 16, 0, -16)
+polygons = [PackedInt32Array(0, 1, 2), PackedInt32Array(0, 2, 3)]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_flr"]
+size = Vector3(32, 0.2, 32)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_flr"]
+size = Vector2(32, 32)
+
+[sub_resource type="Environment" id="Environment_stn"]
+background_mode = 1
+background_color = Color(0.05, 0.06, 0.08, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.2, 0.22, 0.28, 1)
+ambient_light_energy = 0.55
+fog_enabled = true
+fog_light_color = Color(0.08, 0.12, 0.16, 1)
+fog_density = 0.018
+
+[node name="RailwayStation" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_stn")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 12, 0)
+light_color = Color(0.8, 0.88, 1, 1)
+light_energy = 0.45
+shadow_enabled = true
+
+[node name="PlatformLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 2.0
+omni_range = 14.0
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_stn")
+
+[node name="Ground" type="StaticBody3D" parent="NavigationRegion3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Ground"]
+shape = SubResource("BoxShape3D_flr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/Ground"]
+mesh = SubResource("PlaneMesh_flr")
+surface_material_override/0 = ExtResource("8_mplat")
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Tracks1" type="MeshInstance3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+mesh = ExtResource("9_mtrk")
+
+[node name="Tracks2" type="MeshInstance3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -8)
+mesh = ExtResource("9_mtrk")
+
+[node name="Bench1" type="MeshInstance3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -4)
+mesh = ExtResource("10_mbch")
+
+[node name="Bench2" type="MeshInstance3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 4)
+mesh = ExtResource("10_mbch")
+
+[node name="Player" parent="." instance=ExtResource("1_p001")]
+
+[node name="ZombieSpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_points")]
+script = ExtResource("2_g001")
+zombie_scene = ExtResource("3_z001")
+spawn_points = [NodePath("Spawn1"), NodePath("Spawn2")]
+
+[node name="Spawn1" type="Node3D" parent="ZombieSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -10)
+
+[node name="Spawn2" type="Node3D" parent="ZombieSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -10)
+
+[node name="ImpactPool" type="Node3D" parent="." groups=["impact_pool"]]
+script = ExtResource("4_i001")
+impact_scenes = {
+"blood": ExtResource("6_be01"),
+"concrete": ExtResource("5_ie01")
+}
+
+[node name="ResultUI" parent="." instance=ExtResource("7_r001")]
+
+[node name="AmbiencePlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_samb")
+volume_db = -6.0
+autoplay = true

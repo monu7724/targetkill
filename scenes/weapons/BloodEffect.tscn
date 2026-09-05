@@ -2,7 +2,7 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
 shading_mode = 0
-albedo_color = Color(0.8, 0, 0, 1)
+albedo_color = Color(0.42, 0.04, 0.02, 0.95)
 billboard_mode = 3
 particles_anim_h_frames = 1
 particles_anim_v_frames = 1
@@ -10,14 +10,24 @@ particles_anim_loop = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_1"]
 material = SubResource("StandardMaterial3D_1")
-size = Vector2(0.1, 0.1)
+size = Vector2(0.08, 0.08)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
 direction = Vector3(0, 0, 1)
-spread = 60.0
-initial_velocity_min = 1.0
-initial_velocity_max = 3.0
+spread = 50.0
+initial_velocity_min = 1.5
+initial_velocity_max = 3.5
 gravity = Vector3(0, -9.8, 0)
+
+[sub_resource type="GDScript" id="GDScript_1"]
+script/source = "extends GPUParticles3D
+
+func play_effect():
+	restart()
+	emitting = true
+	await get_tree().create_timer(1.0).timeout
+	hide()
+"
 
 [node name="BloodEffect" type="GPUParticles3D"]
 emitting = false
@@ -27,12 +37,3 @@ explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_1")
 draw_pass_1 = SubResource("QuadMesh_1")
 script = SubResource("GDScript_1")
-
-[sub_resource type="GDScript" id="GDScript_1"]
-script/source = "extends GPUParticles3D
-
-func restart():
-	emitting = true
-	await get_tree().create_timer(1.0).timeout
-	hide()
-"

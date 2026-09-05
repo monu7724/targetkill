@@ -7,7 +7,7 @@ var data = {
 	"version": SAVE_VERSION,
 	"coins": 0,
 	"completed_missions": [],
-	"unlocked_weapons": ["pistol"],
+	"unlocked_weapons": ["pistol", "rifle", "shotgun"],
 	"is_first_launch": true,
 	"weapon_upgrades": {
 		"pistol": {"damage": 0, "mag": 0, "reload": 0},
@@ -53,14 +53,14 @@ func load_game():
 func _merge_data(loaded_data: Dictionary):
 	for key in data.keys():
 		if loaded_data.has(key):
-			if typeof(data[key]) == typeof(loaded_data[key]):
-				if key == "weapon_upgrades":
-					# Deep merge for upgrades
-					for w_id in data[key].keys():
-						if loaded_data[key].has(w_id):
-							data[key][w_id] = loaded_data[key][w_id]
-				else:
-					data[key] = loaded_data[key]
+			if key == "coins" or key == "version":
+				data[key] = int(loaded_data[key])
+			elif key == "weapon_upgrades" and loaded_data[key] is Dictionary:
+				for w_id in data[key].keys():
+					if loaded_data[key].has(w_id):
+						data[key][w_id] = loaded_data[key][w_id]
+			elif typeof(data[key]) == typeof(loaded_data[key]):
+				data[key] = loaded_data[key]
 
 func add_coins(amount: int):
 	data.coins = max(0, data.coins + amount)

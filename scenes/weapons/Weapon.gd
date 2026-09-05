@@ -27,6 +27,17 @@ func _ready():
 	fire_timer.wait_time = fire_rate
 	fire_timer.one_shot = true
 	muzzle_flash.hide()
+	
+	if weapon_data:
+		match weapon_data.weapon_id:
+			"pistol":
+				sfx_shoot.stream = preload("res://audio/weapons/sfx_pistol_shoot.wav")
+			"rifle":
+				sfx_shoot.stream = preload("res://audio/weapons/sfx_rifle_shoot.wav")
+			"shotgun":
+				sfx_shoot.stream = preload("res://audio/weapons/sfx_shotgun_shoot.wav")
+		sfx_empty.stream = preload("res://audio/weapons/sfx_empty.wav")
+		sfx_reload.stream = preload("res://audio/weapons/sfx_reload.wav")
 
 func apply_upgrades():
 	if not weapon_data: return
@@ -36,6 +47,11 @@ func apply_upgrades():
 	fire_rate = weapon_data.base_fire_rate
 	max_ammo = weapon_data.get_mag_size(levels.mag)
 	reload_time = weapon_data.get_reload_time(levels.reload)
+
+signal ammo_changed(current_ammo, max_ammo)
+signal weapon_reloaded
+
+var aim_raycast: RayCast3D = null
 
 func shoot():
 	if not can_shoot or is_reloading:
@@ -47,24 +63,33 @@ func shoot():
 		
 	current_ammo -= 1
 	can_shoot = false
+	fire_timer.wait_time = fire_rate
 	fire_timer.start()
+	ammo_changed.emit(current_ammo, max_ammo)
 	
 	# Visuals & Sound
 	muzzle_flash_fx()
 	sfx_shoot.play()
 	apply_recoil()
 	
-	# Hit Detection
-	if raycast.is_colliding():
-		var collider = raycast.get_collider()
-		var point = raycast.get_collision_point()
-		var normal = raycast.get_collision_normal()
+	# Hit Detection using camera aim raycast if available, else local raycast
+	var target_ray = aim_raycast if aim_raycast else raycast
+	if target_ray and target_ray.is_colliding():
+		var collider = target_ray.get_collider()
+		var point = target_ray.get_collision_point()
+		var normal = target_ray.get_collision_normal()
 		
 		var type = "concrete"
-		if collider.has_method("take_damage"):
-			collider.take_damage(damage)
+		if collider and collider.has_method("take_damage"):
+			var final_damage = damage
+			# Headshot detection: top of zombie mesh
+			if point.y > collider.global_position.y + 1.2:
+				final_damage *= 2.0
+			collider.take_damage(final_damage)
 			type = "blood"
 		
+		if not impact_pool:
+			impact_pool = get_tree().get_first_node_in_group("impact_pool")
 		if impact_pool:
 			impact_pool.spawn_impact(type, point, normal)
 
@@ -74,10 +99,11 @@ func reload():
 		
 	is_reloading = true
 	sfx_reload.play()
-	# Play reload animation
 	await get_tree().create_timer(reload_time).timeout
 	current_ammo = max_ammo
 	is_reloading = false
+	ammo_changed.emit(current_ammo, max_ammo)
+	weapon_reloaded.emit()
 
 func muzzle_flash_fx():
 	muzzle_flash.show()

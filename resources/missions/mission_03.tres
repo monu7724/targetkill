@@ -11,5 +11,6 @@ objective_type = 1
 target_count = 0
 wave_count = 3
 reward_coins = 200
+scene_path = "res://scenes/environments/RailwayStation.tscn"
 unlock_requirement_id = "mission_02"
 spawn_config = [{"type": "normal", "weight": 0.6}, {"type": "fast", "weight": 0.3}, {"type": "heavy", "weight": 0.1}]

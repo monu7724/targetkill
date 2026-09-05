@@ -15,7 +15,10 @@ func start_mission(mission: MissionData):
 	wave_count = 0
 	boss_kill_count = 0
 	mission_started.emit(mission)
-	get_tree().change_scene_to_file("res://scenes/environments/UrbanStreet.tscn")
+	var target_scene = "res://scenes/environments/AirportTerminal.tscn"
+	if mission and mission.scene_path != "":
+		target_scene = mission.scene_path
+	get_tree().change_scene_to_file(target_scene)
 
 func on_zombie_killed():
 	kill_count += 1

@@ -11,5 +11,6 @@ objective_type = 0
 target_count = 10
 wave_count = 1
 reward_coins = 50
+scene_path = "res://scenes/environments/AirportTerminal.tscn"
 unlock_requirement_id = ""
 spawn_config = [{"type": "normal", "weight": 1.0}]

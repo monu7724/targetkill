@@ -42,13 +42,21 @@ func start_next_wave():
 	print("Starting Wave: ", current_wave)
 	spawn_wave()
 
+var is_spawning_wave: bool = false
+
 func spawn_wave():
-	for i in range(zombies_to_spawn):
+	is_spawning_wave = true
+	var count = zombies_to_spawn
+	for i in range(count):
 		spawn_zombie()
-		await get_tree().create_timer(1.5).timeout
+		if i < count - 1:
+			await get_tree().create_timer(1.5).timeout
+	is_spawning_wave = false
+	if zombies_alive <= 0:
+		_check_wave_end()
 
 func spawn_zombie():
-	if spawn_points.is_empty():
+	if spawn_points.is_empty() or not zombie_scene:
 		return
 		
 	var spawn_point = spawn_points.pick_random()
@@ -57,8 +65,8 @@ func spawn_zombie():
 	# Select archetype based on mission config
 	zombie.archetype = _pick_archetype()
 	
-	zombie.global_position = spawn_point.global_position
 	add_child(zombie)
+	zombie.global_position = spawn_point.global_position
 	
 	zombies_alive += 1
 	zombie.tree_exited.connect(_on_zombie_death)
@@ -82,14 +90,18 @@ func _pick_archetype() -> String:
 
 func _on_zombie_death():
 	zombies_alive -= 1
-	if zombies_alive <= 0:
-		MissionManager.on_wave_completed()
-		if mission.objective_type == MissionData.ObjectiveType.SURVIVE_WAVES:
-			if current_wave < mission.wave_count:
-				await get_tree().create_timer(wave_delay).timeout
-				start_next_wave()
-		else:
-			# For kill count, keep spawning until objective met
-			if MissionManager.kill_count < mission.target_count:
-				await get_tree().create_timer(wave_delay).timeout
-				start_next_wave()
+	if not is_spawning_wave and zombies_alive <= 0:
+		_check_wave_end()
+
+func _check_wave_end():
+	MissionManager.on_wave_completed()
+	if not mission:
+		return
+	if mission.objective_type == MissionData.ObjectiveType.SURVIVE_WAVES:
+		if current_wave < mission.wave_count:
+			await get_tree().create_timer(wave_delay).timeout
+			start_next_wave()
+	else:
+		if MissionManager.kill_count < mission.target_count:
+			await get_tree().create_timer(wave_delay).timeout
+			start_next_wave()

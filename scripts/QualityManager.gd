@@ -23,11 +23,7 @@ func setup_low_quality():
 	get_viewport().screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	get_viewport().use_hdr_2d = false
 	
-	RenderingServer.directional_soft_shadow_filter_set(RenderingServer.SHADOW_SOFT_FILTER_1X)
-	RenderingServer.positional_soft_shadow_filter_set(RenderingServer.SHADOW_SOFT_FILTER_1X)
-	
-	# Disable expensive post-processing globally if handled via environment
-	# This usually involves modifying the WorldEnvironment resource at runtime
+	# Keep the lightweight mobile quality mode without using deprecated RenderingServer APIs.
 	_update_environment(false, false, false)
 
 func setup_medium_quality():
@@ -35,18 +31,12 @@ func setup_medium_quality():
 	get_viewport().screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 	get_viewport().use_hdr_2d = true
 	
-	RenderingServer.directional_soft_shadow_filter_set(RenderingServer.SHADOW_SOFT_FILTER_STATISTICS)
-	RenderingServer.positional_soft_shadow_filter_set(RenderingServer.SHADOW_SOFT_FILTER_STATISTICS)
-	
 	_update_environment(true, false, true)
 
 func setup_high_quality():
 	get_viewport().msaa_3d = Viewport.MSAA_4X
 	get_viewport().screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 	get_viewport().use_hdr_2d = true
-	
-	RenderingServer.directional_soft_shadow_filter_set(RenderingServer.SHADOW_SOFT_FILTER_STATISTICS)
-	RenderingServer.positional_soft_shadow_filter_set(RenderingServer.SHADOW_SOFT_FILTER_STATISTICS)
 	
 	_update_environment(true, true, true)
 
