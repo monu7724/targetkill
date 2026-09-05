@@ -12,10 +12,12 @@ func _ready():
 	hide()
 
 func _on_mission_completed(mission: MissionData):
+	get_tree().paused = false
 	last_mission = mission
 	title_label.text = "VICTORY"
 	title_label.modulate = Color(0.2, 1.0, 0.4)
-	coins_label.text = "Reward: " + str(mission.reward_coins) + " Coins"
+	var reward = mission.reward_coins if mission else 100
+	coins_label.text = "Reward: " + str(reward) + " Coins"
 	next_button.text = "NEXT MISSION"
 	if AudioManager:
 		AudioManager.play_victory()
@@ -23,6 +25,7 @@ func _on_mission_completed(mission: MissionData):
 	show()
 
 func _on_mission_failed(mission: MissionData):
+	get_tree().paused = false
 	last_mission = mission
 	title_label.text = "MISSION FAILED"
 	title_label.modulate = Color(1.0, 0.25, 0.2)

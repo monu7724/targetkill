@@ -23,6 +23,7 @@ var shake_intensity: float = 0.0
 var shake_fade: float = 5.0
 var time: float = 0.0
 var step_timer: float = 0.0
+var camera_kick: float = 0.0
 
 var max_health: float = 100.0
 var current_health: float = 100.0
@@ -137,7 +138,7 @@ func set_virtual_movement(vec: Vector2):
 func rotate_camera(rot_x: float, rot_y: float):
 	if is_dead: return
 	rotate_y(deg_to_rad(-rot_x * sensitivity))
-	camera.rotate_x(deg_to_rad(-rot_y * sensitivity))
+	camera.rotate_x(deg_to_rad(rot_y * sensitivity))
 	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(min_pitch), deg_to_rad(max_pitch))
 	
 	# Sway
@@ -145,6 +146,11 @@ func rotate_camera(rot_x: float, rot_y: float):
 	weapon_manager.rotation.y = lerp(weapon_manager.rotation.y, sway, 0.15)
 	if fps_arms:
 		fps_arms.rotation.y = lerp(fps_arms.rotation.y, sway, 0.15)
+
+func apply_kick(amount: float):
+	camera_kick += amount
+	camera.rotate_x(deg_to_rad(amount))
+	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(min_pitch), deg_to_rad(max_pitch))
 
 func _input(event):
 	if is_dead: return
@@ -172,7 +178,8 @@ func _trigger_shoot():
 	var weapon = get_current_weapon()
 	if weapon and weapon.can_shoot and not weapon.is_reloading:
 		weapon.shoot()
-		apply_shake(0.22)
+		apply_shake(0.20)
+		apply_kick(-1.3)
 		_recoil_arms()
 		_update_hud()
 
@@ -266,6 +273,15 @@ func _physics_process(delta):
 		camera.h_offset = 0
 		camera.v_offset = 0
 
+	# Camera recoil kick recovery
+	if abs(camera_kick) > 0.005:
+		var recover = camera_kick * 12.0 * delta
+		camera.rotate_x(deg_to_rad(-recover))
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(min_pitch), deg_to_rad(max_pitch))
+		camera_kick -= recover
+	else:
+		camera_kick = 0.0
+
 func apply_shake(intensity: float):
 	shake_intensity = intensity
 
@@ -273,7 +289,12 @@ func _update_hud():
 	if not hud: return
 	var weapon = get_current_weapon()
 	if weapon and weapon.weapon_data:
-		hud.update_ammo(weapon.current_ammo, weapon.max_ammo, weapon.weapon_data.display_name)
+		var next_name = ""
+		if weapons.size() > 1:
+			var next_w = weapons[(current_weapon_index + 1) % weapons.size()]
+			if next_w and next_w.weapon_data:
+				next_name = next_w.weapon_data.display_name
+		hud.update_ammo(weapon.current_ammo, weapon.max_ammo, weapon.weapon_data.display_name, next_name)
 	hud.update_health(current_health, max_health)
 	if SaveManager:
 		hud.update_coins(SaveManager.data.coins)

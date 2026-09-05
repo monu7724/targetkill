@@ -24,13 +24,13 @@ size = Vector2(44, 44)
 
 [sub_resource type="Environment" id="Environment_lck"]
 background_mode = 1
-background_color = Color(0.08, 0.04, 0.04, 1)
+background_color = Color(0.12, 0.06, 0.06, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.35, 0.15, 0.15, 1)
-ambient_light_energy = 0.7
+ambient_light_color = Color(0.65, 0.45, 0.45, 1)
+ambient_light_energy = 1.2
 fog_enabled = true
-fog_light_color = Color(0.25, 0.08, 0.08, 1)
-fog_density = 0.02
+fog_light_color = Color(0.30, 0.15, 0.15, 1)
+fog_density = 0.006
 
 [node name="FinalLockdown" type="Node3D"]
 
@@ -39,8 +39,8 @@ environment = SubResource("Environment_lck")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 15, 0)
-light_color = Color(1, 0.3, 0.2, 1)
-light_energy = 0.7
+light_color = Color(1, 0.5, 0.4, 1)
+light_energy = 1.2
 shadow_enabled = true
 
 [node name="AlarmStrobe" type="OmniLight3D" parent="."]

@@ -11,6 +11,9 @@ extends CanvasLayer
 @onready var boss_health_bar = $Control/BossHealthBar
 @onready var boss_name_label = $Control/BossHealthBar/BossName
 
+@onready var crosshair = $Control/Crosshair
+@onready var hitmarker = $Control/Crosshair/Hitmarker
+
 @onready var virtual_joystick = $Control/VirtualJoystick
 @onready var look_area = $Control/LookArea
 @onready var fire_button = $Control/FireButton
@@ -24,14 +27,23 @@ extends CanvasLayer
 
 var player = null
 var look_touch_id: int = -1
+var is_game_over: bool = false
+var hitmarker_timer: SceneTreeTimer = null
 
 func _ready():
 	await get_tree().process_frame
 	player = get_tree().get_first_node_in_group("player")
 	_connect_controls()
 	_connect_pause_menu()
-	if SaveManager:
-		update_coins(SaveManager.data.coins)
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	if save_mgr and "data" in save_mgr:
+		update_coins(save_mgr.data.coins)
+	var mission_mgr = get_node_or_null("/root/MissionManager")
+	if mission_mgr:
+		if not mission_mgr.mission_completed.is_connected(_on_game_over):
+			mission_mgr.mission_completed.connect(_on_game_over)
+		if not mission_mgr.mission_failed.is_connected(_on_game_over):
+			mission_mgr.mission_failed.connect(_on_game_over)
 
 func _connect_controls():
 	if virtual_joystick and player:
@@ -69,18 +81,42 @@ func _connect_controls():
 		pause_button.pressed.connect(toggle_pause)
 
 func _on_look_area_input(event: InputEvent):
-	if not player or not player.has_method("rotate_camera"):
+	if is_game_over or not player or not player.has_method("rotate_camera"):
 		return
 		
 	if event is InputEventScreenTouch:
-		if event.pressed and look_touch_id == -1:
+		if event.pressed:
+			if look_touch_id == -1:
+				look_touch_id = event.index
+		else:
+			if event.index == look_touch_id:
+				look_touch_id = -1
+	elif event is InputEventScreenDrag:
+		if look_touch_id == -1:
 			look_touch_id = event.index
-		elif not event.pressed and event.index == look_touch_id:
-			look_touch_id = -1
-	elif event is InputEventScreenDrag and event.index == look_touch_id:
-		player.rotate_camera(event.relative.x, event.relative.y)
+		if event.index == look_touch_id:
+			player.rotate_camera(event.relative.x, event.relative.y)
 	elif event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		player.rotate_camera(event.relative.x, event.relative.y)
+
+func _unhandled_input(event: InputEvent):
+	if event is InputEventScreenTouch and not event.pressed:
+		if event.index == look_touch_id:
+			look_touch_id = -1
+
+func show_hitmarker(is_headshot: bool = false):
+	if not hitmarker:
+		return
+	var hit_color = Color(1.0, 0.85, 0.2, 1.0) if is_headshot else Color(1.0, 0.2, 0.2, 1.0)
+	for child in hitmarker.get_children():
+		if child is ColorRect:
+			child.color = hit_color
+	hitmarker.show()
+	var cur_timer = get_tree().create_timer(0.12)
+	hitmarker_timer = cur_timer
+	await cur_timer.timeout
+	if hitmarker_timer == cur_timer and hitmarker:
+		hitmarker.hide()
 
 func _connect_pause_menu():
 	if resume_btn:
@@ -91,9 +127,30 @@ func _connect_pause_menu():
 		exit_btn.pressed.connect(_on_exit_pressed)
 
 func toggle_pause():
+	if is_game_over:
+		return
 	var is_paused = not get_tree().paused
 	get_tree().paused = is_paused
 	pause_menu.visible = is_paused
+	look_touch_id = -1
+
+func _on_game_over(_m = null):
+	is_game_over = true
+	if pause_menu:
+		pause_menu.visible = false
+	if pause_button:
+		pause_button.disabled = true
+	look_touch_id = -1
+	if virtual_joystick:
+		virtual_joystick.visible = false
+	if fire_button:
+		fire_button.visible = false
+	if reload_button:
+		reload_button.visible = false
+	if switch_button:
+		switch_button.visible = false
+	if look_area:
+		look_area.visible = false
 
 func _on_restart_pressed():
 	get_tree().paused = false
@@ -113,12 +170,14 @@ func update_health(value: float, max_val: float = 100.0):
 	if hp_label:
 		hp_label.text = " " + str(int(value)) + " HP"
 
-func update_ammo(current: int, total: int, weapon_name: String = ""):
+func update_ammo(current: int, total: int, weapon_name: String = "", next_weapon: String = ""):
 	if ammo_label:
 		if weapon_name != "":
-			ammo_label.text = weapon_name + ": " + str(current) + " / " + str(total)
+			ammo_label.text = weapon_name.to_upper() + ": " + str(current) + " / " + str(total)
 		else:
 			ammo_label.text = str(current) + " / " + str(total)
+	if switch_button and next_weapon != "":
+		switch_button.text = "NEXT:\n" + next_weapon.to_upper()
 
 func update_objective(title: String, detail: String = ""):
 	if mission_name_label:

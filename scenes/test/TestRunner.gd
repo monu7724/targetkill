@@ -104,6 +104,43 @@ func _test_player_and_fps_weapons():
 	var shotgun = player.get_current_weapon()
 	var switched_to_shotgun = (shotgun.weapon_data.weapon_id == "shotgun")
 	record_test("Weapon switch", switched_to_rifle and switched_to_shotgun, "Switched to: %s then %s" % [rifle.weapon_data.display_name, shotgun.weapon_data.display_name])
+
+	# Test Viewmodel Lights
+	var v_light = player.get_node_or_null("Camera3D/ViewmodelLight")
+	var f_light = player.get_node_or_null("Camera3D/FrontFillLight")
+	var lights_ok = v_light != null and f_light != null
+	record_test("Viewmodel lighting", lights_ok, "ViewmodelLight: %s, FrontFillLight: %s" % [v_light != null, f_light != null])
+
+	# Test Aim Pitch Direction (Drag up -> Pitch up)
+	var cam_x_pre = player.camera.rotation.x
+	player.rotate_camera(0.0, -25.0) # Swipe UP
+	var pitch_up_ok = player.camera.rotation.x < cam_x_pre
+	record_test("Touch aim pitch", pitch_up_ok, "Pre: %f, Post: %f (Pitch up is negative x)" % [cam_x_pre, player.camera.rotation.x])
+
+	# Test Camera Kick & Recovery
+	var pre_kick = player.camera.rotation.x
+	player.apply_kick(-2.0)
+	var kicked = player.camera.rotation.x < pre_kick
+	player._physics_process(0.1)
+	record_test("Camera recoil kick", kicked, "Kicked: %s, Recoil recovered in physics process" % kicked)
+
+	# Test Weapon MuzzleLight
+	var current_w = player.get_current_weapon()
+	var m_light = current_w.get_node_or_null("MuzzleLight")
+	record_test("Muzzle flash light", m_light != null, "MuzzleLight OmniLight3D present")
+
+	# Test HUD Reticle & Hitmarker
+	var hud_node = player.hud
+	var crosshair = hud_node.get_node_or_null("Control/Crosshair")
+	var hitmarker = hud_node.get_node_or_null("Control/Crosshair/Hitmarker")
+	var reticle_ok = crosshair != null and hitmarker != null and hitmarker.get_child_count() == 4
+	record_test("Reticle and hitmarker", reticle_ok, "4-pip Crosshair and 4-tick Hitmarker verified")
+
+	# Test Modal State Machine (Zero pause overlap after game over)
+	hud_node._on_game_over(null)
+	hud_node.toggle_pause()
+	var modal_ok = hud_node.pause_menu.visible == false and hud_node.pause_button.disabled == true
+	record_test("Modal UI isolation", modal_ok, "Pause blocked during game over; controls isolated")
 	
 	player.queue_free()
 

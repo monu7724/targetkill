@@ -3,6 +3,7 @@ extends Node3D
 @onready var raycast = $RayCast3D
 @onready var anim_player = $AnimationPlayer
 @onready var muzzle_flash = $MuzzleFlash
+@onready var muzzle_light = get_node_or_null("MuzzleLight")
 @onready var fire_timer = $FireTimer
 @onready var sfx_shoot = $SfxShoot
 @onready var sfx_empty = $SfxEmpty
@@ -82,11 +83,17 @@ func shoot():
 		var type = "concrete"
 		if collider and collider.has_method("take_damage"):
 			var final_damage = damage
+			var is_headshot = false
 			# Headshot detection: top of zombie mesh
 			if point.y > collider.global_position.y + 1.2:
 				final_damage *= 2.0
+				is_headshot = true
 			collider.take_damage(final_damage)
 			type = "blood"
+			
+			var hud_node = get_tree().get_first_node_in_group("hud")
+			if hud_node and hud_node.has_method("show_hitmarker"):
+				hud_node.show_hitmarker(is_headshot)
 		
 		if not impact_pool:
 			impact_pool = get_tree().get_first_node_in_group("impact_pool")
@@ -106,17 +113,28 @@ func reload():
 	weapon_reloaded.emit()
 
 func muzzle_flash_fx():
-	muzzle_flash.show()
-	await get_tree().create_timer(0.05).timeout
-	muzzle_flash.hide()
+	if muzzle_light:
+		muzzle_light.visible = true
+	if muzzle_flash:
+		muzzle_flash.show()
+		if muzzle_flash is GPUParticles3D:
+			muzzle_flash.restart()
+			muzzle_flash.emitting = true
+	await get_tree().create_timer(0.06).timeout
+	if muzzle_light:
+		muzzle_light.visible = false
+	if muzzle_flash:
+		muzzle_flash.hide()
 
 func apply_recoil():
-	position.z = lerp(position.z, 0.1, 0.5)
-	rotation.x = lerp(rotation.x, deg_to_rad(recoil_rotation), 0.5)
+	position.z = 0.08
+	position.y = 0.015
+	rotation.x = deg_to_rad(recoil_rotation)
 	
 func _process(delta):
-	position.z = lerp(position.z, 0.0, 5.0 * delta)
-	rotation.x = lerp(rotation.x, 0.0, 5.0 * delta)
+	position.z = lerp(position.z, 0.0, 10.0 * delta)
+	position.y = lerp(position.y, 0.0, 10.0 * delta)
+	rotation.x = lerp(rotation.x, 0.0, 10.0 * delta)
 
 func _on_fire_timer_timeout():
 	can_shoot = true
