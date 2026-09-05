@@ -9,6 +9,8 @@ extends CharacterBody3D
 @onready var sfx_footstep = get_node_or_null("SfxFootstep")
 
 @export var sensitivity: float = 0.22
+@export var aim_sensitivity: float = 0.16
+@export var invert_y: bool = false
 @export var min_pitch: float = -65.0
 @export var max_pitch: float = 65.0
 
@@ -56,6 +58,15 @@ func _ready():
 	_update_hud()
 	
 	var save_mgr = get_node_or_null("/root/SaveManager")
+	if save_mgr and save_mgr.data.has("settings"):
+		var st = save_mgr.data.settings
+		if st.has("sensitivity"):
+			sensitivity = float(st.sensitivity)
+		if st.has("aim_sensitivity"):
+			aim_sensitivity = float(st.aim_sensitivity)
+		if st.has("invert_y"):
+			invert_y = bool(st.invert_y)
+			
 	var mission_mgr = get_node_or_null("/root/MissionManager")
 	var game_state_mgr = get_node_or_null("/root/GameStateManager")
 	
@@ -163,8 +174,9 @@ func set_virtual_movement(vec: Vector2):
 
 func rotate_camera(rot_x: float, rot_y: float):
 	if is_dead: return
+	var pitch_mult = -1.0 if invert_y else 1.0
 	rotate_y(deg_to_rad(-rot_x * sensitivity))
-	camera.rotate_x(deg_to_rad(rot_y * sensitivity))
+	camera.rotate_x(deg_to_rad(rot_y * pitch_mult * sensitivity))
 	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(min_pitch), deg_to_rad(max_pitch))
 	
 	# Responsive weapon sway

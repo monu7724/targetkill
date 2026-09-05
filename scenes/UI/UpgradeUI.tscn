@@ -18,68 +18,233 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.12, 0.12, 0.15, 1)
+color = Color(0.08, 0.09, 0.12, 1)
 
-[node name="Header" type="HBoxContainer" parent="."]
+[node name="TopBar" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 60.0
+offset_left = 24.0
+offset_top = 16.0
+offset_right = -24.0
+offset_bottom = 66.0
 grow_horizontal = 2
-alignment = 1
+theme_override_constants/separation = 20
 
-[node name="CoinsLabel" type="Label" parent="Header"]
+[node name="BackButton" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(100, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Coins: 1000"
+text = "◀ BACK"
 
-[node name="Panel" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Title" type="Label" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "SECTOR ZERO: ARMORY UPGRADES"
+vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="CoinsLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.4, 0.9, 0.4, 1)
+text = "COINS: 0"
+vertical_alignment = 1
+
+[node name="ContentContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = 80.0
+offset_right = -60.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
-alignment = 1
+theme_override_constants/separation = 16
 
-[node name="WeaponTitle" type="Label" parent="Panel/VBoxContainer"]
+[node name="TabsBar" type="HBoxContainer" parent="ContentContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "Weapon Name"
-horizontal_alignment = 1
+theme_override_constants/separation = 14
 
-[node name="DamageBtn" type="Button" parent="Panel/VBoxContainer"]
+[node name="PistolTab" type="Button" parent="ContentContainer/TabsBar"]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
-text = "Upgrade Damage"
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "USP-45 (PISTOL)"
 
-[node name="MagBtn" type="Button" parent="Panel/VBoxContainer"]
+[node name="RifleTab" type="Button" parent="ContentContainer/TabsBar"]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
-text = "Upgrade Mag"
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "M4A1 SENTINEL (RIFLE)"
 
-[node name="ReloadBtn" type="Button" parent="Panel/VBoxContainer"]
+[node name="ShotgunTab" type="Button" parent="ContentContainer/TabsBar"]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
-text = "Upgrade Reload"
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "REMINGTON 870 (SHOTGUN)"
 
-[node name="BackButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="Panel" type="PanelContainer" parent="ContentContainer"]
 layout_mode = 2
-text = "BACK"
+size_flags_vertical = 3
 
-[connection signal="pressed" from="Panel/VBoxContainer/DamageBtn" to="." method="_on_upgrade_pressed" binds= ["damage"]]
-[connection signal="pressed" from="Panel/VBoxContainer/MagBtn" to="." method="_on_upgrade_pressed" binds= ["mag"]]
-[connection signal="pressed" from="Panel/VBoxContainer/ReloadBtn" to="." method="_on_upgrade_pressed" binds= ["reload"]]
-[connection signal="pressed" from="Panel/VBoxContainer/BackButton" to="." method="_on_back_pressed"]
+[node name="Margin" type="MarginContainer" parent="ContentContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="WeaponHeader" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="WeaponTitle" type="Label" parent="ContentContainer/Panel/Margin/VBox/WeaponHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "M4A1 SENTINEL"
+
+[node name="WeaponSubtitle" type="Label" parent="ContentContainer/Panel/Margin/VBox/WeaponHeader"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7, 0.75, 0.8, 1)
+text = "Fully-Automatic Assault Rifle"
+vertical_alignment = 1
+
+[node name="DamageRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="LabelBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/DamageRow"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ContentContainer/Panel/Margin/VBox/DamageRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "DAMAGE"
+
+[node name="LevelLbl" type="Label" parent="ContentContainer/Panel/Margin/VBox/DamageRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.65, 0.8, 1, 1)
+text = "LVL 0 / 3"
+
+[node name="StatBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/DamageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="ContentContainer/Panel/Margin/VBox/DamageRow/StatBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+max_value = 3.0
+show_percentage = false
+
+[node name="StatDiff" type="Label" parent="ContentContainer/Panel/Margin/VBox/DamageRow/StatBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+text = "22 -> 26 DMG"
+
+[node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/DamageRow"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+text = "UPGRADE (120 COINS)"
+
+[node name="MagRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="LabelBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/MagRow"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ContentContainer/Panel/Margin/VBox/MagRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "MAGAZINE"
+
+[node name="LevelLbl" type="Label" parent="ContentContainer/Panel/Margin/VBox/MagRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.65, 0.8, 1, 1)
+text = "LVL 0 / 3"
+
+[node name="StatBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/MagRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="ContentContainer/Panel/Margin/VBox/MagRow/StatBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+max_value = 3.0
+show_percentage = false
+
+[node name="StatDiff" type="Label" parent="ContentContainer/Panel/Margin/VBox/MagRow/StatBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+text = "30 -> 36 ROUNDS"
+
+[node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/MagRow"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+text = "UPGRADE (100 COINS)"
+
+[node name="ReloadRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="LabelBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/ReloadRow"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "RELOAD SPEED"
+
+[node name="LevelLbl" type="Label" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.65, 0.8, 1, 1)
+text = "LVL 0 / 3"
+
+[node name="StatBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/ReloadRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/StatBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+max_value = 3.0
+show_percentage = false
+
+[node name="StatDiff" type="Label" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/StatBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+text = "2.8s -> 2.4s"
+
+[node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/ReloadRow"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+text = "UPGRADE (110 COINS)"
+
+[connection signal="pressed" from="TopBar/BackButton" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="ContentContainer/TabsBar/PistolTab" to="." method="_on_tab_pressed" binds= ["pistol"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/RifleTab" to="." method="_on_tab_pressed" binds= ["rifle"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/ShotgunTab" to="." method="_on_tab_pressed" binds= ["shotgun"]]
+[connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/DamageRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["damage"]]
+[connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/MagRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["mag"]]
+[connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/ReloadRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["reload"]]

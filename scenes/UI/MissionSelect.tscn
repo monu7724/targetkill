@@ -20,59 +20,170 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.1, 0.12, 1)
+color = Color(0.08, 0.09, 0.12, 1)
 
-[node name="Label" type="Label" parent="."]
+[node name="TopBar" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -100.0
-offset_top = 30.0
-offset_right = 100.0
-offset_bottom = 60.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 32
-text = "SELECT MISSION"
-horizontal_alignment = 1
-
-[node name="UpgradeButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 10
 anchor_right = 1.0
-offset_left = -150.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = 60.0
-grow_horizontal = 0
-text = "UPGRADES"
-
-[node name="SettingsButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 0
 offset_left = 20.0
-offset_top = 20.0
-offset_right = 120.0
-offset_bottom = 60.0
+offset_top = 16.0
+offset_right = -20.0
+offset_bottom = 66.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+
+[node name="BackButton" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(100, 44)
+layout_mode = 2
+text = "◀ BACK"
+
+[node name="Title" type="Label" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "SECTOR ZERO: OPERATIONS"
+vertical_alignment = 1
+
+[node name="CoinsLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.4, 0.9, 0.4, 1)
+text = "COINS: 0"
+vertical_alignment = 1
+
+[node name="UpgradeButton" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+text = "ARMORY"
+
+[node name="SettingsButton" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(110, 44)
+layout_mode = 2
 text = "SETTINGS"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
-...
-[connection signal="pressed" from="UpgradeButton" to="." method="_on_upgrade_button_pressed"]
-[connection signal="pressed" from="SettingsButton" to="." method="_on_settings_button_pressed"]
 layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -160.0
-offset_top = 100.0
-offset_right = 160.0
+offset_left = 60.0
+offset_top = 80.0
+offset_right = -60.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
-theme_override_constants/separation = 15
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="BriefingModal" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.05, 0.08, 0.92)
+
+[node name="ModalPanel" type="PanelContainer" parent="BriefingModal"]
+custom_minimum_size = Vector2(620, 480)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -240.0
+offset_right = 310.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="BriefingModal/ModalPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="BriefingModal/ModalPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BriefingHeader" type="Label" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "TACTICAL BRIEFING: OPERATION"
+
+[node name="BriefingLocation" type="Label" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7, 0.8, 0.95, 1)
+text = "LOCATION: Concourse A"
+
+[node name="BriefingDifficulty" type="Label" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+text = "DIFFICULTY: ★☆☆☆☆"
+
+[node name="BriefingObjective" type="Label" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+text = "PRIMARY OBJECTIVE: Clear perimeter."
+
+[node name="BriefingLore" type="Label" parent="BriefingModal/ModalPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.75, 0.75, 0.75, 1)
+text = "Intel briefing lore..."
+autowrap_mode = 3
+
+[node name="BriefingLoadout" type="Label" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+text = "RECOMMENDED LOADOUT: USP-45 Tactical"
+
+[node name="BriefingReward" type="Label" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.4, 0.9, 0.4, 1)
+text = "MISSION REWARD: 100 COINS"
+
+[node name="Spacer" type="Control" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ButtonGroup" type="HBoxContainer" parent="BriefingModal/ModalPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="DeployButton" type="Button" parent="BriefingModal/ModalPanel/Margin/VBox/ButtonGroup"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.9, 0.2, 1)
+text = "DEPLOY OPERATION"
+
+[node name="CloseModalButton" type="Button" parent="BriefingModal/ModalPanel/Margin/VBox/ButtonGroup"]
+custom_minimum_size = Vector2(160, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "CANCEL"
+
+[connection signal="pressed" from="TopBar/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="TopBar/UpgradeButton" to="." method="_on_upgrade_button_pressed"]
+[connection signal="pressed" from="TopBar/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="BriefingModal/ModalPanel/Margin/VBox/ButtonGroup/DeployButton" to="." method="_on_deploy_button_pressed"]
+[connection signal="pressed" from="BriefingModal/ModalPanel/Margin/VBox/ButtonGroup/CloseModalButton" to="." method="_on_close_briefing_button_pressed"]

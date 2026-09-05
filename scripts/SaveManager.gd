@@ -17,7 +17,9 @@ var data = {
 		"music_volume": 0.8,
 		"sfx_volume": 1.0,
 		"ambience_volume": 0.7,
-		"sensitivity": 0.22
+		"sensitivity": 0.22,
+		"aim_sensitivity": 0.16,
+		"invert_y": false
 	},
 	"weapon_upgrades": {
 		"pistol": {"damage": 0, "mag": 0, "reload": 0},

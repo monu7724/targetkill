@@ -1,6 +1,41 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/MainMenuUI.gd" id="1_m3s4d"]
+[ext_resource type="Material" path="res://resources/materials/mat_asphalt.tres" id="2_masph"]
+[ext_resource type="ArrayMesh" path="res://models/environment/airport/terminal_pillar.obj" id="3_mpil"]
+[ext_resource type="ArrayMesh" path="res://models/environment/airport/luggage_trolley.obj" id="4_mtrly"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_day"]
+sky_top_color = Color(0.35, 0.58, 0.88, 1)
+sky_horizon_color = Color(0.68, 0.78, 0.90, 1)
+ground_bottom_color = Color(0.22, 0.25, 0.28, 1)
+ground_horizon_color = Color(0.62, 0.72, 0.82, 1)
+
+[sub_resource type="Sky" id="Sky_day"]
+sky_material = SubResource("ProceduralSkyMaterial_day")
+
+[sub_resource type="Environment" id="Environment_menu"]
+background_mode = 2
+sky = SubResource("Sky_day")
+ambient_light_source = 3
+ambient_light_color = Color(0.72, 0.82, 0.95, 1)
+ambient_light_energy = 0.9
+tonemap_mode = 2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tarmac"]
+size = Vector2(40, 40)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tactical_btn"]
+bg_color = Color(0.12, 0.16, 0.22, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.55, 0.8, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -11,27 +46,86 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_m3s4d")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.05, 0.05, 0.08, 1)
+stretch = true
 
-[node name="Title" type="Label" parent="."]
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="DaylightWorld" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport/DaylightWorld"]
+environment = SubResource("Environment_menu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/DaylightWorld"]
+transform = Transform3D(0.866, -0.287, 0.409, 0, 0.819, 0.574, -0.5, -0.497, 0.709, 0, 15, 0)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 2.2
+shadow_enabled = true
+
+[node name="BackgroundCamera" type="Camera3D" parent="SubViewportContainer/SubViewport/DaylightWorld"]
+transform = Transform3D(1, 0, 0, 0, 0.9659, 0.2588, 0, -0.2588, 0.9659, 0, 2.2, 8)
+current = true
+fov = 65.0
+
+[node name="Tarmac" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/DaylightWorld"]
+mesh = SubResource("PlaneMesh_tarmac")
+surface_material_override/0 = ExtResource("2_masph")
+
+[node name="PillarL" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/DaylightWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
+mesh = ExtResource("3_mpil")
+
+[node name="PillarR" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/DaylightWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+mesh = ExtResource("3_mpil")
+
+[node name="Trolley" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/DaylightWorld"]
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 2.2, 0, 3.5)
+mesh = ExtResource("4_mtrly")
+
+[node name="Scrim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.04, 0.06, 0.09, 0.45)
+
+[node name="HeaderBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -200.0
-offset_top = 80.0
-offset_right = 200.0
+offset_left = -300.0
+offset_top = 50.0
+offset_right = 300.0
 offset_bottom = 160.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 64
-text = "SECTOR ZERO: LOCKDOWN"
+theme_override_constants/separation = -4
+
+[node name="Title" type="Label" parent="HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 46
+text = "SECTOR ZERO"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+theme_override_font_sizes/font_size = 28
+text = "LOCKDOWN"
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -41,28 +135,40 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -20.0
-offset_right = 100.0
-offset_bottom = 180.0
+offset_left = -130.0
+offset_top = -10.0
+offset_right = 130.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 14
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(260, 52)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "START GAME"
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_tactical_btn")
+text = "START MISSION"
+
+[node name="UpgradesButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(260, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxFlat_tactical_btn")
+text = "UPGRADES"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(260, 46)
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxFlat_tactical_btn")
 text = "SETTINGS"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(260, 42)
 layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_tactical_btn")
 text = "QUIT"
 
 [node name="VersionLabel" type="Label" parent="."]
@@ -72,19 +178,20 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -240.0
+offset_left = -260.0
 offset_top = -42.0
 offset_right = -24.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 0
-theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 0.8)
-theme_override_font_sizes/font_size = 14
-text = "v1.0.0 | Sector Zero"
+theme_override_colors/font_color = Color(0.7, 0.78, 0.9, 0.85)
+theme_override_font_sizes/font_size = 13
+text = "v1.0.0 | Sector Zero (5-tap)"
 horizontal_alignment = 2
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/UpgradesButton" to="." method="_on_upgrades_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="gui_input" from="VersionLabel" to="." method="_on_version_label_gui_input"]

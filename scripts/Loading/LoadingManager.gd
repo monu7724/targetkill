@@ -1,5 +1,7 @@
 extends Node
 
+const ErrorHandler = preload("res://scripts/Core/ErrorHandler.gd")
+
 signal loading_started(scene_path: String)
 signal loading_progress(ratio: float)
 signal loading_completed(scene_path: String)
@@ -185,6 +187,9 @@ func _run_poll_loop(start_time: int):
 					get_tree().change_scene_to_packed(packed_scene)
 					var elapsed = Time.get_ticks_msec() - start_time
 					print("[%d ms] [LOADING] SUCCESS: Loaded %s in %d ms." % [Time.get_ticks_msec(), target_scene_path, elapsed])
+					var perf_mgr = get_node_or_null("/root/PerformanceManager")
+					if perf_mgr and perf_mgr.has_method("set_last_load_time"):
+						perf_mgr.set_last_load_time(elapsed)
 					loading_completed.emit(target_scene_path)
 				else:
 					_fallback_synchronous_load(target_scene_path, start_time)
@@ -209,6 +214,9 @@ func _fallback_synchronous_load(scene_path: String, start_time: int):
 		get_tree().change_scene_to_packed(scene)
 		var elapsed = Time.get_ticks_msec() - start_time
 		print("[%d ms] [LOADING] SUCCESS (Fallback): Loaded in %d ms." % [Time.get_ticks_msec(), elapsed])
+		var perf_mgr = get_node_or_null("/root/PerformanceManager")
+		if perf_mgr and perf_mgr.has_method("set_last_load_time"):
+			perf_mgr.set_last_load_time(elapsed)
 		loading_completed.emit(scene_path)
 		loading_ui_layer.visible = false
 		is_loading = false
@@ -216,12 +224,12 @@ func _fallback_synchronous_load(scene_path: String, start_time: int):
 		_handle_load_failure("Unable to load scene resource: " + scene_path)
 
 func _handle_load_failure(reason: String):
-	printerr("[%d ms] [LOADING:FAILURE] %s" % [Time.get_ticks_msec(), reason])
+	ErrorHandler.report_error(ErrorHandler.Category.LOAD_ERROR, reason, {"scene": target_scene_path})
 	is_loading = false
 	loading_failed.emit(reason)
 	
-	mission_title_lbl.text = "UNABLE TO LOAD MISSION"
-	mission_sub_lbl.text = "RETURNING TO BASE"
+	mission_title_lbl.text = "MISSION COULD NOT BE LOADED"
+	mission_sub_lbl.text = "RETURNING TO MISSION SELECT"
 	location_lbl.text = reason
 	progress_bar.value = 0.0
 	percent_lbl.text = "Error"

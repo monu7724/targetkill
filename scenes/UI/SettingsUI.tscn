@@ -18,72 +18,252 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.1, 0.12, 1)
+color = Color(0.08, 0.09, 0.12, 1)
 
-[node name="Panel" type="Panel" parent="."]
+[node name="TopBar" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -180.0
-offset_right = 200.0
-offset_bottom = 180.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 16.0
+offset_right = -24.0
+offset_bottom = 66.0
 grow_horizontal = 2
-grow_vertical = 2
+theme_override_constants/separation = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="BackButton" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(100, 44)
+layout_mode = 2
+text = "◀ BACK"
+
+[node name="Title" type="Label" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "SECTOR ZERO: SYSTEM SETTINGS"
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = 80.0
+offset_right = -80.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 30
-alignment = 1
 
-[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "SETTINGS"
-horizontal_alignment = 1
+size_flags_horizontal = 3
+theme_override_constants/separation = 22
 
-[node name="AudioSettings" type="VBoxContainer" parent="Panel/VBoxContainer"]
+[node name="AudioSection" type="PanelContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/VBoxContainer/AudioSettings"]
+[node name="Margin" type="MarginContainer" parent="ScrollContainer/VBoxContainer/AudioSection"]
 layout_mode = 2
-text = "Master Volume"
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
 
-[node name="MasterSlider" type="HSlider" parent="Panel/VBoxContainer/AudioSettings"]
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/AudioSection/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SectionTitle" type="Label" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "AUDIO CONFIGURATION"
+
+[node name="MasterBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MasterBox"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Master Volume:"
+
+[node name="MasterSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MasterBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 max_value = 1.0
 step = 0.05
 value = 1.0
 
-[node name="GraphicsSettings" type="VBoxContainer" parent="Panel/VBoxContainer"]
+[node name="MasterVal" type="Label" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MasterBox"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "100%"
+horizontal_alignment = 2
+
+[node name="MusicBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/VBoxContainer/GraphicsSettings"]
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MusicBox"]
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-text = "Graphics Quality"
+text = "Music Volume:"
 
-[node name="QualityOption" type="OptionButton" parent="Panel/VBoxContainer/GraphicsSettings"]
+[node name="MusicSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MusicBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="MusicVal" type="Label" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MusicBox"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "80%"
+horizontal_alignment = 2
+
+[node name="SFXBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/SFXBox"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Sound Effects (SFX):"
+
+[node name="SFXSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/SFXBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="SFXVal" type="Label" parent="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/SFXBox"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "100%"
+horizontal_alignment = 2
+
+[node name="ControlsSection" type="PanelContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="ScrollContainer/VBoxContainer/ControlsSection"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SectionTitle" type="Label" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "TOUCH CONTROLS & AIM SENSITIVITY"
+
+[node name="SensBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/SensBox"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Look Sensitivity:"
+
+[node name="SensSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/SensBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.05
+max_value = 0.60
+step = 0.01
+value = 0.22
+
+[node name="SensVal" type="Label" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/SensBox"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0.22"
+horizontal_alignment = 2
+
+[node name="AimSensBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/AimSensBox"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Aiming Sensitivity:"
+
+[node name="AimSensSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/AimSensBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.05
+max_value = 0.50
+step = 0.01
+value = 0.16
+
+[node name="AimSensVal" type="Label" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/AimSensBox"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0.16"
+horizontal_alignment = 2
+
+[node name="InvertBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/InvertBox"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Invert Pitch (Y-Axis):"
+
+[node name="InvertCheck" type="CheckBox" parent="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/InvertBox"]
+layout_mode = 2
+text = "Inverted"
+
+[node name="GraphicsSection" type="PanelContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="ScrollContainer/VBoxContainer/GraphicsSection"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/GraphicsSection/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SectionTitle" type="Label" parent="ScrollContainer/VBoxContainer/GraphicsSection/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "GRAPHICS & RENDERING PROFILES"
+
+[node name="QualityBox" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/GraphicsSection/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/GraphicsSection/Margin/VBox/QualityBox"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Hardware Profile:"
+
+[node name="QualityOption" type="OptionButton" parent="ScrollContainer/VBoxContainer/GraphicsSection/Margin/VBox/QualityBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 item_count = 3
-popup/item_0/text = "LOW"
+popup/item_0/text = "LOW (ANDROID_LEGACY: 720p, Minimal Shadows, Stable 30-60 FPS)"
 popup/item_0/id = 0
-popup/item_1/text = "MEDIUM"
+popup/item_1/text = "MEDIUM (ANDROID_BALANCED: Full Lighting, Fast Shadows, 60 FPS Target)"
 popup/item_1/id = 1
-popup/item_2/text = "HIGH"
+popup/item_2/text = "HIGH (ANDROID_HIGH: Max Resolution, Volumetric FX, High-End Devices)"
 popup/item_2/id = 2
 
-[node name="BackButton" type="Button" parent="Panel/VBoxContainer"]
-layout_mode = 2
-text = "BACK"
-
-[connection signal="value_changed" from="Panel/VBoxContainer/AudioSettings/MasterSlider" to="." method="_on_master_slider_value_changed"]
-[connection signal="item_selected" from="Panel/VBoxContainer/GraphicsSettings/QualityOption" to="." method="_on_quality_option_item_selected"]
-[connection signal="pressed" from="Panel/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="TopBar/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MasterBox/MasterSlider" to="." method="_on_master_slider_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/MusicBox/MusicSlider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/AudioSection/Margin/VBox/SFXBox/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/SensBox/SensSlider" to="." method="_on_sens_slider_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/AimSensBox/AimSensSlider" to="." method="_on_aim_sens_slider_value_changed"]
+[connection signal="toggled" from="ScrollContainer/VBoxContainer/ControlsSection/Margin/VBox/InvertBox/InvertCheck" to="." method="_on_invert_check_toggled"]
+[connection signal="item_selected" from="ScrollContainer/VBoxContainer/GraphicsSection/Margin/VBox/QualityBox/QualityOption" to="." method="_on_quality_option_item_selected"]

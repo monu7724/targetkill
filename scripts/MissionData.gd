@@ -12,6 +12,9 @@ enum ObjectiveType { KILL_COUNT, SURVIVE_WAVES, BOSS_KILL }
 @export var reward_coins: int = 100
 @export var unlock_requirement_id: String = "" # ID of mission that must be completed
 @export var scene_path: String = "res://scenes/environments/AirportTerminal.tscn"
+@export var location_name: String = "Sector Perimeter"
+@export var difficulty_stars: int = 1
+@export var recommended_loadout: String = "USP-45 Tactical / M4A1 Sentinel"
 
 @export var spawn_config: Array[Dictionary] = [
 	{"type": "normal", "weight": 1.0}
