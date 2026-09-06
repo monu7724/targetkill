@@ -42,13 +42,20 @@ var weapon_configs = [
 	{"id": "pistol", "path": "res://resources/weapons/pistol.tres", "model": "res://assets/3d/weapons/pistol.glb"},
 	{"id": "rifle", "path": "res://resources/weapons/rifle.tres", "model": "res://assets/3d/weapons/rifle.glb"},
 	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://assets/3d/weapons/shotgun.glb"},
-	{"id": "m4a1", "path": "res://resources/weapons/m4a1.tres", "model": "res://assets/3d/weapons/rifle.glb"},
-	{"id": "ak47", "path": "res://resources/weapons/ak47.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "usp45", "path": "res://resources/weapons/usp45.tres", "model": "res://assets/3d/weapons/usp45.glb"},
+	{"id": "m4a1", "path": "res://resources/weapons/m4a1.tres", "model": "res://assets/3d/weapons/m4a1.glb"},
+	{"id": "remington870", "path": "res://resources/weapons/remington870.tres", "model": "res://assets/3d/weapons/remington870.glb"},
+	{"id": "ak47", "path": "res://resources/weapons/ak47.tres", "model": "res://assets/3d/weapons/ak47.glb"},
+	{"id": "desert_eagle", "path": "res://resources/weapons/desert_eagle.tres", "model": "res://assets/3d/weapons/desert_eagle.glb"},
+	{"id": "mp5", "path": "res://resources/weapons/mp5.tres", "model": "res://assets/3d/weapons/mp5.glb"},
+	{"id": "awp", "path": "res://resources/weapons/awp.tres", "model": "res://assets/3d/weapons/awp.glb"},
+	{"id": "combat_knife", "path": "res://resources/weapons/combat_knife.tres", "model": "res://assets/3d/weapons/combat_knife.glb"},
+	{"id": "crossbow", "path": "res://resources/weapons/crossbow.tres", "model": "res://assets/3d/weapons/crossbow.glb"},
+	{"id": "grenade_launcher", "path": "res://resources/weapons/grenade_launcher.tres", "model": "res://assets/3d/weapons/grenade_launcher.glb"},
 	{"id": "scar_l", "path": "res://resources/weapons/scar_l.tres", "model": "res://assets/3d/weapons/rifle.glb"},
 	{"id": "g36", "path": "res://resources/weapons/g36.tres", "model": "res://assets/3d/weapons/rifle.glb"},
 	{"id": "famas", "path": "res://resources/weapons/famas.tres", "model": "res://assets/3d/weapons/rifle.glb"},
 	{"id": "aug", "path": "res://resources/weapons/aug.tres", "model": "res://assets/3d/weapons/rifle.glb"},
-	{"id": "mp5", "path": "res://resources/weapons/mp5.tres", "model": "res://assets/3d/weapons/rifle.glb"},
 	{"id": "spas12", "path": "res://resources/weapons/spas12.tres", "model": "res://assets/3d/weapons/shotgun.glb"},
 	{"id": "svd", "path": "res://resources/weapons/svd.tres", "model": "res://assets/3d/weapons/rifle.glb"},
 	{"id": "m249", "path": "res://resources/weapons/m249.tres", "model": "res://assets/3d/weapons/rifle.glb"}
@@ -132,10 +139,29 @@ func _init_weapons():
 	# We will dynamically build the list from unlocked IDs
 	var all_possible_weapons = weapon_configs.duplicate()
 
-
 	for cfg in all_possible_weapons:
 		if not cfg.id in unlocked_ids:
 			continue
+		# Prevent loading duplicate alias weapons
+		var already_have = false
+		for w_inst in weapons:
+			if w_inst.weapon_data:
+				var wid = w_inst.weapon_data.weapon_id
+				if wid == cfg.id:
+					already_have = true
+					break
+				if (wid in ["pistol", "usp45"]) and (cfg.id in ["pistol", "usp45"]):
+					already_have = true
+					break
+				if (wid in ["rifle", "m4a1"]) and (cfg.id in ["rifle", "m4a1"]):
+					already_have = true
+					break
+				if (wid in ["shotgun", "remington870"]) and (cfg.id in ["shotgun", "remington870"]):
+					already_have = true
+					break
+		if already_have:
+			continue
+
 		var w = weapon_prefab.instantiate()
 		w.weapon_data = load(cfg.path)
 		w.aim_raycast = aim_raycast
@@ -157,6 +183,7 @@ func _init_weapons():
 
 	current_weapon_index = 0
 	_apply_active_weapon()
+
 
 func _apply_active_weapon():
 	for i in range(weapons.size()):

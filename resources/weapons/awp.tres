@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "awp"
+display_name = "AWP Arctic Warfare"
+base_damage = 160.0
+headshot_multiplier = 4.0
+base_fire_rate = 1.30
+base_mag_size = 5
+base_reserve_ammo = 25
+base_reload_time = 3.8
+spread = 0.001
+recoil = 3.20
+range = 250.0
+pellet_count = 1
+is_automatic = false
+muzzle_fx = "rifle"
+sound_set = "awp"
+unlock_price = 3500
+upgrade_cost_damage = 600
+upgrade_cost_mag = 500
+upgrade_cost_reload = 550
+upgrade_cost_accuracy = 480

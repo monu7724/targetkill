@@ -61,6 +61,14 @@ func _ready():
 		event_bus.wave_started.connect(func(wave_num: int, total_waves: int):
 			update_wave(wave_num, total_waves)
 		)
+		if event_bus.has_signal("boss_health_changed"):
+			event_bus.boss_health_changed.connect(func(cur_hp: float, max_hp: float):
+				if cur_hp > 0.0:
+					show_boss_health("APEX MUTANT", max_hp)
+					update_boss_health(cur_hp)
+				else:
+					update_boss_health(0.0)
+			)
 
 var damage_overlay: ColorRect
 

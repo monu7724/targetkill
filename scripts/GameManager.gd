@@ -28,6 +28,21 @@ func _ready():
 
 func start_next_wave():
 	current_wave += 1
+	var total_waves = mission.wave_count if mission else 3
+	
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		event_bus.wave_started.emit(current_wave, total_waves)
+	
+	# Check if structured waves are defined in mission
+	if mission and not mission.waves.is_empty() and current_wave <= mission.waves.size():
+		var wave_data = mission.waves[current_wave - 1]
+		var groups = wave_data.get("groups", [])
+		zombies_to_spawn = 0
+		for g in groups:
+			zombies_to_spawn += g.get("count", 1)
+		spawn_structured_wave(groups)
+		return
 	
 	if mission and mission.objective_type == MissionData.ObjectiveType.BOSS_KILL:
 		zombies_to_spawn = max(1, mission.target_count)
@@ -51,6 +66,29 @@ func start_next_wave():
 
 	spawn_wave()
 
+func spawn_structured_wave(groups: Array):
+	is_spawning_wave = true
+	for group in groups:
+		if not is_inside_tree():
+			return
+		var arch = group.get("enemy_type", "normal")
+		var count = group.get("count", 1)
+		var dir = group.get("spawn_direction", "")
+		var delay = group.get("delay", 1.2)
+		for i in range(count):
+			while zombies_alive >= max_active_zombies:
+				await get_tree().create_timer(0.8).timeout
+				if not is_inside_tree():
+					return
+			spawn_zombie(arch, dir)
+			if delay > 0 and (i < count - 1 or group != groups.back()):
+				await get_tree().create_timer(delay).timeout
+				if not is_inside_tree():
+					return
+	is_spawning_wave = false
+	if zombies_alive <= 0:
+		_check_wave_end()
+
 func spawn_wave():
 	is_spawning_wave = true
 	var count = zombies_to_spawn
@@ -58,16 +96,20 @@ func spawn_wave():
 		# Throttle spawning if too many zombies are active
 		while zombies_alive >= max_active_zombies:
 			await get_tree().create_timer(0.8).timeout
+			if not is_inside_tree():
+				return
 			
 		spawn_zombie()
 		if i < count - 1:
 			await get_tree().create_timer(1.4).timeout
+			if not is_inside_tree():
+				return
 			
 	is_spawning_wave = false
 	if zombies_alive <= 0:
 		_check_wave_end()
 
-func spawn_zombie():
+func spawn_zombie(specific_archetype: String = "", direction: String = ""):
 	if spawn_points.is_empty() or not zombie_scene:
 		return
 		
@@ -75,16 +117,34 @@ func spawn_zombie():
 		player_ref = get_tree().get_first_node_in_group("player")
 	var player_pos = player_ref.global_position if player_ref else Vector3.ZERO
 	
-	# Filter spawn points that maintain tactical distance (>10m)
-	var distant_points = []
-	for sp in spawn_points:
-		if sp.global_position.distance_to(player_pos) > 10.0:
-			distant_points.append(sp)
+	# Select spawn point matching direction if provided
+	var candidate_points: Array[Node3D] = []
+	if direction != "":
+		for sp in spawn_points:
+			if sp and sp.name.to_lower().contains(direction.to_lower()):
+				candidate_points.append(sp)
+				
+	if candidate_points.is_empty():
+		# Filter spawn points that maintain tactical distance (>10m)
+		for sp in spawn_points:
+			if sp and sp.global_position.distance_to(player_pos) > 10.0:
+				candidate_points.append(sp)
 			
-	var spawn_point = distant_points.pick_random() if not distant_points.is_empty() else spawn_points.pick_random()
-	var zombie = zombie_scene.instantiate()
-	
-	zombie.archetype = _pick_archetype()
+	var spawn_point = candidate_points.pick_random() if not candidate_points.is_empty() else spawn_points.pick_random()
+	if not spawn_point:
+		return
+		
+	var arch = specific_archetype if specific_archetype != "" else _pick_archetype()
+	var zombie = null
+	if arch == "dog" and ResourceLoader.exists("res://scenes/zombies/InfectedDog.tscn"):
+		var dog_scene = load("res://scenes/zombies/InfectedDog.tscn")
+		if dog_scene:
+			zombie = dog_scene.instantiate()
+			
+	if not zombie:
+		zombie = zombie_scene.instantiate()
+		zombie.archetype = arch
+		
 	add_child(zombie)
 	zombie.global_position = spawn_point.global_position
 	
@@ -117,13 +177,21 @@ func _check_wave_end():
 	var mission_mgr = get_node_or_null("/root/MissionManager")
 	if mission_mgr:
 		mission_mgr.on_wave_completed()
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		event_bus.wave_completed.emit(current_wave)
+		
 	if not mission:
 		return
-	if mission.objective_type == MissionData.ObjectiveType.SURVIVE_WAVES:
-		if current_wave < mission.wave_count:
+		
+	var total_waves = mission.wave_count if mission else 3
+	if current_wave < total_waves:
+		if mission.objective_type == MissionData.ObjectiveType.SURVIVE_WAVES:
 			await get_tree().create_timer(wave_delay).timeout
-			start_next_wave()
-	else:
-		if mission_mgr and mission_mgr.kill_count < mission.target_count:
-			await get_tree().create_timer(wave_delay).timeout
-			start_next_wave()
+			if is_inside_tree():
+				start_next_wave()
+		else:
+			if mission_mgr and mission_mgr.kill_count < mission.target_count:
+				await get_tree().create_timer(wave_delay).timeout
+				if is_inside_tree():
+					start_next_wave()

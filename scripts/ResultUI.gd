@@ -73,7 +73,7 @@ func _on_mission_failed(mission: MissionData):
 	kills_label.text = "Zombies Eliminated: %d" % kills
 	headshots_label.text = "Headshots: %d" % headshots
 	accuracy_label.text = "Accuracy: %d%%" % accuracy
-	cash_label.text = "Try Again!"
+	cash_label.text = "Reward: $0 CASH (MISSION FAILED)"
 	
 	next_button.visible = false
 	replay_button.visible = true

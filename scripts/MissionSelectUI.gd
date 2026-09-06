@@ -20,7 +20,14 @@ var missions = [
 	"res://resources/missions/mission_02.tres",
 	"res://resources/missions/mission_03.tres",
 	"res://resources/missions/mission_04.tres",
-	"res://resources/missions/mission_05.tres"
+	"res://resources/missions/mission_05.tres",
+	"res://resources/missions/mission_06.tres",
+	"res://resources/missions/mission_07.tres",
+	"res://resources/missions/mission_08.tres",
+	"res://resources/missions/mission_09.tres",
+	"res://resources/missions/mission_10.tres",
+	"res://resources/missions/mission_11.tres",
+	"res://resources/missions/mission_12.tres"
 ]
 
 func _ready():
@@ -30,7 +37,7 @@ func _ready():
 		
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if save_mgr and cash_label:
-		cash_label.text = "CASH: %d" % save_mgr.data.cash
+		cash_label.text = "CASH: $%d" % save_mgr.data.cash
 		
 	if briefing_modal:
 		briefing_modal.visible = false
@@ -71,16 +78,38 @@ func _on_mission_selected(data: MissionData):
 	var obj_text = "Eliminate hostile contacts."
 	match data.objective_type:
 		MissionData.ObjectiveType.KILL_COUNT:
-			obj_text = "Eliminate %d infected hosts." % data.target_count
+			obj_text = "Eliminate %d infected hosts across 3 waves." % data.target_count
 		MissionData.ObjectiveType.SURVIVE_WAVES:
-			obj_text = "Survive %d hostile waves." % data.wave_count
+			obj_text = "Survive %d hostile assault waves." % data.wave_count
 		MissionData.ObjectiveType.BOSS_KILL:
 			obj_text = "Neutralize the Sector Apex Alpha specimen."
 	briefing_objective.text = "PRIMARY OBJECTIVE: " + obj_text
 	
 	briefing_lore.text = data.description
 	briefing_loadout.text = "RECOMMENDED LOADOUT: " + (data.recommended_loadout if "recommended_loadout" in data and data.recommended_loadout != "" else "Standard Issue Rifle")
-	briefing_reward.text = "MISSION BOUNTY: %d CASH" % data.reward_cash
+	
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	var is_completed = save_mgr.is_mission_completed(data.mission_id) if save_mgr else false
+	var is_unlocked = true
+	if data.unlock_requirement_id != "" and save_mgr:
+		is_unlocked = save_mgr.is_mission_completed(data.unlock_requirement_id)
+		
+	if is_completed:
+		briefing_reward.text = "MISSION BOUNTY: $%d (CLAIMED - REPLAY $0)" % data.reward_cash
+	else:
+		briefing_reward.text = "MISSION BOUNTY: $%d CASH (SINGLE-CLAIM)" % data.reward_cash
+		
+	var deploy_btn = get_node_or_null("BriefingModal/ModalPanel/Margin/VBox/HBox/DeployButton")
+	if deploy_btn:
+		if not is_unlocked:
+			deploy_btn.text = "LOCKED"
+			deploy_btn.disabled = true
+		elif is_completed:
+			deploy_btn.text = "REPLAY MISSION"
+			deploy_btn.disabled = false
+		else:
+			deploy_btn.text = "DEPLOY TO OPERATION"
+			deploy_btn.disabled = false
 	
 	briefing_modal.modulate.a = 0.0
 	briefing_modal.visible = true

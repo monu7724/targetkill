@@ -17,3 +17,4 @@ difficulty_stars = 4
 recommended_loadout = "Remington 870 / Heavy Weapons"
 unlock_requirement_id = "mission_08"
 spawn_config = [{"type": "heavy", "weight": 0.5}, {"type": "dog", "weight": 0.5}]
+waves = [{"wave_num": 1, "groups": [{"enemy_type": "heavy", "count": 5, "spawn_direction": "front", "delay": 1.5}, {"enemy_type": "dog", "count": 5, "spawn_direction": "left", "delay": 1.0}]}, {"wave_num": 2, "groups": [{"enemy_type": "heavy", "count": 6, "spawn_direction": "back", "delay": 1.4}, {"enemy_type": "dog", "count": 6, "spawn_direction": "right", "delay": 0.9}]}, {"wave_num": 3, "groups": [{"enemy_type": "heavy", "count": 7, "spawn_direction": "front", "delay": 1.2}, {"enemy_type": "dog", "count": 6, "spawn_direction": "back", "delay": 0.8}]}]

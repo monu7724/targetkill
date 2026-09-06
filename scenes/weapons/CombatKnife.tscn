@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/weapons/Weapon.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/MuzzleFlash.tscn" id="2_flash"]
+[ext_resource type="Resource" path="res://resources/weapons/combat_knife.tres" id="3_data"]
+[ext_resource type="PackedScene" path="res://assets/3d/weapons/combat_knife.glb" id="4_mesh"]
+
+[node name="CombatKnife" type="Node3D"]
+script = ExtResource("1_script")
+weapon_data = ExtResource("3_data")
+
+[node name="ModelInstance" parent="." instance=ExtResource("4_mesh")]
+
+[node name="MuzzleFlash" parent="." instance=ExtResource("2_flash")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.28)
+
+[node name="MuzzleLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.33)
+visible = false
+light_color = Color(1, 0.85, 0.45, 1)
+light_energy = 3.5
+omni_range = 6.0
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -100)
+collision_mask = 2
+
+[node name="FireTimer" type="Timer" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="SfxShoot" type="AudioStreamPlayer3D" parent="."]
+
+[node name="SfxEmpty" type="AudioStreamPlayer3D" parent="."]
+
+[node name="SfxReload" type="AudioStreamPlayer3D" parent="."]

@@ -6,6 +6,10 @@ signal enemy_killed(archetype: String, is_headshot: bool, death_position: Vector
 signal player_health_changed(current: float, max_val: float)
 signal player_died()
 
+# Boss Signals
+signal boss_spawned(boss_name: String, max_health: float)
+signal boss_health_changed(current_health: float, max_health: float)
+
 # Weapon Signals
 signal weapon_fired(weapon_id: String, current_ammo: int, max_ammo: int)
 signal weapon_reloaded(weapon_id: String)

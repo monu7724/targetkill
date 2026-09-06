@@ -229,6 +229,26 @@ layout_mode = 2
 custom_minimum_size = Vector2(120, 40)
 text = "$1200"
 
+[node name="AccuracyRow" type="HBoxContainer" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="StatsPanel/Margin/VBox/AccuracyRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "ACCURACY"
+
+[node name="Value" type="Label" parent="StatsPanel/Margin/VBox/AccuracyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "90%"
+horizontal_alignment = 2
+
+[node name="UpgradeBtn" parent="StatsPanel/Margin/VBox/AccuracyRow" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 40)
+text = "$1000"
+
 [node name="HSeparator2" type="HSeparator" parent="StatsPanel/Margin/VBox"]
 layout_mode = 2
 

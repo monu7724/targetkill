@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "grenade_launcher"
+display_name = "M79 Grenade Launcher"
+base_damage = 180.0
+headshot_multiplier = 1.5
+base_fire_rate = 1.40
+base_mag_size = 4
+base_reserve_ammo = 16
+base_reload_time = 4.2
+spread = 0.035
+recoil = 3.50
+range = 80.0
+pellet_count = 1
+is_automatic = false
+muzzle_fx = "shotgun"
+sound_set = "grenade_launcher"
+unlock_price = 4500
+upgrade_cost_damage = 700
+upgrade_cost_mag = 600
+upgrade_cost_reload = 650
+upgrade_cost_accuracy = 550

@@ -82,3 +82,15 @@ Do NOT copy commercial assets or clone proprietary code (e.g., Dead Target). Ens
 
 The server restarted and all subagents and background tasks were stopped. Please resume your execution, revive your orchestrator, and restart your monitoring crons to continue working on the Sector Zero: Lockdown project.
 
+## 2026-09-06T14:41:52Z
+
+The user has requested to expedite the execution ("fast work karao"). Please prioritize completing the core gameplay features, resolving the remaining test failures, and moving towards the final integration as quickly as possible. Skip exhaustive non-essential tasks if they are slowing down the critical path.
+
+## 2026-09-06T14:45:33Z
+
+The user has requested to add more agents to the workforce ("aur agent ko work par lagao"). Please scale up your team by spawning additional worker agents to execute the remaining workstreams in parallel and finish the project even faster.
+
+## 2026-09-06T14:57:17Z
+
+The server restarted again and all subagents and background tasks were stopped. Please resume your execution, revive your orchestrator and worker agents, and restart your monitoring crons to continue working on the Sector Zero: Lockdown project at maximum scale.
+

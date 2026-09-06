@@ -22,40 +22,49 @@ extends Control
 @onready var reload_diff_lbl = $ContentContainer/Panel/Margin/VBox/ReloadRow/StatBox/StatDiff
 @onready var reload_btn = $ContentContainer/Panel/Margin/VBox/ReloadRow/UpgradeBtn
 
-# Tabs
-@onready var pistol_tab = $ContentContainer/TabsBar/PistolTab
-@onready var rifle_tab = $ContentContainer/TabsBar/RifleTab
-@onready var shotgun_tab = $ContentContainer/TabsBar/ShotgunTab
-@onready var heavy_gun_tab = $ContentContainer/TabsBar/HeavyGunTab
+# Accuracy nodes
+@onready var acc_row = get_node_or_null("ContentContainer/Panel/Margin/VBox/AccuracyRow")
+@onready var acc_level_lbl = get_node_or_null("ContentContainer/Panel/Margin/VBox/AccuracyRow/LabelBox/LevelLbl")
+@onready var acc_progress = get_node_or_null("ContentContainer/Panel/Margin/VBox/AccuracyRow/StatBox/ProgressBar")
+@onready var acc_diff_lbl = get_node_or_null("ContentContainer/Panel/Margin/VBox/AccuracyRow/StatBox/StatDiff")
+@onready var acc_btn = get_node_or_null("ContentContainer/Panel/Margin/VBox/AccuracyRow/UpgradeBtn")
 
-var current_weapon_id: String = "rifle"
+var current_weapon_id: String = "m4a1"
 
 var weapon_resources = {
+	"usp45": "res://resources/weapons/usp45.tres",
 	"pistol": "res://resources/weapons/pistol.tres",
+	"m4a1": "res://resources/weapons/m4a1.tres",
 	"rifle": "res://resources/weapons/rifle.tres",
+	"remington870": "res://resources/weapons/remington870.tres",
 	"shotgun": "res://resources/weapons/shotgun.tres",
-	"heavy_gun": "res://resources/weapons/heavy_gun.tres",
-	"heavy_m134": "res://resources/weapons/heavy_m134.tres",
-	"heavy_rpg7": "res://resources/weapons/heavy_rpg7.tres",
-	"heavy_rpd": "res://resources/weapons/heavy_rpd.tres",
-	"heavy_mg42": "res://resources/weapons/heavy_mg42.tres",
-	"heavy_l86": "res://resources/weapons/heavy_l86.tres",
-	"heavy_m249": "res://resources/weapons/heavy_m249.tres",
-	"heavy_pkm": "res://resources/weapons/heavy_pkm.tres",
-	"heavy_m60": "res://resources/weapons/heavy_m60.tres",
-	"heavy_m2browning": "res://resources/weapons/heavy_m2browning.tres",
-	"heavy_flamethrower": "res://resources/weapons/heavy_flamethrower.tres"
-
+	"ak47": "res://resources/weapons/ak47.tres",
+	"desert_eagle": "res://resources/weapons/desert_eagle.tres",
+	"mp5": "res://resources/weapons/mp5.tres",
+	"awp": "res://resources/weapons/awp.tres",
+	"combat_knife": "res://resources/weapons/combat_knife.tres",
+	"crossbow": "res://resources/weapons/crossbow.tres",
+	"grenade_launcher": "res://resources/weapons/grenade_launcher.tres",
+	"heavy_gun": "res://resources/weapons/heavy_gun.tres"
 }
 
 var weapon_subtitles = {
+	"usp45": "Tactical .45 ACP Sidearm - Reliable Critical Headshots",
 	"pistol": "Tactical .45 ACP Sidearm - Reliable Critical Headshots",
+	"m4a1": "5.56 NATO Tactical Carbine - High Cyclic Fire Rate",
 	"rifle": "5.56 NATO Tactical Carbine - High Cyclic Fire Rate",
+	"remington870": "12-Gauge Pump Action - Lethal Close-Quarters Spread",
 	"shotgun": "12-Gauge Pump Action - Lethal Close-Quarters Spread",
-	"heavy_gun": "5.56 NATO Light Machine Gun - Massive Magazine Capacity"
+	"ak47": "7.62x39mm Combat Rifle - Heavy Kinetic Punch",
+	"desert_eagle": ".50 Action Express Hand Cannon - Devastating Stopping Power",
+	"mp5": "9mm Submachine Gun - Ultra Fast Cyclic Fire Rate",
+	"awp": ".338 Lapua Bolt-Action Sniper - Extreme Range One-Shot Lethality",
+	"combat_knife": "Serrated Tanto Blade - Silent Rapid Melee Takedowns",
+	"crossbow": "Composite Bolt Thrower - High-Tension Silent Piercing",
+	"grenade_launcher": "40mm Area Ordinance - High-Explosive Crowd Annihilation"
 }
 
-const MAX_LEVEL = 3
+const MAX_LEVEL = 5
 
 func _ready():
 	var gsm = get_node_or_null("/root/GameStateManager")
@@ -75,18 +84,23 @@ func update_ui():
 	var cash = save_mgr.data.cash if save_mgr else 0
 	cash_label.text = "CASH $: $%d" % cash
 	
-	# Update tab states
-	
 	var res_path = weapon_resources.get(current_weapon_id, "")
-	var data = load(res_path)
+	if res_path == "" or not ResourceLoader.exists(res_path):
+		res_path = "res://resources/weapons/m4a1.tres"
+	var data = load(res_path) as WeaponData
 	if not data: return
 	
 	weapon_title.text = data.display_name.to_upper()
-	weapon_subtitle.text = weapon_subtitles.get(current_weapon_id, "")
+	weapon_subtitle.text = weapon_subtitles.get(current_weapon_id, data.display_name)
 	
-	var upgrades_dict = save_mgr.data.weapon_upgrades.get(current_weapon_id, {}) if save_mgr else {}
+	var upgrades_dict = {}
+	if save_mgr:
+		upgrades_dict = WeaponManager.get_upgrade_levels(current_weapon_id, save_mgr)
 	var lvl_dmg: int = upgrades_dict.get("damage", 0)
 	var lvl_mag: int = upgrades_dict.get("mag", 0)
+	var lvl_rel: int = upgrades_dict.get("reload", 0)
+	var lvl_acc: int = upgrades_dict.get("accuracy", 0)
+	
 	# Handle Unlocks
 	var vbox = $ContentContainer/Panel/Margin/VBox
 	var unlock_btn = get_node_or_null("UnlockBtn")
@@ -98,27 +112,30 @@ func update_ui():
 		$ContentContainer/Panel/Margin.add_child(unlock_btn)
 		unlock_btn.pressed.connect(_on_unlock_pressed)
 		
-	if current_weapon_id in save_mgr.data.unlocked_weapons:
+	var is_unlocked = WeaponManager.is_weapon_unlocked(current_weapon_id, save_mgr) if save_mgr else true
+	if is_unlocked:
 		vbox.visible = true
 		unlock_btn.visible = false
 	else:
 		vbox.visible = false
 		unlock_btn.visible = true
-		unlock_btn.text = "WATCH AD TO UNLOCK " + data.display_name.to_upper() + "\n(Or Buy for $5000)"
+		var price = data.unlock_price if data.unlock_price > 0 else 1500
+		unlock_btn.text = "UNLOCK " + data.display_name.to_upper() + "\n(Price: $" + str(price) + ")"
+		unlock_btn.disabled = (cash < price)
 		
 	# 1. Damage Row
 	dmg_level_lbl.text = "LVL %d / %d" % [lvl_dmg, MAX_LEVEL]
+	dmg_progress.max_value = float(MAX_LEVEL)
 	dmg_progress.value = float(lvl_dmg)
-	var base_dmg = data.base_damage
-	var cur_dmg = base_dmg * (1.0 + lvl_dmg * 0.2)
-	var next_dmg = base_dmg * (1.0 + (lvl_dmg + 1) * 0.2)
+	var cur_dmg = data.get_damage(lvl_dmg)
+	var next_dmg = data.get_damage(lvl_dmg + 1)
 	if lvl_dmg >= MAX_LEVEL:
-		dmg_diff_lbl.text = "%.0f DMG (MAX)" % cur_dmg
+		dmg_diff_lbl.text = "%.1f DMG (MAX)" % cur_dmg
 		dmg_btn.text = "MAX LEVEL"
 		dmg_btn.disabled = true
 	else:
-		var cost = data.upgrade_cost_damage * (lvl_dmg + 1)
-		dmg_diff_lbl.text = "%.0f -> %.0f DMG (+20%%)" % [cur_dmg, next_dmg]
+		var cost = data.get_upgrade_cost("damage", lvl_dmg)
+		dmg_diff_lbl.text = "%.1f -> %.1f DMG" % [cur_dmg, next_dmg]
 		if cash < cost:
 			dmg_btn.text = "NOT ENOUGH CASH ($%d)" % cost
 			dmg_btn.disabled = true
@@ -128,16 +145,16 @@ func update_ui():
 			
 	# 2. Mag Row
 	mag_level_lbl.text = "LVL %d / %d" % [lvl_mag, MAX_LEVEL]
+	mag_progress.max_value = float(MAX_LEVEL)
 	mag_progress.value = float(lvl_mag)
-	var base_mag = data.base_mag_size
-	var cur_mag = base_mag + (lvl_mag * int(base_mag * 0.25))
-	var next_mag = base_mag + ((lvl_mag + 1) * int(base_mag * 0.25))
+	var cur_mag = data.get_mag_size(lvl_mag)
+	var next_mag = data.get_mag_size(lvl_mag + 1)
 	if lvl_mag >= MAX_LEVEL:
 		mag_diff_lbl.text = "%d ROUNDS (MAX)" % cur_mag
 		mag_btn.text = "MAX LEVEL"
 		mag_btn.disabled = true
 	else:
-		var cost = data.upgrade_cost_mag * (lvl_mag + 1)
+		var cost = data.get_upgrade_cost("mag", lvl_mag)
 		mag_diff_lbl.text = "%d -> %d ROUNDS" % [cur_mag, next_mag]
 		if cash < cost:
 			mag_btn.text = "NOT ENOUGH CASH ($%d)" % cost
@@ -148,17 +165,17 @@ func update_ui():
 			
 	# 3. Reload Row
 	reload_level_lbl.text = "LVL %d / %d" % [lvl_rel, MAX_LEVEL]
+	reload_progress.max_value = float(MAX_LEVEL)
 	reload_progress.value = float(lvl_rel)
-	var base_rel = data.base_reload_time
-	var cur_rel = max(0.6, base_rel * (1.0 - lvl_rel * 0.15))
-	var next_rel = max(0.6, base_rel * (1.0 - (lvl_rel + 1) * 0.15))
+	var cur_rel = data.get_reload_time(lvl_rel)
+	var next_rel = data.get_reload_time(lvl_rel + 1)
 	if lvl_rel >= MAX_LEVEL:
 		reload_diff_lbl.text = "%.2fs (MAX)" % cur_rel
 		reload_btn.text = "MAX LEVEL"
 		reload_btn.disabled = true
 	else:
-		var cost = data.upgrade_cost_reload * (lvl_rel + 1)
-		reload_diff_lbl.text = "%.2fs -> %.2fs (-15%%)" % [cur_rel, next_rel]
+		var cost = data.get_upgrade_cost("reload", lvl_rel)
+		reload_diff_lbl.text = "%.2fs -> %.2fs" % [cur_rel, next_rel]
 		if cash < cost:
 			reload_btn.text = "NOT ENOUGH CASH ($%d)" % cost
 			reload_btn.disabled = true
@@ -166,56 +183,50 @@ func update_ui():
 			reload_btn.text = "UPGRADE ($%d)" % cost
 			reload_btn.disabled = false
 
+	# 4. Accuracy Row
+	if acc_row and acc_level_lbl and acc_progress and acc_diff_lbl and acc_btn:
+		acc_level_lbl.text = "LVL %d / %d" % [lvl_acc, MAX_LEVEL]
+		acc_progress.max_value = float(MAX_LEVEL)
+		acc_progress.value = float(lvl_acc)
+		var cur_acc = data.get_accuracy(lvl_acc)
+		var next_acc = data.get_accuracy(lvl_acc + 1)
+		if lvl_acc >= MAX_LEVEL:
+			acc_diff_lbl.text = "%.0f%% ACCURACY (MAX)" % cur_acc
+			acc_btn.text = "MAX LEVEL"
+			acc_btn.disabled = true
+		else:
+			var cost = data.get_upgrade_cost("accuracy", lvl_acc)
+			acc_diff_lbl.text = "%.0f%% -> %.0f%% ACCURACY" % [cur_acc, next_acc]
+			if cash < cost:
+				acc_btn.text = "NOT ENOUGH CASH ($%d)" % cost
+				acc_btn.disabled = true
+			else:
+				acc_btn.text = "UPGRADE ($%d)" % cost
+				acc_btn.disabled = false
+
 func _on_unlock_pressed():
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if not save_mgr: return
 	
-	# Simulate AdMob Rewarded Video
-	print("[AdMob] Show Rewarded Ad for Weapon Unlock")
-	# Fake Ad Callback (in a real game, wait for AdMob callback)
-	if save_mgr.data.cash >= 5000:
-		save_mgr.add_cash(-5000)
-		_unlock_current_weapon(save_mgr)
-	else:
-		# Just simulate the user watched an ad
-		_unlock_current_weapon(save_mgr)
-
-func _unlock_current_weapon(save_mgr):
-	if not current_weapon_id in save_mgr.data.unlocked_weapons:
-		save_mgr.data.unlocked_weapons.append(current_weapon_id)
-		save_mgr.save_game()
-		
-		# Also add to player's weapon configs so it spawns!
-		# In a real setup, Player.gd loads from SaveManager
+	var res_path = weapon_resources.get(current_weapon_id, "")
+	var data = load(res_path) as WeaponData
+	var price = data.unlock_price if data and data.unlock_price > 0 else 1500
+	
+	if save_mgr.data.cash >= price:
+		save_mgr.add_cash(-price)
+		WeaponManager.unlock_weapon(current_weapon_id, save_mgr)
+		var audio_mgr = get_node_or_null("/root/AudioManager")
+		if audio_mgr: audio_mgr.play_ui_click()
 		update_ui()
 
 func _on_upgrade_pressed(type: String):
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if not save_mgr: return
 	
-	var data = load(weapon_resources[current_weapon_id])
-	if not data: return
-	
-	var upgrades_dict = save_mgr.data.weapon_upgrades.get(current_weapon_id, {})
-	var cur_lvl = upgrades_dict.get(type, 0)
-	if cur_lvl >= MAX_LEVEL: return
-	
-	var base_cost = 0
-	match type:
-		"damage": base_cost = data.upgrade_cost_damage
-		"mag": base_cost = data.upgrade_cost_mag
-		"reload": base_cost = data.upgrade_cost_reload
-		
-	var cost = base_cost * (cur_lvl + 1)
-	if save_mgr.data.cash >= cost:
-		save_mgr.add_cash(-cost)
-		upgrades_dict[type] = cur_lvl + 1
-		save_mgr.data.weapon_upgrades[current_weapon_id] = upgrades_dict
-		save_mgr.save_game()
-		
+	var success = WeaponManager.purchase_upgrade(current_weapon_id, type, save_mgr)
+	if success:
 		var audio_mgr = get_node_or_null("/root/AudioManager")
 		if audio_mgr: audio_mgr.play_ui_click()
-		
 		update_ui()
 
 func _on_back_pressed():

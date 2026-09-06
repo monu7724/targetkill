@@ -39,7 +39,16 @@ var weapon_configs = [
 	{"id": "pistol", "path": "res://resources/weapons/pistol.tres", "model": "res://assets/3d/weapons/pistol.glb"},
 	{"id": "rifle", "path": "res://resources/weapons/rifle.tres", "model": "res://assets/3d/weapons/rifle.glb"},
 	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://assets/3d/weapons/shotgun.glb"},
-	{"id": "heavy_gun", "path": "res://resources/weapons/heavy_gun.tres", "model": "res://assets/3d/weapons/rifle.glb"}
+	{"id": "usp45", "path": "res://resources/weapons/usp45.tres", "model": "res://assets/3d/weapons/usp45.glb"},
+	{"id": "m4a1", "path": "res://resources/weapons/m4a1.tres", "model": "res://assets/3d/weapons/m4a1.glb"},
+	{"id": "remington870", "path": "res://resources/weapons/remington870.tres", "model": "res://assets/3d/weapons/remington870.glb"},
+	{"id": "ak47", "path": "res://resources/weapons/ak47.tres", "model": "res://assets/3d/weapons/ak47.glb"},
+	{"id": "desert_eagle", "path": "res://resources/weapons/desert_eagle.tres", "model": "res://assets/3d/weapons/desert_eagle.glb"},
+	{"id": "mp5", "path": "res://resources/weapons/mp5.tres", "model": "res://assets/3d/weapons/mp5.glb"},
+	{"id": "awp", "path": "res://resources/weapons/awp.tres", "model": "res://assets/3d/weapons/awp.glb"},
+	{"id": "combat_knife", "path": "res://resources/weapons/combat_knife.tres", "model": "res://assets/3d/weapons/combat_knife.glb"},
+	{"id": "crossbow", "path": "res://resources/weapons/crossbow.tres", "model": "res://assets/3d/weapons/crossbow.glb"},
+	{"id": "grenade_launcher", "path": "res://resources/weapons/grenade_launcher.tres", "model": "res://assets/3d/weapons/grenade_launcher.glb"}
 ]
 var weapons: Array = []
 var current_weapon_index: int = 0

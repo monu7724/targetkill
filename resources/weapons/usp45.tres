@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "usp45"
+display_name = "USP-45"
+base_damage = 25.0
+headshot_multiplier = 2.5
+base_fire_rate = 0.22
+base_mag_size = 12
+base_reserve_ammo = 96
+base_reload_time = 1.5
+spread = 0.005
+recoil = 1.20
+range = 80.0
+pellet_count = 1
+is_automatic = false
+muzzle_fx = "standard"
+sound_set = "pistol"
+unlock_price = 0
+upgrade_cost_damage = 200
+upgrade_cost_mag = 180
+upgrade_cost_reload = 220
+upgrade_cost_accuracy = 190

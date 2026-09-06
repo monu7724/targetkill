@@ -136,18 +136,14 @@ func finish_mission(success: bool):
 		else:
 			is_first_win = true
 			
-	var earned_cash = 0
-	if success:
-		earned_cash = current_mission.reward_cash if is_first_win else 0
-	else:
-		earned_cash = int(kill_count * 10)
+	var earned_cash = current_mission.reward_cash if (success and is_first_win) else 0
 		
 	last_stats = {
 		"kills": kill_count + boss_kill_count,
 		"headshots": headshots,
 		"accuracy": accuracy,
 		"cash": earned_cash,
-		"bounty_awarded": current_mission.reward_cash if (success and is_first_win) else 0,
+		"bounty_awarded": earned_cash,
 		"first_time_reward": is_first_win if success else false,
 		"success": success
 	}
@@ -157,9 +153,12 @@ func finish_mission(success: bool):
 		if game_state_mgr:
 			game_state_mgr.change_state(game_state_mgr.State.MISSION_COMPLETE)
 			
+		if save_mgr and not save_mgr.is_mission_completed(current_mission.mission_id):
+			save_mgr.add_cash(current_mission.reward_cash)
+			last_stats["bounty_awarded"] = current_mission.reward_cash
+		else:
+			last_stats["bounty_awarded"] = 0
 		if save_mgr:
-			if is_first_win:
-				save_mgr.add_cash(current_mission.reward_cash)
 			save_mgr.complete_mission(current_mission.mission_id)
 			
 		print("[%d ms] [MISSION:COMPLETE] Mission succeeded: %s (Kills: %d, Accuracy: %d%%, Cash Awarded: %d)" % [Time.get_ticks_msec(), current_mission.display_name, last_stats.kills, accuracy, last_stats.bounty_awarded])

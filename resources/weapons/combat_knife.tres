@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "combat_knife"
+display_name = "Combat Knife"
+base_damage = 50.0
+headshot_multiplier = 3.0
+base_fire_rate = 0.40
+base_mag_size = 1
+base_reserve_ammo = 1
+base_reload_time = 0.3
+spread = 0.0
+recoil = 0.20
+range = 3.5
+pellet_count = 1
+is_automatic = false
+muzzle_fx = "none"
+sound_set = "knife"
+unlock_price = 800
+upgrade_cost_damage = 250
+upgrade_cost_mag = 200
+upgrade_cost_reload = 200
+upgrade_cost_accuracy = 200

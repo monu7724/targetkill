@@ -17,3 +17,4 @@ difficulty_stars = 1
 recommended_loadout = "USP-45 Tactical"
 unlock_requirement_id = ""
 spawn_config = [{"type": "normal", "weight": 0.7}, {"type": "fast", "weight": 0.3}]
+waves = [{"wave_num": 1, "groups": [{"enemy_type": "normal", "count": 4, "spawn_direction": "front", "delay": 1.2}]}, {"wave_num": 2, "groups": [{"enemy_type": "normal", "count": 3, "spawn_direction": "front", "delay": 1.0}, {"enemy_type": "fast", "count": 2, "spawn_direction": "left", "delay": 1.5}]}, {"wave_num": 3, "groups": [{"enemy_type": "normal", "count": 4, "spawn_direction": "back", "delay": 1.0}, {"enemy_type": "fast", "count": 2, "spawn_direction": "right", "delay": 1.2}]}]

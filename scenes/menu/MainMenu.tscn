@@ -1,0 +1,151 @@
+[gd_scene load_steps=8 format=3 uid="uid://b8xxmainmenualt"]
+
+[ext_resource type="Script" path="res://scripts/MainMenuUI.gd" id="1_m3s4d"]
+[ext_resource type="PackedScene" path="res://scenes/UI/Components/PrimaryButton.tscn" id="2_btn"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
+sky_top_color = Color(0.02, 0.05, 0.1, 1)
+sky_horizon_color = Color(0.1, 0.15, 0.25, 1)
+ground_bottom_color = Color(0.01, 0.02, 0.03, 1)
+ground_horizon_color = Color(0.05, 0.1, 0.15, 1)
+
+[sub_resource type="Sky" id="Sky_night"]
+sky_material = SubResource("ProceduralSkyMaterial_night")
+
+[sub_resource type="Environment" id="Environment_menu"]
+background_mode = 2
+sky = SubResource("Sky_night")
+ambient_light_source = 3
+ambient_light_color = Color(0.1, 0.15, 0.25, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 1.5
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tarmac"]
+size = Vector2(40, 40)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_overlay"]
+bg_color = Color(0, 0, 0, 0.3)
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m3s4d")
+
+[node name="Background3D" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Background3D"]
+environment = SubResource("Environment_menu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Background3D"]
+transform = Transform3D(0.5, -0.7, 0.5, 0, 0.58, 0.81, -0.86, -0.4, 0.29, 0, 10, 0)
+light_color = Color(0.3, 0.4, 0.6, 1)
+shadow_enabled = true
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Background3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 5, 0)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 5.0
+spot_range = 10.0
+spot_angle = 30.0
+
+[node name="Ground" type="MeshInstance3D" parent="Background3D"]
+mesh = SubResource("PlaneMesh_tarmac")
+
+[node name="BackgroundCamera" type="Camera3D" parent="Background3D"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 2.2, 4)
+
+[node name="Overlay" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_overlay")
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = 72.0
+grow_horizontal = 2
+
+[node name="Spacer" type="Control" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CashLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 28
+text = "CASH: $0"
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Title" type="Label" parent="CenterContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 64
+text = "SECTOR ZERO: LOCKDOWN"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 40
+
+[node name="StartButton" parent="CenterContainer/VBox/HBox" instance=ExtResource("2_btn")]
+layout_mode = 2
+text = "MISSIONS"
+
+[node name="UpgradesButton" parent="CenterContainer/VBox/HBox" instance=ExtResource("2_btn")]
+layout_mode = 2
+text = "ARMORY"
+
+[node name="SettingsButton" parent="CenterContainer/VBox/HBox" instance=ExtResource("2_btn")]
+layout_mode = 2
+text = "SETTINGS"
+
+[node name="VersionLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -40.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "v1.0.0"
+horizontal_alignment = 2
+
+[connection signal="pressed" from="CenterContainer/VBox/HBox/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBox/HBox/UpgradesButton" to="." method="_on_upgrades_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBox/HBox/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="gui_input" from="VersionLabel" to="." method="_on_version_label_gui_input"]
+

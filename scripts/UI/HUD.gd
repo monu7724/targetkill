@@ -19,6 +19,7 @@ extends CanvasLayer
 @onready var fire_button = $Control/FireButton
 @onready var reload_button = $Control/ReloadButton
 @onready var switch_button = $Control/SwitchButton
+@onready var grenade_button = $Control/GrenadeButton
 
 @onready var pause_menu = $PauseMenu
 @onready var resume_btn = $PauseMenu/Panel/VBox/ResumeBtn
@@ -36,6 +37,7 @@ func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	await get_tree().process_frame
 	player = get_tree().get_first_node_in_group("player")
+	_init_damage_overlay()
 	_connect_controls()
 	_connect_pause_menu()
 	
@@ -55,9 +57,29 @@ func _ready():
 		event_bus.objective_updated.connect(func(title, _desc, prog, target):
 			update_objective(title, "Zombies Remaining: %d" % max(0, target - prog))
 		)
+		event_bus.weapon_fired.connect(func(_w, _c, _m): expand_crosshair())
 		event_bus.wave_started.connect(func(wave_num: int, total_waves: int):
 			update_wave(wave_num, total_waves)
 		)
+		if event_bus.has_signal("boss_health_changed"):
+			event_bus.boss_health_changed.connect(func(cur_hp: float, max_hp: float):
+				if cur_hp > 0.0:
+					show_boss_health("APEX MUTANT", max_hp)
+					update_boss_health(cur_hp)
+				else:
+					update_boss_health(0.0)
+			)
+
+var damage_overlay: ColorRect
+
+func _init_damage_overlay():
+	damage_overlay = ColorRect.new()
+	damage_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	damage_overlay.color = Color(0.8, 0.0, 0.0, 0.0)
+	damage_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if has_node("Control"):
+		$Control.add_child(damage_overlay)
+		$Control.move_child(damage_overlay, 0)
 
 func _connect_controls():
 	if virtual_joystick and player:
@@ -83,6 +105,14 @@ func _connect_controls():
 			if audio: audio.play_ui_click()
 			if player and player.has_method("switch_weapon"):
 				player.switch_weapon()
+		)
+		
+	if grenade_button:
+		grenade_button.pressed.connect(func():
+			var audio = get_node_or_null("/root/AudioManager")
+			if audio: audio.play_ui_click()
+			if player and player.has_method("throw_grenade"):
+				player.throw_grenade()
 		)
 		
 	if look_area:
@@ -162,6 +192,20 @@ func show_hitmarker(is_headshot: bool = false):
 		if child is ColorRect:
 			child.color = hit_color
 	hitmarker.show()
+	
+	if is_headshot:
+		var lbl = Label.new()
+		lbl.text = "HEADSHOT!"
+		lbl.add_theme_color_override("font_color", hit_color)
+		lbl.add_theme_font_size_override("font_size", 24)
+		lbl.set_anchors_preset(Control.PRESET_CENTER)
+		lbl.position = Vector2(-50, -60)
+		hitmarker.add_child(lbl)
+		var tw = create_tween()
+		tw.tween_property(lbl, "position:y", -90.0, 0.4).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(lbl, "modulate:a", 0.0, 0.4).set_delay(0.1)
+		tw.tween_callback(lbl.queue_free)
+	
 	var cur_timer = get_tree().create_timer(0.12)
 	hitmarker_timer = cur_timer
 	await cur_timer.timeout
@@ -263,12 +307,34 @@ func _on_exit_pressed():
 		get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/UI/MissionSelect.tscn")
 
+var crosshair_spread: float = 0.0
+
+func _process(delta):
+	if crosshair and not is_game_over:
+		crosshair_spread = lerp(crosshair_spread, 0.0, 10.0 * delta)
+		var base_scale = 1.0 + crosshair_spread
+		crosshair.scale = Vector2(base_scale, base_scale)
+
+func expand_crosshair():
+	crosshair_spread = min(crosshair_spread + 0.35, 1.5)
+
 func update_health(value: float, max_val: float = 100.0):
 	if health_bar:
 		health_bar.max_value = max_val
 		health_bar.value = value
 	if hp_label:
 		hp_label.text = " " + str(int(value)) + " HP"
+	if damage_overlay:
+		var health_pct = clamp(value / max_val, 0.0, 1.0)
+		var target_alpha = 0.0
+		if health_pct < 0.4:
+			target_alpha = lerp(0.5, 0.1, health_pct / 0.4) # More red when low health
+		
+		# Flash red briefly on damage
+		var tw = create_tween()
+		tw.tween_property(damage_overlay, "color:a", min(target_alpha + 0.4, 0.8), 0.05)
+		tw.tween_property(damage_overlay, "color:a", target_alpha, 0.3)
+
 
 func update_ammo(current: int, total: int, weapon_name: String = "", next_weapon: String = ""):
 	if ammo_label:
@@ -289,9 +355,9 @@ func update_cash(value: int):
 	if cash_label:
 		cash_label.text = "CASH: " + str(value)
 
-func update_wave(value: int):
+func update_wave(value: int, total: int = 3):
 	if wave_label:
-		wave_label.text = "WAVE: " + str(value)
+		wave_label.text = "WAVE: %d / %d" % [value, total]
 
 func show_boss_health(b_name: String, max_hp: float):
 	if boss_health_bar:

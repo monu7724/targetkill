@@ -48,7 +48,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.4, 0.9, 0.4, 1)
-text = "CASH: 0"
+text = "CASH: $0"
 vertical_alignment = 1
 
 [node name="ContentContainer" type="VBoxContainer" parent="."]
@@ -56,112 +56,85 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 60.0
-offset_top = 80.0
-offset_right = -60.0
-offset_bottom = -20.0
+offset_left = 40.0
+offset_top = 75.0
+offset_right = -40.0
+offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
 [node name="TabsBar" type="ScrollContainer" parent="ContentContainer"]
-custom_minimum_size = Vector2(0, 60)
-[node name="TabsHBox" type="HBoxContainer" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+horizontal_scroll_mode = 1
+vertical_scroll_mode = 0
+
+[node name="TabsHBox" type="HBoxContainer" parent="ContentContainer/TabsBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 10
-layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 8
 
 [node name="PistolTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "USP-45 (PISTOL)"
+theme_override_font_sizes/font_size = 13
+text = "USP-45"
 
 [node name="RifleTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "M4A1 SENTINEL (RIFLE)"
+theme_override_font_sizes/font_size = 13
+text = "M4A1 SENTINEL"
 
 [node name="ShotgunTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "REMINGTON 870 (SHOTGUN)"
+theme_override_font_sizes/font_size = 13
+text = "REMINGTON 870"
 
-[node name="HeavyGunTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(0, 44)
+[node name="AK47Tab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-text = "M249 SAW (LMG)"
+theme_override_font_sizes/font_size = 13
+text = "AK-47 VANGUARD"
 
-
-[node name="HeavyTab0" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
+[node name="DeagleTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "M134 MINIGUN"
+theme_override_font_sizes/font_size = 13
+text = "DESERT EAGLE"
 
-[node name="HeavyTab1" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
+[node name="MP5Tab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "RPG-7"
+theme_override_font_sizes/font_size = 13
+text = "MP5 TACTICAL"
 
-[node name="HeavyTab2" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
+[node name="AWPTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "RPD"
+theme_override_font_sizes/font_size = 13
+text = "AWP SNIPER"
 
-[node name="HeavyTab3" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
+[node name="KnifeTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "MG42"
+theme_override_font_sizes/font_size = 13
+text = "COMBAT KNIFE"
 
-[node name="HeavyTab4" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
+[node name="CrossbowTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "L86 LSW"
+theme_override_font_sizes/font_size = 13
+text = "CROSSBOW"
 
-[node name="HeavyTab5" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
+[node name="GLTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "M249 SAW"
-
-[node name="HeavyTab6" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "PKM"
-
-[node name="HeavyTab7" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "M60"
-
-[node name="HeavyTab8" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "M2 BROWNING"
-
-[node name="HeavyTab9" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
-custom_minimum_size = Vector2(180, 44)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "FLAMETHROWER"
+theme_override_font_sizes/font_size = 13
+text = "GRENADE LAUNCHER"
 
 [node name="Panel" type="PanelContainer" parent="ContentContainer"]
 layout_mode = 2
@@ -169,14 +142,14 @@ size_flags_vertical = 3
 
 [node name="Margin" type="MarginContainer" parent="ContentContainer/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
 
 [node name="VBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 18
+theme_override_constants/separation = 12
 
 [node name="WeaponHeader" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
 layout_mode = 2
@@ -184,152 +157,189 @@ layout_mode = 2
 [node name="WeaponTitle" type="Label" parent="ContentContainer/Panel/Margin/VBox/WeaponHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
 text = "M4A1 SENTINEL"
 
 [node name="WeaponSubtitle" type="Label" parent="ContentContainer/Panel/Margin/VBox/WeaponHeader"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 theme_override_colors/font_color = Color(0.7, 0.75, 0.8, 1)
 text = "Fully-Automatic Assault Rifle"
 vertical_alignment = 1
 
 [node name="DamageRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 14
 
 [node name="LabelBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/DamageRow"]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="ContentContainer/Panel/Margin/VBox/DamageRow/LabelBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 14
 text = "DAMAGE"
 
 [node name="LevelLbl" type="Label" parent="ContentContainer/Panel/Margin/VBox/DamageRow/LabelBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 theme_override_colors/font_color = Color(0.65, 0.8, 1, 1)
-text = "LVL 0 / 3"
+text = "LVL 0 / 5"
 
 [node name="StatBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/DamageRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ProgressBar" type="ProgressBar" parent="ContentContainer/Panel/Margin/VBox/DamageRow/StatBox"]
-custom_minimum_size = Vector2(0, 18)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-max_value = 3.0
+max_value = 5.0
 show_percentage = false
 
 [node name="StatDiff" type="Label" parent="ContentContainer/Panel/Margin/VBox/DamageRow/StatBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 text = "22 -> 26 DMG"
 
 [node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/DamageRow"]
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(180, 38)
 layout_mode = 2
-text = "UPGRADE (120 CASH)"
+text = "UPGRADE ($300)"
 
 [node name="MagRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 14
 
 [node name="LabelBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/MagRow"]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="ContentContainer/Panel/Margin/VBox/MagRow/LabelBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 14
 text = "MAGAZINE"
 
 [node name="LevelLbl" type="Label" parent="ContentContainer/Panel/Margin/VBox/MagRow/LabelBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 theme_override_colors/font_color = Color(0.65, 0.8, 1, 1)
-text = "LVL 0 / 3"
+text = "LVL 0 / 5"
 
 [node name="StatBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/MagRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ProgressBar" type="ProgressBar" parent="ContentContainer/Panel/Margin/VBox/MagRow/StatBox"]
-custom_minimum_size = Vector2(0, 18)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-max_value = 3.0
+max_value = 5.0
 show_percentage = false
 
 [node name="StatDiff" type="Label" parent="ContentContainer/Panel/Margin/VBox/MagRow/StatBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 text = "30 -> 36 ROUNDS"
 
 [node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/MagRow"]
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(180, 38)
 layout_mode = 2
-text = "UPGRADE (100 CASH)"
+text = "UPGRADE ($250)"
 
 [node name="ReloadRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 14
 
 [node name="LabelBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/ReloadRow"]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/LabelBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 14
 text = "RELOAD SPEED"
 
 [node name="LevelLbl" type="Label" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/LabelBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 theme_override_colors/font_color = Color(0.65, 0.8, 1, 1)
-text = "LVL 0 / 3"
+text = "LVL 0 / 5"
 
 [node name="StatBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/ReloadRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ProgressBar" type="ProgressBar" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/StatBox"]
-custom_minimum_size = Vector2(0, 18)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-max_value = 3.0
+max_value = 5.0
 show_percentage = false
 
 [node name="StatDiff" type="Label" parent="ContentContainer/Panel/Margin/VBox/ReloadRow/StatBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-text = "2.8s -> 2.4s"
+text = "2.6s -> 2.3s"
 
 [node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/ReloadRow"]
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(180, 38)
 layout_mode = 2
-text = "UPGRADE (110 CASH)"
+text = "UPGRADE ($280)"
+
+[node name="AccuracyRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LabelBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/AccuracyRow"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ContentContainer/Panel/Margin/VBox/AccuracyRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "ACCURACY"
+
+[node name="LevelLbl" type="Label" parent="ContentContainer/Panel/Margin/VBox/AccuracyRow/LabelBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.65, 0.8, 1, 1)
+text = "LVL 0 / 5"
+
+[node name="StatBox" type="VBoxContainer" parent="ContentContainer/Panel/Margin/VBox/AccuracyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="ContentContainer/Panel/Margin/VBox/AccuracyRow/StatBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+max_value = 5.0
+show_percentage = false
+
+[node name="StatDiff" type="Label" parent="ContentContainer/Panel/Margin/VBox/AccuracyRow/StatBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+text = "80% -> 85%"
+
+[node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/AccuracyRow"]
+custom_minimum_size = Vector2(180, 38)
+layout_mode = 2
+text = "UPGRADE ($260)"
 
 [connection signal="pressed" from="TopBar/BackButton" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/PistolTab" to="." method="_on_tab_pressed" binds= ["pistol"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/RifleTab" to="." method="_on_tab_pressed" binds= ["rifle"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/ShotgunTab" to="." method="_on_tab_pressed" binds= ["shotgun"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyGunTab" to="." method="_on_tab_pressed" binds= ["heavy_gun"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/PistolTab" to="." method="_on_tab_pressed" binds= ["usp45"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/RifleTab" to="." method="_on_tab_pressed" binds= ["m4a1"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/ShotgunTab" to="." method="_on_tab_pressed" binds= ["remington870"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/AK47Tab" to="." method="_on_tab_pressed" binds= ["ak47"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/DeagleTab" to="." method="_on_tab_pressed" binds= ["desert_eagle"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/MP5Tab" to="." method="_on_tab_pressed" binds= ["mp5"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/AWPTab" to="." method="_on_tab_pressed" binds= ["awp"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/KnifeTab" to="." method="_on_tab_pressed" binds= ["combat_knife"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/CrossbowTab" to="." method="_on_tab_pressed" binds= ["crossbow"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/GLTab" to="." method="_on_tab_pressed" binds= ["grenade_launcher"]]
 [connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/DamageRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["damage"]]
 [connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/MagRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["mag"]]
 [connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/ReloadRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["reload"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab0" to="." method="_on_tab_pressed" binds= ["heavy_m134"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab1" to="." method="_on_tab_pressed" binds= ["heavy_rpg7"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab2" to="." method="_on_tab_pressed" binds= ["heavy_rpd"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab3" to="." method="_on_tab_pressed" binds= ["heavy_mg42"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab4" to="." method="_on_tab_pressed" binds= ["heavy_l86"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab5" to="." method="_on_tab_pressed" binds= ["heavy_m249"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab6" to="." method="_on_tab_pressed" binds= ["heavy_pkm"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab7" to="." method="_on_tab_pressed" binds= ["heavy_m60"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab8" to="." method="_on_tab_pressed" binds= ["heavy_m2browning"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab9" to="." method="_on_tab_pressed" binds= ["heavy_flamethrower"]]
+[connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/AccuracyRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["accuracy"]]

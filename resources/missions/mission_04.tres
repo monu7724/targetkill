@@ -17,3 +17,4 @@ difficulty_stars = 2
 recommended_loadout = "M4A1 Sentinel / Remington 870"
 unlock_requirement_id = "mission_03"
 spawn_config = [{"type": "dog", "weight": 0.6}, {"type": "fast", "weight": 0.4}]
+waves = [{"wave_num": 1, "groups": [{"enemy_type": "dog", "count": 5, "spawn_direction": "front", "delay": 1.0}, {"enemy_type": "fast", "count": 3, "spawn_direction": "back", "delay": 1.2}]}, {"wave_num": 2, "groups": [{"enemy_type": "dog", "count": 6, "spawn_direction": "front", "delay": 0.9}, {"enemy_type": "fast", "count": 6, "spawn_direction": "back", "delay": 0.9}]}, {"wave_num": 3, "groups": [{"enemy_type": "dog", "count": 8, "spawn_direction": "front", "delay": 0.8}, {"enemy_type": "fast", "count": 6, "spawn_direction": "back", "delay": 0.8}]}]

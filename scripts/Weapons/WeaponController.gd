@@ -44,15 +44,28 @@ func _ready():
 
 func _load_sound_set():
 	if not weapon_data: return
-	match weapon_data.weapon_id:
-		"pistol":
+	var snd = weapon_data.sound_set if weapon_data.sound_set != "" else weapon_data.weapon_id
+	match snd:
+		"pistol", "usp45":
 			sfx_shoot.stream = preload("res://audio/weapons/sfx_pistol_shoot.wav")
-		"rifle":
+		"rifle", "m4a1":
 			sfx_shoot.stream = preload("res://audio/weapons/sfx_rifle_shoot.wav")
-		"shotgun":
+		"shotgun", "remington870":
 			sfx_shoot.stream = preload("res://audio/weapons/sfx_shotgun_shoot.wav")
-		"heavy_gun":
-			sfx_shoot.stream = preload("res://audio/weapons/sfx_rifle_shoot.wav")
+		"ak47":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_ak47_shoot.wav")
+		"deagle", "desert_eagle":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_deagle_shoot.wav")
+		"mp5":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_mp5_shoot.wav")
+		"awp":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_awp_shoot.wav")
+		"knife", "combat_knife":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_knife_slash.wav")
+		"crossbow":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_crossbow_shoot.wav")
+		"grenade_launcher":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_grenade_launcher_shoot.wav")
 		_:
 			sfx_shoot.stream = preload("res://audio/weapons/sfx_pistol_shoot.wav")
 			
@@ -63,15 +76,32 @@ func apply_upgrades():
 	if not weapon_data: return
 	
 	var save_mgr = get_node_or_null("/root/SaveManager")
-	var levels = {"damage": 0, "mag": 0, "reload": 0}
+	var levels = {"damage": 0, "mag": 0, "reload": 0, "accuracy": 0}
 	if save_mgr and save_mgr.data.has("weapon_upgrades"):
-		levels = save_mgr.data.weapon_upgrades.get(weapon_data.weapon_id, levels)
+		var w_id = weapon_data.weapon_id
+		if save_mgr.data.weapon_upgrades.has(w_id):
+			levels = save_mgr.data.weapon_upgrades[w_id]
+		elif w_id == "pistol" and save_mgr.data.weapon_upgrades.has("usp45"):
+			levels = save_mgr.data.weapon_upgrades["usp45"]
+		elif w_id == "usp45" and save_mgr.data.weapon_upgrades.has("pistol"):
+			levels = save_mgr.data.weapon_upgrades["pistol"]
+		elif w_id == "rifle" and save_mgr.data.weapon_upgrades.has("m4a1"):
+			levels = save_mgr.data.weapon_upgrades["m4a1"]
+		elif w_id == "m4a1" and save_mgr.data.weapon_upgrades.has("rifle"):
+			levels = save_mgr.data.weapon_upgrades["rifle"]
+		elif w_id == "shotgun" and save_mgr.data.weapon_upgrades.has("remington870"):
+			levels = save_mgr.data.weapon_upgrades["remington870"]
+		elif w_id == "remington870" and save_mgr.data.weapon_upgrades.has("shotgun"):
+			levels = save_mgr.data.weapon_upgrades["shotgun"]
 		
-	damage = weapon_data.get_damage(levels.damage)
+	damage = weapon_data.get_damage(levels.get("damage", 0))
 	fire_rate = weapon_data.base_fire_rate
-	max_ammo = weapon_data.get_mag_size(levels.mag)
-	reload_time = weapon_data.get_reload_time(levels.reload)
-	spread = weapon_data.spread
+	max_ammo = weapon_data.get_mag_size(levels.get("mag", 0))
+	reload_time = weapon_data.get_reload_time(levels.get("reload", 0))
+	if weapon_data.has_method("get_spread"):
+		spread = weapon_data.get_spread(levels.get("accuracy", 0))
+	else:
+		spread = weapon_data.spread
 	pellet_count = max(1, weapon_data.pellet_count)
 	recoil_kick = weapon_data.recoil
 
@@ -79,11 +109,17 @@ func shoot():
 	if not can_shoot or is_reloading:
 		return
 	
-	if current_ammo <= 0:
+	var is_knife = weapon_data and (weapon_data.weapon_id == "combat_knife" or weapon_data.sound_set == "knife")
+	
+	if current_ammo <= 0 and not is_knife:
 		sfx_empty.play()
 		return
 		
-	current_ammo -= 1
+	if is_knife:
+		current_ammo = 1
+	else:
+		current_ammo -= 1
+		
 	can_shoot = false
 	fire_timer.wait_time = fire_rate
 	fire_timer.start()
@@ -162,6 +198,10 @@ func _fire_projectiles():
 				total_hit_enemy = true
 				impact_type = "blood"
 			
+			if weapon_data and (weapon_data.weapon_id == "grenade_launcher" or weapon_data.sound_set == "grenade_launcher"):
+				_apply_area_explosion(hit_point, damage)
+				impact_type = "concrete"
+			
 			_spawn_impact(impact_type, hit_point, hit_normal)
 		elif p == 0 and target_ray.is_colliding():
 			# Target raycast fallback
@@ -176,12 +216,26 @@ func _fire_projectiles():
 				total_hit_enemy = true
 				if is_head: had_headshot = true
 				impact_type = "blood"
+			if weapon_data and (weapon_data.weapon_id == "grenade_launcher" or weapon_data.sound_set == "grenade_launcher"):
+				_apply_area_explosion(pt, damage)
 			_spawn_impact(impact_type, pt, norm)
 	
 	if total_hit_enemy:
 		var hud_node = get_tree().get_first_node_in_group("hud")
 		if hud_node and hud_node.has_method("show_hitmarker"):
 			hud_node.show_hitmarker(had_headshot)
+
+func _apply_area_explosion(epicenter: Vector3, blast_dmg: float):
+	var zombies = get_tree().get_nodes_in_group("zombies")
+	var blast_radius: float = 7.0
+	for z in zombies:
+		if is_instance_valid(z) and z.has_method("take_damage"):
+			var dist = z.global_position.distance_to(epicenter)
+			if dist <= blast_radius:
+				var falloff = 1.0 - (dist / blast_radius)
+				var applied_dmg = blast_dmg * max(0.2, falloff)
+				var dir = (z.global_position - epicenter).normalized()
+				z.take_damage(applied_dmg, false, dir)
 
 func _spawn_impact(type: String, pos: Vector3, normal: Vector3):
 	if not impact_pool:
@@ -191,6 +245,13 @@ func _spawn_impact(type: String, pos: Vector3, normal: Vector3):
 
 func reload():
 	if is_reloading or current_ammo == max_ammo:
+		return
+		
+	var is_knife = weapon_data and (weapon_data.weapon_id == "combat_knife" or weapon_data.sound_set == "knife")
+	if is_knife:
+		current_ammo = 1
+		ammo_changed.emit(current_ammo, max_ammo)
+		weapon_reloaded.emit()
 		return
 		
 	is_reloading = true
@@ -206,6 +267,8 @@ func reload():
 		event_bus.weapon_reloaded.emit(weapon_data.weapon_id if weapon_data else "")
 
 func muzzle_flash_fx():
+	if weapon_data and weapon_data.muzzle_fx == "none":
+		return
 	if muzzle_light:
 		muzzle_light.visible = true
 	if muzzle_flash:

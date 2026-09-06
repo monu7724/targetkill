@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cdc73bgpwjvv2"
+path="res://.godot/imported/remington870.obj-6e37f511e9587b0af60f53bd6d875fea.mesh"
+
+[deps]
+
+files=["res://.godot/imported/remington870.obj-6e37f511e9587b0af60f53bd6d875fea.mesh"]
+
+source_file="res://models/weapons/remington870.obj"
+dest_files=["res://.godot/imported/remington870.obj-6e37f511e9587b0af60f53bd6d875fea.mesh", "res://.godot/imported/remington870.obj-6e37f511e9587b0af60f53bd6d875fea.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "desert_eagle"
+display_name = "Desert Eagle .50 AE"
+base_damage = 65.0
+headshot_multiplier = 3.0
+base_fire_rate = 0.38
+base_mag_size = 7
+base_reserve_ammo = 42
+base_reload_time = 2.2
+spread = 0.012
+recoil = 2.60
+range = 90.0
+pellet_count = 1
+is_automatic = false
+muzzle_fx = "standard"
+sound_set = "deagle"
+unlock_price = 2200
+upgrade_cost_damage = 450
+upgrade_cost_mag = 380
+upgrade_cost_reload = 400
+upgrade_cost_accuracy = 420

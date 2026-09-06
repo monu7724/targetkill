@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "crossbow"
+display_name = "Silent Hunter Crossbow"
+base_damage = 90.0
+headshot_multiplier = 3.5
+base_fire_rate = 1.10
+base_mag_size = 5
+base_reserve_ammo = 30
+base_reload_time = 2.4
+spread = 0.003
+recoil = 0.50
+range = 100.0
+pellet_count = 1
+is_automatic = false
+muzzle_fx = "none"
+sound_set = "crossbow"
+unlock_price = 2800
+upgrade_cost_damage = 380
+upgrade_cost_mag = 320
+upgrade_cost_reload = 340
+upgrade_cost_accuracy = 300

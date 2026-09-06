@@ -17,3 +17,4 @@ difficulty_stars = 2
 recommended_loadout = "M4A1 Sentinel"
 unlock_requirement_id = "mission_02"
 spawn_config = [{"type": "normal", "weight": 0.5}, {"type": "dog", "weight": 0.5}]
+waves = [{"wave_num": 1, "groups": [{"enemy_type": "normal", "count": 4, "spawn_direction": "front", "delay": 1.2}, {"enemy_type": "dog", "count": 2, "spawn_direction": "left", "delay": 1.0}]}, {"wave_num": 2, "groups": [{"enemy_type": "normal", "count": 4, "spawn_direction": "front", "delay": 1.0}, {"enemy_type": "dog", "count": 4, "spawn_direction": "right", "delay": 1.0}]}, {"wave_num": 3, "groups": [{"enemy_type": "normal", "count": 4, "spawn_direction": "back", "delay": 0.9}, {"enemy_type": "dog", "count": 4, "spawn_direction": "front", "delay": 0.9}]}]

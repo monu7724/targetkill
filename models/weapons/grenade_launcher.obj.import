@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://copf1y7aa6x15"
+path="res://.godot/imported/grenade_launcher.obj-e6893382ff27da81b6e8e96a6bdad700.mesh"
+
+[deps]
+
+files=["res://.godot/imported/grenade_launcher.obj-e6893382ff27da81b6e8e96a6bdad700.mesh"]
+
+source_file="res://models/weapons/grenade_launcher.obj"
+dest_files=["res://.godot/imported/grenade_launcher.obj-e6893382ff27da81b6e8e96a6bdad700.mesh", "res://.godot/imported/grenade_launcher.obj-e6893382ff27da81b6e8e96a6bdad700.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
