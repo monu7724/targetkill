@@ -140,36 +140,36 @@ func _init_weapons():
 	var all_possible_weapons = weapon_configs.duplicate()
 
 	for cfg in all_possible_weapons:
-		if not cfg.id in unlocked_ids:
+		if not cfg["id"] in unlocked_ids:
 			continue
 		# Prevent loading duplicate alias weapons
 		var already_have = false
 		for w_inst in weapons:
 			if w_inst.weapon_data:
 				var wid = w_inst.weapon_data.weapon_id
-				if wid == cfg.id:
+				if wid == cfg["id"]:
 					already_have = true
 					break
-				if (wid in ["pistol", "usp45"]) and (cfg.id in ["pistol", "usp45"]):
+				if (wid in ["pistol", "usp45"]) and (cfg["id"] in ["pistol", "usp45"]):
 					already_have = true
 					break
-				if (wid in ["rifle", "m4a1"]) and (cfg.id in ["rifle", "m4a1"]):
+				if (wid in ["rifle", "m4a1"]) and (cfg["id"] in ["rifle", "m4a1"]):
 					already_have = true
 					break
-				if (wid in ["shotgun", "remington870"]) and (cfg.id in ["shotgun", "remington870"]):
+				if (wid in ["shotgun", "remington870"]) and (cfg["id"] in ["shotgun", "remington870"]):
 					already_have = true
 					break
 		if already_have:
 			continue
 
 		var w = weapon_prefab.instantiate()
-		w.weapon_data = load(cfg.path)
+		w.weapon_data = load(cfg["path"])
 		w.aim_raycast = aim_raycast
 		weapon_manager.add_child(w)
 		
 		# Set 3D model on weapon
 		if w.has_node("MeshInstance3D"):
-			var model_res = load(cfg.model)
+			var model_res = load(cfg["model"])
 			if model_res is PackedScene:
 				var wm = _extract_mesh_from_scene(model_res)
 				if wm:

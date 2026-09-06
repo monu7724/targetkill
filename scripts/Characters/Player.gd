@@ -126,17 +126,17 @@ func _init_weapons():
 		all_possible_weapons.append({"id": "heavy_"+wid, "path": "res://resources/weapons/heavy_"+wid+".tres", "model": "res://assets/3d/weapons/rifle.glb"})
 
 	for cfg in all_possible_weapons:
-		if not cfg.id in unlocked_ids:
+		if not cfg["id"] in unlocked_ids:
 			continue
-			
+
 		var w = weapon_prefab.instantiate()
-		w.weapon_data = load(cfg.path)
+		w.weapon_data = load(cfg["path"])
 		w.aim_raycast = aim_raycast
 		weapon_manager.add_child(w)
 		
 		# Set 3D model on weapon
 		if w.has_node("MeshInstance3D"):
-			var model_res = load(cfg.model)
+			var model_res = load(cfg["model"])
 			if model_res is PackedScene:
 				var wm = _extract_mesh_from_scene(model_res)
 				if wm:

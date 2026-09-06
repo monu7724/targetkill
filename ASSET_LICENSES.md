@@ -1,3 +1,112 @@
+ASSET_LICENSES.md
+
+Purpose
+-------
+Inventory of external assets, their sources, and license status for Sector Zero: Lockdown.
+
+DO NOT invent license information. Verify each `Source` and `License` entry from purchase records,
+asset store pages, or original provider documentation before marking as approved for production.
+
+Format (fields):
+- Asset name
+- Path (repo)
+- Source (website / provider) — VERIFY
+- URL — VERIFY
+- License (e.g., CC0, CC-BY, Royalty-free commercial, Proprietary) — VERIFY
+- Attribution required (Yes/No) — VERIFY
+- Where used (scenes / prefabs)
+- Notes
+
+Initial inventory (audit required)
+---------------------------------
+- FPS Arms
+  - Path: assets/3d/weapons/fps_arms.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Attribution: UNKNOWN
+  - Where used: scenes/player/Player.tscn, weapon viewmodel
+  - Notes: Visual benchmark for player viewmodel
+
+- USP-45 (sidearm)
+  - Path: assets/3d/weapons/usp45.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Attribution: UNKNOWN
+  - Where used: resources/weapons/usp45.tres, scenes/weapons/USP45.tscn
+
+- M4A1
+  - Path: assets/3d/weapons/m4a1.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/m4a1.tres, scenes/weapons/M4A1.tscn
+
+- Remington 870
+  - Path: assets/3d/weapons/remington870.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/remington870.tres, scenes/weapons/Remington870.tscn
+
+- AK-47
+  - Path: assets/3d/weapons/ak47.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/ak47.tres, scenes/weapons/AK47.tscn
+
+- Desert Eagle
+  - Path: assets/3d/weapons/desert_eagle.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/desert_eagle.tres, scenes/weapons/DesertEagle.tscn
+
+- MP5
+  - Path: assets/3d/weapons/mp5.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/mp5.tres, scenes/weapons/MP5.tscn
+
+- AWP (sniper)
+  - Path: assets/3d/weapons/awp.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/awp.tres, scenes/weapons/AWP.tscn
+
+- Grenade Launcher
+  - Path: assets/3d/weapons/grenade_launcher.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/grenade_launcher.tres, scenes/weapons/GrenadeLauncher.tscn
+
+- Combat Knife
+  - Path: assets/3d/weapons/combat_knife.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/combat_knife.tres, scenes/weapons/CombatKnife.tscn
+
+- Crossbow
+  - Path: assets/3d/weapons/crossbow.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: resources/weapons/crossbow.tres, scenes/weapons/Crossbow.tscn
+
+- Generic rifle/shotgun models
+  - Path: assets/3d/weapons/rifle.glb, assets/3d/weapons/shotgun.glb
+  - Source: UNKNOWN — verify
+  - License: UNKNOWN — verify
+  - Where used: various scenes and weapon prefabs
+
+Next steps
+----------
+1. For each UNKNOWN entry, locate original source (commit history, asset store, or purchase receipts) and update `Source`, `URL`, `License`, `Attribution`.
+2. Remove or replace any production export assets that lack appropriate commercial licenses.
+3. Keep this file updated before any Android export/release.
+
+Helpful commands to start provenance checks locally:
+```
+git log --name-only -- assets/3d/weapons | less
+git blame -- assets/3d/weapons/fps_arms.glb
+```
+
+If you want, I can begin verifying assets by scanning commit history and searching common asset stores for matching files — confirm and I'll start.
 # Sector Zero: Lockdown — Comprehensive Asset & Legal Licenses
 
 This document provides complete legal licensing documentation for all third-party, external, and procedurally generated assets utilized in **Sector Zero: Lockdown**.
