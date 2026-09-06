@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "g36"
+display_name = "G36 Tactical"
+base_damage = 23.0
+headshot_multiplier = 2.0
+base_fire_rate = 0.1
+base_mag_size = 30
+base_reserve_ammo = 210
+base_reload_time = 2.7
+spread = 0.025
+recoil = 0.8
+range = 110.0
+pellet_count = 1
+is_automatic = true
+muzzle_fx = "rifle"
+sound_set = "rifle"
+upgrade_cost_damage = 125
+upgrade_cost_mag = 95
+upgrade_cost_reload = 105

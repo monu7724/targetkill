@@ -1,0 +1,239 @@
+[gd_scene load_steps=7 format=3 uid="uid://cy8xx1234abcd"]
+
+[ext_resource type="Script" path="res://scripts/UI/ArmoryUI.gd" id="1_armory"]
+[ext_resource type="PackedScene" path="res://scenes/UI/Components/PrimaryButton.tscn" id="2_btn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.08, 0.09, 0.11, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.12, 0.14, 0.17, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.3, 0.35, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="ArmoryUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_armory")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="3DView" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="3DView"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="WeaponPreviewCam" type="Camera3D" parent="3DView/SubViewport"]
+transform = Transform3D(0.866025, -0.17101, 0.469846, 0, 0.939693, 0.34202, -0.5, -0.296198, 0.813798, 1.2, 0.8, 2)
+current = true
+
+[node name="WeaponPivot" type="Node3D" parent="3DView/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="3DView/SubViewport"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 1.5
+
+[node name="OmniLight3D" type="OmniLight3D" parent="3DView/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, 1)
+light_color = Color(1, 0.8, 0.6, 1)
+light_energy = 2.0
+omni_range = 3.0
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = 72.0
+grow_horizontal = 2
+
+[node name="BackButton" parent="TopBar" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(150, 40)
+text = "BACK"
+
+[node name="Spacer" type="Control" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CashLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 28
+text = "CASH: $0"
+
+[node name="WeaponListPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 100.0
+offset_right = 382.0
+offset_bottom = -32.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Scroll" type="ScrollContainer" parent="WeaponListPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="WeaponListPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="StatsPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -450.0
+offset_top = 100.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Margin" type="MarginContainer" parent="StatsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="StatsPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="WeaponTitle" type="Label" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "WEAPON NAME"
+horizontal_alignment = 1
+
+[node name="WeaponSubtitle" type="Label" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 18
+text = "Description here"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="DamageRow" type="HBoxContainer" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="StatsPanel/Margin/VBox/DamageRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "DAMAGE"
+
+[node name="Value" type="Label" parent="StatsPanel/Margin/VBox/DamageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+horizontal_alignment = 2
+
+[node name="UpgradeBtn" parent="StatsPanel/Margin/VBox/DamageRow" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 40)
+text = "$1500"
+
+[node name="MagRow" type="HBoxContainer" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="StatsPanel/Margin/VBox/MagRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "AMMO"
+
+[node name="Value" type="Label" parent="StatsPanel/Margin/VBox/MagRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "30"
+horizontal_alignment = 2
+
+[node name="UpgradeBtn" parent="StatsPanel/Margin/VBox/MagRow" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 40)
+text = "$1000"
+
+[node name="ReloadRow" type="HBoxContainer" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="StatsPanel/Margin/VBox/ReloadRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "RELOAD"
+
+[node name="Value" type="Label" parent="StatsPanel/Margin/VBox/ReloadRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2.5s"
+horizontal_alignment = 2
+
+[node name="UpgradeBtn" parent="StatsPanel/Margin/VBox/ReloadRow" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 40)
+text = "$1200"
+
+[node name="HSeparator2" type="HSeparator" parent="StatsPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="UnlockBtn" parent="StatsPanel/Margin/VBox" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+text = "UNLOCK (WATCH AD OR $5000)"
+

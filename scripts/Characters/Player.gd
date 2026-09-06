@@ -38,7 +38,8 @@ var weapon_prefab: PackedScene = preload("res://scenes/weapons/Weapon.tscn")
 var weapon_configs = [
 	{"id": "pistol", "path": "res://resources/weapons/pistol.tres", "model": "res://assets/3d/weapons/pistol.glb"},
 	{"id": "rifle", "path": "res://resources/weapons/rifle.tres", "model": "res://assets/3d/weapons/rifle.glb"},
-	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://assets/3d/weapons/shotgun.glb"}
+	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://assets/3d/weapons/shotgun.glb"},
+	{"id": "heavy_gun", "path": "res://resources/weapons/heavy_gun.tres", "model": "res://assets/3d/weapons/rifle.glb"}
 ]
 var weapons: Array = []
 var current_weapon_index: int = 0
@@ -64,8 +65,8 @@ func _ready():
 		
 	if hud and is_instance_valid(hud):
 		hud.update_health(current_health, max_health)
-		if save_mgr and save_mgr.data.has("coins"):
-			hud.update_coins(save_mgr.data.coins)
+		if save_mgr and save_mgr.data.has("cash"):
+			hud.update_cash(save_mgr.data.cash)
 			
 	if mission_mgr and mission_mgr.current_mission and hud and is_instance_valid(hud):
 		hud.update_objective(mission_mgr.current_mission.display_name, "Eliminate " + str(mission_mgr.current_mission.target_count) + " Zombies")
@@ -104,7 +105,21 @@ func _init_weapons():
 		child.queue_free()
 	weapons.clear()
 
-	for cfg in weapon_configs:
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	var unlocked_ids = save_mgr.data.unlocked_weapons if save_mgr and save_mgr.data.has("unlocked_weapons") else ["pistol", "rifle", "shotgun"]
+	print("UNLOCKED IDS: ", unlocked_ids)
+
+	# We will dynamically build the list from unlocked IDs
+	var all_possible_weapons = weapon_configs.duplicate()
+	# Add the 10 heavy weapons to the possible list so we can find them
+	var ids = ["m134", "rpg7", "rpd", "mg42", "l86", "m249", "pkm", "m60", "m2browning", "flamethrower"]
+	for wid in ids:
+		all_possible_weapons.append({"id": "heavy_"+wid, "path": "res://resources/weapons/heavy_"+wid+".tres", "model": "res://assets/3d/weapons/rifle.glb"})
+
+	for cfg in all_possible_weapons:
+		if not cfg.id in unlocked_ids:
+			continue
+			
 		var w = weapon_prefab.instantiate()
 		w.weapon_data = load(cfg.path)
 		w.aim_raycast = aim_raycast
@@ -122,7 +137,6 @@ func _init_weapons():
 				w.get_node("MeshInstance3D").mesh = model_res
 			
 		w.ammo_changed.connect(func(_c, _m): _update_hud())
-		weapons.append(w)
 
 	current_weapon_index = 0
 	_apply_active_weapon()
@@ -333,8 +347,8 @@ func _update_hud():
 		hud.update_ammo(weapon.current_ammo, weapon.max_ammo, weapon.weapon_data.display_name, next_name)
 	hud.update_health(current_health, max_health)
 	var save_mgr = get_node_or_null("/root/SaveManager")
-	if save_mgr and save_mgr.data.has("coins"):
-		hud.update_coins(save_mgr.data.coins)
+	if save_mgr and save_mgr.data.has("cash"):
+		hud.update_cash(save_mgr.data.cash)
 
 func take_damage(amount: float):
 	if is_dead: return

@@ -34,7 +34,7 @@ func _init():
 			var dummy_m = MissionData.new()
 			dummy_m.mission_id = "mission_01"
 			dummy_m.display_name = "First Contact"
-			dummy_m.reward_coins = 100
+			dummy_m.reward_cash = 100
 			dummy_m.target_count = 10
 			res_ui._on_mission_completed(dummy_m)
 			for f in range(3):

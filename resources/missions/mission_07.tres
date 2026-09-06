@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/MissionData.gd" id="1_m1s2d"]
+
+[resource]
+script = ExtResource("1_m1s2d")
+mission_id = "mission_07"
+display_name = "Dead Mall"
+description = "The shopping district is crawling with infected. Dogs hunt in packs through the metro corridors."
+objective_type = 0
+target_count = 30
+wave_count = 3
+reward_cash = 2100
+scene_path = "res://scenes/environments/UrbanStreet.tscn"
+location_name = "Metro Shopping Center - Level B2"
+difficulty_stars = 4
+recommended_loadout = "Remington 870 / M4A1 Sentinel"
+unlock_requirement_id = "mission_06"
+spawn_config = [{"type": "normal", "weight": 0.3}, {"type": "fast", "weight": 0.3}, {"type": "dog", "weight": 0.4}]

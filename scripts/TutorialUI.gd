@@ -7,8 +7,8 @@ var steps = [
 	"Welcome to Sector Zero. Drag anywhere to aim.",
 	"Tap the screen to shoot. Aim for the head for extra damage.",
 	"Your ammo is limited. Tap RELOAD when empty.",
-	"Zombies are approaching. Clear the sector to earn coins.",
-	"Use coins in the UPGRADE HUB to improve your weapons."
+	"Zombies are approaching. Clear the sector to earn cash.",
+	"Use cash in the UPGRADE HUB to improve your weapons."
 ]
 var current_step = 0
 

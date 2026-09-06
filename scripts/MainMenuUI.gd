@@ -15,6 +15,12 @@ func _ready():
 		audio_mgr.play_location_ambience("airport")
 		
 	bg_cam = find_child("BackgroundCamera", true, false)
+	
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	var cash_label = get_node_or_null("TopBar/CashLabel")
+	if save_mgr and cash_label:
+		cash_label.text = "CASH: $%d" % save_mgr.data.cash
+		
 	print("[%d ms] [MAIN_MENU] MainMenu ready." % Time.get_ticks_msec())
 
 func _process(delta):
@@ -44,7 +50,7 @@ func _on_upgrades_button_pressed():
 	var game_state_mgr = get_node_or_null("/root/GameStateManager")
 	if game_state_mgr:
 		game_state_mgr.change_state(game_state_mgr.State.UPGRADES)
-	get_tree().change_scene_to_file("res://scenes/UI/UpgradeUI.tscn")
+	get_tree().change_scene_to_file("res://scenes/UI/ArmoryUI.tscn")
 
 func _on_settings_button_pressed():
 	var audio_mgr = get_node_or_null("/root/AudioManager")

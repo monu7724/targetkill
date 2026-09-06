@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "svd"
+display_name = "SVD Dragunov"
+base_damage = 95.0
+headshot_multiplier = 3.0
+base_fire_rate = 0.8
+base_mag_size = 10
+base_reserve_ammo = 50
+base_reload_time = 3.5
+spread = 0.005
+recoil = 3.0
+range = 300.0
+pellet_count = 1
+is_automatic = false
+muzzle_fx = "rifle"
+sound_set = "rifle"
+upgrade_cost_damage = 200
+upgrade_cost_mag = 150
+upgrade_cost_reload = 140

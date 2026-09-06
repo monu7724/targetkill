@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/MissionData.gd" id="1_m1s2d"]
+
+[resource]
+script = ExtResource("1_m1s2d")
+mission_id = "mission_12"
+display_name = "Lockdown"
+description = "The quarantine zone. All major infected types converge. Eliminate the Alpha to end the outbreak."
+objective_type = 2
+target_count = 1
+wave_count = 3
+reward_cash = 6000
+scene_path = "res://scenes/environments/FinalLockdown.tscn"
+location_name = "Quarantine Zone - Sector Zero"
+difficulty_stars = 5
+recommended_loadout = "Full Arsenal Required"
+unlock_requirement_id = "mission_11"
+spawn_config = [{"type": "normal", "weight": 0.2}, {"type": "fast", "weight": 0.15}, {"type": "heavy", "weight": 0.2}, {"type": "dog", "weight": 0.15}, {"type": "spitter", "weight": 0.15}, {"type": "boss", "weight": 0.15}]

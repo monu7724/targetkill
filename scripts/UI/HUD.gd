@@ -5,7 +5,7 @@ extends CanvasLayer
 @onready var wave_label = $Control/TopBar/Margin/HBox/LeftBox/WaveLabel
 @onready var mission_name_label = $Control/TopBar/Margin/HBox/CenterBox/MissionName
 @onready var objective_label = $Control/TopBar/Margin/HBox/CenterBox/ObjectiveLabel
-@onready var coins_label = $Control/TopBar/Margin/HBox/RightBox/CoinsLabel
+@onready var cash_label = $Control/TopBar/Margin/HBox/RightBox/CashLabel
 @onready var ammo_label = $Control/TopBar/Margin/HBox/RightBox/AmmoLabel
 @onready var pause_button = $Control/TopBar/Margin/HBox/PauseButton
 @onready var boss_health_bar = $Control/BossHealthBar
@@ -41,7 +41,7 @@ func _ready():
 	
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if save_mgr and "data" in save_mgr:
-		update_coins(save_mgr.data.coins)
+		update_cash(save_mgr.data.cash)
 		
 	var mission_mgr = get_node_or_null("/root/MissionManager")
 	if mission_mgr:
@@ -54,6 +54,9 @@ func _ready():
 	if event_bus:
 		event_bus.objective_updated.connect(func(title, _desc, prog, target):
 			update_objective(title, "Zombies Remaining: %d" % max(0, target - prog))
+		)
+		event_bus.wave_started.connect(func(wave_num: int, total_waves: int):
+			update_wave(wave_num, total_waves)
 		)
 
 func _connect_controls():
@@ -282,9 +285,9 @@ func update_objective(title: String, detail: String = ""):
 	if objective_label:
 		objective_label.text = detail if detail != "" else title
 
-func update_coins(value: int):
-	if coins_label:
-		coins_label.text = "COINS: " + str(value)
+func update_cash(value: int):
+	if cash_label:
+		cash_label.text = "CASH: " + str(value)
 
 func update_wave(value: int):
 	if wave_label:

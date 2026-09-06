@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/MissionData.gd" id="1_m1s2d"]
+
+[resource]
+script = ExtResource("1_m1s2d")
+mission_id = "mission_09"
+display_name = "Fortified"
+description = "The military checkpoint has been overrun. Heavy infected and attack dogs patrol the ruins."
+objective_type = 0
+target_count = 35
+wave_count = 3
+reward_cash = 3000
+scene_path = "res://scenes/environments/AirportTerminal.tscn"
+location_name = "Military Checkpoint - Sector Alpha"
+difficulty_stars = 4
+recommended_loadout = "Remington 870 / Heavy Weapons"
+unlock_requirement_id = "mission_08"
+spawn_config = [{"type": "heavy", "weight": 0.5}, {"type": "dog", "weight": 0.5}]

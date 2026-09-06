@@ -16,7 +16,7 @@ var last_stats: Dictionary = {
 	"kills": 0,
 	"headshots": 0,
 	"accuracy": 0,
-	"coins": 0,
+	"cash": 0,
 	"success": false
 }
 
@@ -128,12 +128,27 @@ func finish_mission(success: bool):
 	elif kill_count > 0:
 		accuracy = 100
 		
-	var earned_coins = current_mission.reward_coins if success else int(kill_count * 10)
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	var is_first_win = false
+	if success:
+		if save_mgr:
+			is_first_win = not save_mgr.is_mission_completed(current_mission.mission_id)
+		else:
+			is_first_win = true
+			
+	var earned_cash = 0
+	if success:
+		earned_cash = current_mission.reward_cash if is_first_win else 0
+	else:
+		earned_cash = int(kill_count * 10)
+		
 	last_stats = {
 		"kills": kill_count + boss_kill_count,
 		"headshots": headshots,
 		"accuracy": accuracy,
-		"coins": earned_coins,
+		"cash": earned_cash,
+		"bounty_awarded": current_mission.reward_cash if (success and is_first_win) else 0,
+		"first_time_reward": is_first_win if success else false,
 		"success": success
 	}
 	
@@ -142,12 +157,12 @@ func finish_mission(success: bool):
 		if game_state_mgr:
 			game_state_mgr.change_state(game_state_mgr.State.MISSION_COMPLETE)
 			
-		var save_mgr = get_node_or_null("/root/SaveManager")
 		if save_mgr:
-			save_mgr.add_coins(current_mission.reward_coins)
+			if is_first_win:
+				save_mgr.add_cash(current_mission.reward_cash)
 			save_mgr.complete_mission(current_mission.mission_id)
 			
-		print("[%d ms] [MISSION:COMPLETE] Mission succeeded: %s (Kills: %d, Accuracy: %d%%)" % [Time.get_ticks_msec(), current_mission.display_name, last_stats.kills, accuracy])
+		print("[%d ms] [MISSION:COMPLETE] Mission succeeded: %s (Kills: %d, Accuracy: %d%%, Cash Awarded: %d)" % [Time.get_ticks_msec(), current_mission.display_name, last_stats.kills, accuracy, last_stats.bounty_awarded])
 		mission_completed.emit(current_mission)
 	else:
 		if game_state_mgr:

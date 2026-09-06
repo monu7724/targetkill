@@ -1,0 +1,43 @@
+import os
+
+btn_tscn = """[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
+bg_color = Color(0.1, 0.1, 0.12, 0.95)
+border_width_left = 4
+border_color = Color(1, 0.85, 0.3, 1)
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover"]
+bg_color = Color(0.18, 0.18, 0.22, 0.95)
+border_width_left = 6
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pressed"]
+bg_color = Color(1, 0.85, 0.3, 0.95)
+border_width_left = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+
+[node name="PrimaryButton" type="Button"]
+custom_minimum_size = Vector2(300, 60)
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.1, 0.1, 0.12, 1)
+theme_override_font_sizes/font_size = 24
+text = "TACTICAL BUTTON"
+"""
+
+with open("/workspaces/targetkill/scenes/UI/Components/PrimaryButton.tscn", "w") as f:
+    f.write(btn_tscn)
+
+print("Generated UI Components")

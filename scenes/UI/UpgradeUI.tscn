@@ -44,11 +44,11 @@ theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
 text = "SECTOR ZERO: ARMORY UPGRADES"
 vertical_alignment = 1
 
-[node name="CoinsLabel" type="Label" parent="TopBar"]
+[node name="CashLabel" type="Label" parent="TopBar"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.4, 0.9, 0.4, 1)
-text = "COINS: 0"
+text = "CASH: 0"
 vertical_alignment = 1
 
 [node name="ContentContainer" type="VBoxContainer" parent="."]
@@ -64,30 +64,104 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 16
 
-[node name="TabsBar" type="HBoxContainer" parent="ContentContainer"]
+[node name="TabsBar" type="ScrollContainer" parent="ContentContainer"]
+custom_minimum_size = Vector2(0, 60)
+[node name="TabsHBox" type="HBoxContainer" parent="ContentContainer/TabsBar/TabsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="PistolTab" type="Button" parent="ContentContainer/TabsBar"]
+[node name="PistolTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "USP-45 (PISTOL)"
 
-[node name="RifleTab" type="Button" parent="ContentContainer/TabsBar"]
+[node name="RifleTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "M4A1 SENTINEL (RIFLE)"
 
-[node name="ShotgunTab" type="Button" parent="ContentContainer/TabsBar"]
+[node name="ShotgunTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "REMINGTON 870 (SHOTGUN)"
+
+[node name="HeavyGunTab" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "M249 SAW (LMG)"
+
+
+[node name="HeavyTab0" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "M134 MINIGUN"
+
+[node name="HeavyTab1" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "RPG-7"
+
+[node name="HeavyTab2" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "RPD"
+
+[node name="HeavyTab3" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "MG42"
+
+[node name="HeavyTab4" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "L86 LSW"
+
+[node name="HeavyTab5" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "M249 SAW"
+
+[node name="HeavyTab6" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "PKM"
+
+[node name="HeavyTab7" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "M60"
+
+[node name="HeavyTab8" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "M2 BROWNING"
+
+[node name="HeavyTab9" type="Button" parent="ContentContainer/TabsBar/TabsHBox"]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "FLAMETHROWER"
 
 [node name="Panel" type="PanelContainer" parent="ContentContainer"]
 layout_mode = 2
@@ -159,7 +233,7 @@ text = "22 -> 26 DMG"
 [node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/DamageRow"]
 custom_minimum_size = Vector2(200, 44)
 layout_mode = 2
-text = "UPGRADE (120 COINS)"
+text = "UPGRADE (120 CASH)"
 
 [node name="MagRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
 layout_mode = 2
@@ -199,7 +273,7 @@ text = "30 -> 36 ROUNDS"
 [node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/MagRow"]
 custom_minimum_size = Vector2(200, 44)
 layout_mode = 2
-text = "UPGRADE (100 COINS)"
+text = "UPGRADE (100 CASH)"
 
 [node name="ReloadRow" type="HBoxContainer" parent="ContentContainer/Panel/Margin/VBox"]
 layout_mode = 2
@@ -239,12 +313,23 @@ text = "2.8s -> 2.4s"
 [node name="UpgradeBtn" type="Button" parent="ContentContainer/Panel/Margin/VBox/ReloadRow"]
 custom_minimum_size = Vector2(200, 44)
 layout_mode = 2
-text = "UPGRADE (110 COINS)"
+text = "UPGRADE (110 CASH)"
 
 [connection signal="pressed" from="TopBar/BackButton" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="ContentContainer/TabsBar/PistolTab" to="." method="_on_tab_pressed" binds= ["pistol"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/RifleTab" to="." method="_on_tab_pressed" binds= ["rifle"]]
-[connection signal="pressed" from="ContentContainer/TabsBar/ShotgunTab" to="." method="_on_tab_pressed" binds= ["shotgun"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/PistolTab" to="." method="_on_tab_pressed" binds= ["pistol"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/RifleTab" to="." method="_on_tab_pressed" binds= ["rifle"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/ShotgunTab" to="." method="_on_tab_pressed" binds= ["shotgun"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyGunTab" to="." method="_on_tab_pressed" binds= ["heavy_gun"]]
 [connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/DamageRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["damage"]]
 [connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/MagRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["mag"]]
 [connection signal="pressed" from="ContentContainer/Panel/Margin/VBox/ReloadRow/UpgradeBtn" to="." method="_on_upgrade_pressed" binds= ["reload"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab0" to="." method="_on_tab_pressed" binds= ["heavy_m134"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab1" to="." method="_on_tab_pressed" binds= ["heavy_rpg7"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab2" to="." method="_on_tab_pressed" binds= ["heavy_rpd"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab3" to="." method="_on_tab_pressed" binds= ["heavy_mg42"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab4" to="." method="_on_tab_pressed" binds= ["heavy_l86"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab5" to="." method="_on_tab_pressed" binds= ["heavy_m249"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab6" to="." method="_on_tab_pressed" binds= ["heavy_pkm"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab7" to="." method="_on_tab_pressed" binds= ["heavy_m60"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab8" to="." method="_on_tab_pressed" binds= ["heavy_m2browning"]]
+[connection signal="pressed" from="ContentContainer/TabsBar/TabsHBox/HeavyTab9" to="." method="_on_tab_pressed" binds= ["heavy_flamethrower"]]

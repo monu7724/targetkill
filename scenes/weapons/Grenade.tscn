@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://grenade001test"]
+
+[ext_resource type="Script" path="res://scenes/weapons/Grenade.gd" id="1_grn"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bounce"]
+bounce = 0.5
+rough = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_grn"]
+radius = 0.15
+
+[sub_resource type="SphereMesh" id="SphereMesh_grn"]
+radius = 0.15
+height = 0.3
+
+[node name="Grenade" type="RigidBody3D"]
+mass = 1.0
+physics_material_override = SubResource("PhysicsMaterial_bounce")
+script = ExtResource("1_grn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_grn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_grn")

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/MissionData.gd" id="1_m1s2d"]
+
+[resource]
+script = ExtResource("1_m1s2d")
+mission_id = "mission_10"
+display_name = "Mutation"
+description = "Chemical contamination has accelerated mutations. Mutated infected with enhanced abilities detected."
+objective_type = 0
+target_count = 30
+wave_count = 3
+reward_cash = 3500
+scene_path = "res://scenes/environments/AbandonedTrain.tscn"
+location_name = "Chemical Facility - Reactor Core"
+difficulty_stars = 5
+recommended_loadout = "Heavy Weapons / Remington 870"
+unlock_requirement_id = "mission_09"
+spawn_config = [{"type": "normal", "weight": 0.3}, {"type": "heavy", "weight": 0.4}, {"type": "spitter", "weight": 0.3}]

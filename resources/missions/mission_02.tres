@@ -5,15 +5,15 @@
 [resource]
 script = ExtResource("1_m1s2d")
 mission_id = "mission_02"
-display_name = "Dark Street"
-description = "The infection is spreading. Faster variants spotted."
+display_name = "Feral Pack"
+description = "The infection has spread to animals. Packs of infected dogs roam the airport service road. Neutralize the threat."
 objective_type = 0
-target_count = 20
-wave_count = 1
-reward_coins = 100
-scene_path = "res://scenes/environments/DarkIndustrial.tscn"
-location_name = "Subway Transit - Lower Platform"
-difficulty_stars = 2
-recommended_loadout = "M4A1 Sentinel"
+target_count = 18
+wave_count = 3
+reward_cash = 750
+scene_path = "res://scenes/environments/UrbanStreet.tscn"
+location_name = "Airport Service Road - Gate 7"
+difficulty_stars = 1
+recommended_loadout = "USP-45 Tactical / M4A1 Sentinel"
 unlock_requirement_id = "mission_01"
-spawn_config = [{"type": "normal", "weight": 0.7}, {"type": "fast", "weight": 0.3}]
+spawn_config = [{"type": "dog", "weight": 1.0}]

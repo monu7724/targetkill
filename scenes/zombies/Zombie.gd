@@ -49,8 +49,8 @@ var archetype_data = {
 		"mesh": "res://assets/3d/zombies/zombie_normal.glb",
 		"material": "res://resources/materials/mat_zombie_normal.tres",
 		"hp": 50.0,
-		"speed": 2.2,
-		"damage": 12.0,
+		"speed": 1.4,
+		"damage": 6.0,
 		"scale": Vector3(1, 1, 1),
 		"reward": 10
 	},
@@ -58,8 +58,8 @@ var archetype_data = {
 		"mesh": "res://assets/3d/zombies/zombie_fast.glb",
 		"material": "res://resources/materials/mat_zombie_fast.tres",
 		"hp": 30.0,
-		"speed": 4.2,
-		"damage": 10.0,
+		"speed": 2.8,
+		"damage": 5.0,
 		"scale": Vector3(0.95, 0.95, 0.95),
 		"reward": 15
 	},
@@ -67,17 +67,37 @@ var archetype_data = {
 		"mesh": "res://assets/3d/zombies/zombie_heavy.glb",
 		"material": "res://resources/materials/mat_zombie_heavy.tres",
 		"hp": 160.0,
-		"speed": 1.4,
-		"damage": 26.0,
+		"speed": 0.8,
+		"damage": 14.0,
 		"scale": Vector3(1.2, 1.2, 1.2),
 		"reward": 25
+	},
+	"dog": {
+		"mesh": "res://assets/3d/zombies/zombie_fast.glb",
+		"material": "res://resources/materials/mat_zombie_fast.tres",
+		"hp": 50.0,
+		"speed": 4.5,
+		"damage": 12.0,
+		"scale": Vector3(1.0, 0.45, 1.0),
+		"reward": 15,
+		"attack_range": 2.0,
+		"attack_interval": 1.8
+	},
+	"spitter": {
+		"mesh": "res://assets/3d/zombies/zombie_normal.glb",
+		"material": "res://resources/materials/mat_zombie_normal.tres",
+		"hp": 40.0,
+		"speed": 1.2,
+		"damage": 8.0,
+		"scale": Vector3(0.9, 0.9, 0.9),
+		"reward": 20
 	},
 	"boss": {
 		"mesh": "res://assets/3d/zombies/zombie_boss.glb",
 		"material": "res://resources/materials/mat_zombie_boss.tres",
 		"hp": 500.0,
-		"speed": 1.8,
-		"damage": 40.0,
+		"speed": 1.1,
+		"damage": 22.0,
 		"scale": Vector3(1.45, 1.45, 1.45),
 		"reward": 100
 	}
@@ -116,9 +136,14 @@ func _apply_archetype():
 			model_instance.queue_free()
 			model_instance = null
 			
+		var wrapper = Node3D.new()
+		wrapper.name = "ModelWrapper"
+		wrapper.rotation.y = PI
+		add_child(wrapper)
+		
 		model_instance = res.instantiate()
 		model_instance.name = "SkeletalModel"
-		add_child(model_instance)
+		wrapper.add_child(model_instance)
 		
 		var anims = model_instance.find_children("*", "AnimationPlayer", true, false)
 		if not anims.is_empty():
@@ -144,6 +169,7 @@ func _apply_archetype():
 		mesh_instance.mesh = res
 		mesh_instance.material_override = mat_res
 		mesh_instance.visible = true
+		mesh_instance.rotation.y = PI
 	
 	scale = cfg.scale * randf_range(0.96, 1.04)
 	move_speed = cfg.speed
@@ -151,6 +177,20 @@ func _apply_archetype():
 	reward_on_kill = cfg.reward
 	health_component.max_health = cfg.hp
 	health_component.current_health = cfg.hp
+	
+	if archetype == "spitter":
+		attack_range = 14.0
+		var sk_mesh: MeshInstance3D = model_instance.find_child("*Mesh*", true, false)
+		if sk_mesh and sk_mesh.mesh:
+			for s_idx in range(sk_mesh.mesh.get_surface_count()):
+				var mat = sk_mesh.get_active_material(s_idx)
+				if mat is StandardMaterial3D:
+					var new_mat = mat.duplicate()
+					new_mat.albedo_color = Color(0.2, 0.9, 0.3, 1.0)
+					sk_mesh.set_surface_override_material(s_idx, new_mat)
+	elif archetype == "dog":
+		attack_range = 2.0
+		attack_interval = 1.8
 	
 	if archetype == "boss":
 		var hud = get_tree().get_first_node_in_group("hud")
@@ -349,12 +389,21 @@ func _handle_search(delta: float):
 		if search_timer <= 0:
 			ai_state = AIState.LOST_PLAYER
 
+var acid_prefab = preload("res://scenes/zombies/AcidSpit.tscn")
+
 func _perform_attack_strike():
 	await get_tree().create_timer(0.35).timeout
 	if is_dead: return
-	if player and global_position.distance_to(player.global_position) <= attack_range * 1.25:
-		if player.has_method("take_damage"):
-			player.take_damage(attack_damage)
+	if archetype == "spitter":
+		if acid_prefab and player:
+			var spit = acid_prefab.instantiate()
+			get_tree().current_scene.add_child(spit)
+			spit.global_position = global_position + Vector3(0, 1.2, 0)
+			spit.direction = (player.global_position + Vector3(0, 1.0, 0) - spit.global_position).normalized()
+	else:
+		if player and global_position.distance_to(player.global_position) <= attack_range * 1.25:
+			if player.has_method("take_damage"):
+				player.take_damage(attack_damage)
 
 func _on_died():
 	if is_dead: return
@@ -378,7 +427,7 @@ func _on_died():
 		
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if save_mgr:
-		save_mgr.add_coins(reward_on_kill)
+		save_mgr.add_cash(reward_on_kill)
 		
 	var mission_mgr = get_node_or_null("/root/MissionManager")
 	if mission_mgr:

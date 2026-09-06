@@ -1,0 +1,131 @@
+import os
+
+result_tscn = """[gd_scene load_steps=6 format=3 uid="uid://bqresultui01"]
+
+[ext_resource type="Script" path="res://scripts/ResultUI.gd" id="1_r3s4d"]
+[ext_resource type="PackedScene" path="res://scenes/UI/Components/PrimaryButton.tscn" id="2_btn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.05, 0.05, 0.07, 0.95)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.12, 0.14, 0.17, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.4, 0.5, 0.6)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_size = 12
+
+[node name="ResultUI" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_r3s4d")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Center"]
+custom_minimum_size = Vector2(500, 450)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 40
+text = "MISSION COMPLETE"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="Kills" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Enemies Eliminated: 0"
+horizontal_alignment = 1
+
+[node name="Headshots" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Headshots: 0"
+horizontal_alignment = 1
+
+[node name="Accuracy" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Accuracy: 0%"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="CashLabel" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "Reward: +$0 CASH"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Center/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NextButton" parent="Center/Panel/VBox" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 50)
+text = "CONTINUE"
+
+[node name="ReplayButton" parent="Center/Panel/VBox" instance=ExtResource("2_btn")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 50)
+text = "REPLAY MISSION"
+
+[connection signal="pressed" from="Center/Panel/VBox/NextButton" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="Center/Panel/VBox/ReplayButton" to="." method="_on_replay_pressed"]
+
+"""
+
+with open("/workspaces/targetkill/scenes/UI/ResultUI.tscn", "w") as f:
+    f.write(result_tscn)
+
+print("Generated new ResultUI.tscn")

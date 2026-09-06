@@ -41,7 +41,17 @@ var weapon_prefab: PackedScene = preload("res://scenes/weapons/Weapon.tscn")
 var weapon_configs = [
 	{"id": "pistol", "path": "res://resources/weapons/pistol.tres", "model": "res://assets/3d/weapons/pistol.glb"},
 	{"id": "rifle", "path": "res://resources/weapons/rifle.tres", "model": "res://assets/3d/weapons/rifle.glb"},
-	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://assets/3d/weapons/shotgun.glb"}
+	{"id": "shotgun", "path": "res://resources/weapons/shotgun.tres", "model": "res://assets/3d/weapons/shotgun.glb"},
+	{"id": "m4a1", "path": "res://resources/weapons/m4a1.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "ak47", "path": "res://resources/weapons/ak47.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "scar_l", "path": "res://resources/weapons/scar_l.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "g36", "path": "res://resources/weapons/g36.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "famas", "path": "res://resources/weapons/famas.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "aug", "path": "res://resources/weapons/aug.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "mp5", "path": "res://resources/weapons/mp5.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "spas12", "path": "res://resources/weapons/spas12.tres", "model": "res://assets/3d/weapons/shotgun.glb"},
+	{"id": "svd", "path": "res://resources/weapons/svd.tres", "model": "res://assets/3d/weapons/rifle.glb"},
+	{"id": "m249", "path": "res://resources/weapons/m249.tres", "model": "res://assets/3d/weapons/rifle.glb"}
 ]
 var weapons: Array = []
 var current_weapon_index: int = 0
@@ -76,8 +86,8 @@ func _ready():
 		
 	if hud and is_instance_valid(hud):
 		hud.update_health(current_health, max_health)
-		if save_mgr and save_mgr.data.has("coins"):
-			hud.update_coins(save_mgr.data.coins)
+		if save_mgr and save_mgr.data.has("cash"):
+			hud.update_cash(save_mgr.data.cash)
 			
 	if mission_mgr and mission_mgr.current_mission and hud and is_instance_valid(hud):
 		hud.update_objective(mission_mgr.current_mission.display_name, "Eliminate " + str(mission_mgr.current_mission.target_count) + " Zombies")
@@ -116,7 +126,16 @@ func _init_weapons():
 		child.queue_free()
 	weapons.clear()
 
-	for cfg in weapon_configs:
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	var unlocked_ids = save_mgr.data.unlocked_weapons if save_mgr and save_mgr.data.has("unlocked_weapons") else ["pistol", "rifle", "shotgun"]
+
+	# We will dynamically build the list from unlocked IDs
+	var all_possible_weapons = weapon_configs.duplicate()
+
+
+	for cfg in all_possible_weapons:
+		if not cfg.id in unlocked_ids:
+			continue
 		var w = weapon_prefab.instantiate()
 		w.weapon_data = load(cfg.path)
 		w.aim_raycast = aim_raycast
@@ -264,9 +283,52 @@ func _reload_arms(duration: float = 1.5):
 	tw.parallel().tween_property(fps_arms, "rotation:z", 0.0, duration * 0.25)
 	tw.tween_callback(func(): is_tactical_reloading = false)
 
+var grenade_prefab = preload("res://scenes/weapons/Grenade.tscn")
+var last_grenade_time: float = 0.0
+
+func throw_grenade():
+	if is_dead or time - last_grenade_time < 3.0:
+		return
+	last_grenade_time = time
+	if grenade_prefab:
+		var g = grenade_prefab.instantiate()
+		get_tree().current_scene.add_child(g)
+		g.global_position = camera.global_position + (-camera.global_transform.basis.z * 1.5)
+		if g is RigidBody3D:
+			g.linear_velocity = (-camera.global_transform.basis.z * 15.0) + (Vector3.UP * 4.0)
+
+func auto_aim(delta):
+	var zombies = get_tree().get_nodes_in_group("zombie")
+	var best_zombie = null
+	var best_dot = 0.96 # Magnet threshold
+	
+	for z in zombies:
+		if z.is_dead: continue
+		var dir_to_z = (z.global_position + Vector3(0, 1.2, 0) - camera.global_position).normalized()
+		var forward = -camera.global_transform.basis.z
+		var dot = forward.dot(dir_to_z)
+		if dot > best_dot:
+			best_dot = dot
+			best_zombie = z
+			
+	if best_zombie:
+		var target_pos = best_zombie.global_position + Vector3(0, 1.2, 0)
+		var current_transform = camera.global_transform
+		var target_transform = current_transform.looking_at(target_pos, Vector3.UP)
+		var t = current_transform.interpolate_with(target_transform, 5.0 * delta)
+		
+		# Apply rotations back
+		var euler = t.basis.get_euler()
+		rotation.y = euler.y
+		camera.rotation.x = euler.x
+		camera.rotation.z = 0.0
+
 func _physics_process(delta):
 	if is_dead: return
 	time += delta
+	
+	auto_aim(delta)
+
 	
 	# Auto fire for automatic weapons or held fire button
 	if is_firing:
@@ -381,8 +443,8 @@ func _update_hud():
 		hud.update_ammo(weapon.current_ammo, weapon.max_ammo, weapon.weapon_data.display_name, next_name)
 	hud.update_health(current_health, max_health)
 	var save_mgr = get_node_or_null("/root/SaveManager")
-	if save_mgr and save_mgr.data.has("coins"):
-		hud.update_coins(save_mgr.data.coins)
+	if save_mgr and save_mgr.data.has("cash"):
+		hud.update_cash(save_mgr.data.cash)
 
 func take_damage(amount: float):
 	if is_dead: return

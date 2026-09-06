@@ -51,6 +51,8 @@ func _load_sound_set():
 			sfx_shoot.stream = preload("res://audio/weapons/sfx_rifle_shoot.wav")
 		"shotgun":
 			sfx_shoot.stream = preload("res://audio/weapons/sfx_shotgun_shoot.wav")
+		"heavy_gun":
+			sfx_shoot.stream = preload("res://audio/weapons/sfx_rifle_shoot.wav")
 		_:
 			sfx_shoot.stream = preload("res://audio/weapons/sfx_pistol_shoot.wav")
 			

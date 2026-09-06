@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "mp5"
+display_name = "MP5 Spec Ops"
+base_damage = 18.0
+headshot_multiplier = 2.0
+base_fire_rate = 0.07
+base_mag_size = 40
+base_reserve_ammo = 240
+base_reload_time = 2.2
+spread = 0.04
+recoil = 0.5
+range = 70.0
+pellet_count = 1
+is_automatic = true
+muzzle_fx = "rifle"
+sound_set = "rifle"
+upgrade_cost_damage = 100
+upgrade_cost_mag = 90
+upgrade_cost_reload = 80

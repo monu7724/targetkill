@@ -15,7 +15,7 @@ signal weapon_switched(weapon_id: String, display_name: String)
 signal wave_started(wave_number: int, total_waves: int)
 signal wave_completed(wave_number: int)
 signal objective_updated(title: String, description: String, progress: int, target: int)
-signal coins_changed(new_total: int)
+signal cash_changed(new_total: int)
 signal mission_finished(mission_id: String, success: bool)
 
 # Performance & Settings Signals

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "heavy_flamethrower"
+display_name = "Napalm Flamethrower"
+base_damage = 10.0
+headshot_multiplier = 2.0
+base_fire_rate = 0.02
+base_mag_size = 100
+base_reserve_ammo = 1000
+base_reload_time = 4.0
+spread = 0.05
+recoil = 1.5
+range = 100.0
+pellet_count = 1
+is_automatic = true
+muzzle_fx = "rifle"
+sound_set = "rifle"
+upgrade_cost_damage = 500
+upgrade_cost_mag = 400
+upgrade_cost_reload = 300

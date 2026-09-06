@@ -1,6 +1,6 @@
 extends Control
 
-@onready var coins_label = $TopBar/CoinsLabel
+@onready var cash_label = $TopBar/CashLabel
 @onready var weapon_title = $ContentContainer/Panel/Margin/VBox/WeaponHeader/WeaponTitle
 @onready var weapon_subtitle = $ContentContainer/Panel/Margin/VBox/WeaponHeader/WeaponSubtitle
 
@@ -26,19 +26,33 @@ extends Control
 @onready var pistol_tab = $ContentContainer/TabsBar/PistolTab
 @onready var rifle_tab = $ContentContainer/TabsBar/RifleTab
 @onready var shotgun_tab = $ContentContainer/TabsBar/ShotgunTab
+@onready var heavy_gun_tab = $ContentContainer/TabsBar/HeavyGunTab
 
 var current_weapon_id: String = "rifle"
 
 var weapon_resources = {
 	"pistol": "res://resources/weapons/pistol.tres",
 	"rifle": "res://resources/weapons/rifle.tres",
-	"shotgun": "res://resources/weapons/shotgun.tres"
+	"shotgun": "res://resources/weapons/shotgun.tres",
+	"heavy_gun": "res://resources/weapons/heavy_gun.tres",
+	"heavy_m134": "res://resources/weapons/heavy_m134.tres",
+	"heavy_rpg7": "res://resources/weapons/heavy_rpg7.tres",
+	"heavy_rpd": "res://resources/weapons/heavy_rpd.tres",
+	"heavy_mg42": "res://resources/weapons/heavy_mg42.tres",
+	"heavy_l86": "res://resources/weapons/heavy_l86.tres",
+	"heavy_m249": "res://resources/weapons/heavy_m249.tres",
+	"heavy_pkm": "res://resources/weapons/heavy_pkm.tres",
+	"heavy_m60": "res://resources/weapons/heavy_m60.tres",
+	"heavy_m2browning": "res://resources/weapons/heavy_m2browning.tres",
+	"heavy_flamethrower": "res://resources/weapons/heavy_flamethrower.tres"
+
 }
 
 var weapon_subtitles = {
 	"pistol": "Tactical .45 ACP Sidearm - Reliable Critical Headshots",
 	"rifle": "5.56 NATO Tactical Carbine - High Cyclic Fire Rate",
-	"shotgun": "12-Gauge Pump Action - Lethal Close-Quarters Spread"
+	"shotgun": "12-Gauge Pump Action - Lethal Close-Quarters Spread",
+	"heavy_gun": "5.56 NATO Light Machine Gun - Massive Magazine Capacity"
 }
 
 const MAX_LEVEL = 3
@@ -58,13 +72,10 @@ func _on_tab_pressed(wid: String):
 
 func update_ui():
 	var save_mgr = get_node_or_null("/root/SaveManager")
-	var coins = save_mgr.data.coins if save_mgr else 0
-	coins_label.text = "COINS: %d" % coins
+	var cash = save_mgr.data.cash if save_mgr else 0
+	cash_label.text = "CASH $: $%d" % cash
 	
 	# Update tab states
-	pistol_tab.modulate = Color(1.0, 0.85, 0.3) if current_weapon_id == "pistol" else Color(0.7, 0.7, 0.7)
-	rifle_tab.modulate = Color(1.0, 0.85, 0.3) if current_weapon_id == "rifle" else Color(0.7, 0.7, 0.7)
-	shotgun_tab.modulate = Color(1.0, 0.85, 0.3) if current_weapon_id == "shotgun" else Color(0.7, 0.7, 0.7)
 	
 	var res_path = weapon_resources.get(current_weapon_id, "")
 	var data = load(res_path)
@@ -76,8 +87,25 @@ func update_ui():
 	var upgrades_dict = save_mgr.data.weapon_upgrades.get(current_weapon_id, {}) if save_mgr else {}
 	var lvl_dmg: int = upgrades_dict.get("damage", 0)
 	var lvl_mag: int = upgrades_dict.get("mag", 0)
-	var lvl_rel: int = upgrades_dict.get("reload", 0)
-	
+	# Handle Unlocks
+	var vbox = $ContentContainer/Panel/Margin/VBox
+	var unlock_btn = get_node_or_null("UnlockBtn")
+	if not unlock_btn:
+		unlock_btn = Button.new()
+		unlock_btn.name = "UnlockBtn"
+		unlock_btn.custom_minimum_size = Vector2(0, 80)
+		unlock_btn.add_theme_font_size_override("font_size", 20)
+		$ContentContainer/Panel/Margin.add_child(unlock_btn)
+		unlock_btn.pressed.connect(_on_unlock_pressed)
+		
+	if current_weapon_id in save_mgr.data.unlocked_weapons:
+		vbox.visible = true
+		unlock_btn.visible = false
+	else:
+		vbox.visible = false
+		unlock_btn.visible = true
+		unlock_btn.text = "WATCH AD TO UNLOCK " + data.display_name.to_upper() + "\n(Or Buy for $5000)"
+		
 	# 1. Damage Row
 	dmg_level_lbl.text = "LVL %d / %d" % [lvl_dmg, MAX_LEVEL]
 	dmg_progress.value = float(lvl_dmg)
@@ -91,11 +119,11 @@ func update_ui():
 	else:
 		var cost = data.upgrade_cost_damage * (lvl_dmg + 1)
 		dmg_diff_lbl.text = "%.0f -> %.0f DMG (+20%%)" % [cur_dmg, next_dmg]
-		if coins < cost:
-			dmg_btn.text = "NOT ENOUGH COINS (%d)" % cost
+		if cash < cost:
+			dmg_btn.text = "NOT ENOUGH CASH ($%d)" % cost
 			dmg_btn.disabled = true
 		else:
-			dmg_btn.text = "UPGRADE (%d COINS)" % cost
+			dmg_btn.text = "UPGRADE ($%d)" % cost
 			dmg_btn.disabled = false
 			
 	# 2. Mag Row
@@ -111,11 +139,11 @@ func update_ui():
 	else:
 		var cost = data.upgrade_cost_mag * (lvl_mag + 1)
 		mag_diff_lbl.text = "%d -> %d ROUNDS" % [cur_mag, next_mag]
-		if coins < cost:
-			mag_btn.text = "NOT ENOUGH COINS (%d)" % cost
+		if cash < cost:
+			mag_btn.text = "NOT ENOUGH CASH ($%d)" % cost
 			mag_btn.disabled = true
 		else:
-			mag_btn.text = "UPGRADE (%d COINS)" % cost
+			mag_btn.text = "UPGRADE ($%d)" % cost
 			mag_btn.disabled = false
 			
 	# 3. Reload Row
@@ -131,12 +159,35 @@ func update_ui():
 	else:
 		var cost = data.upgrade_cost_reload * (lvl_rel + 1)
 		reload_diff_lbl.text = "%.2fs -> %.2fs (-15%%)" % [cur_rel, next_rel]
-		if coins < cost:
-			reload_btn.text = "NOT ENOUGH COINS (%d)" % cost
+		if cash < cost:
+			reload_btn.text = "NOT ENOUGH CASH ($%d)" % cost
 			reload_btn.disabled = true
 		else:
-			reload_btn.text = "UPGRADE (%d COINS)" % cost
+			reload_btn.text = "UPGRADE ($%d)" % cost
 			reload_btn.disabled = false
+
+func _on_unlock_pressed():
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	if not save_mgr: return
+	
+	# Simulate AdMob Rewarded Video
+	print("[AdMob] Show Rewarded Ad for Weapon Unlock")
+	# Fake Ad Callback (in a real game, wait for AdMob callback)
+	if save_mgr.data.cash >= 5000:
+		save_mgr.add_cash(-5000)
+		_unlock_current_weapon(save_mgr)
+	else:
+		# Just simulate the user watched an ad
+		_unlock_current_weapon(save_mgr)
+
+func _unlock_current_weapon(save_mgr):
+	if not current_weapon_id in save_mgr.data.unlocked_weapons:
+		save_mgr.data.unlocked_weapons.append(current_weapon_id)
+		save_mgr.save_game()
+		
+		# Also add to player's weapon configs so it spawns!
+		# In a real setup, Player.gd loads from SaveManager
+		update_ui()
 
 func _on_upgrade_pressed(type: String):
 	var save_mgr = get_node_or_null("/root/SaveManager")
@@ -156,8 +207,8 @@ func _on_upgrade_pressed(type: String):
 		"reload": base_cost = data.upgrade_cost_reload
 		
 	var cost = base_cost * (cur_lvl + 1)
-	if save_mgr.data.coins >= cost:
-		save_mgr.add_coins(-cost)
+	if save_mgr.data.cash >= cost:
+		save_mgr.add_cash(-cost)
 		upgrades_dict[type] = cur_lvl + 1
 		save_mgr.data.weapon_upgrades[current_weapon_id] = upgrades_dict
 		save_mgr.save_game()

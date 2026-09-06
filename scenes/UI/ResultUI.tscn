@@ -1,18 +1,24 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=6 format=3 uid="uid://bqresultui01"]
 
 [ext_resource type="Script" path="res://scripts/ResultUI.gd" id="1_r3s4d"]
+[ext_resource type="PackedScene" path="res://scenes/UI/Components/PrimaryButton.tscn" id="2_btn"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
-bg_color = Color(0.08, 0.1, 0.14, 0.95)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.05, 0.05, 0.07, 0.95)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.12, 0.14, 0.17, 0.9)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.25, 0.45, 0.7, 0.8)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+border_color = Color(0.3, 0.4, 0.5, 0.6)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_size = 12
 
 [node name="ResultUI" type="Control"]
 process_mode = 3
@@ -22,106 +28,96 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 script = ExtResource("1_r3s4d")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.7)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
 
-[node name="Panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(400, 310)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -155.0
-offset_right = 200.0
-offset_bottom = 155.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 16.0
-offset_right = -20.0
-offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
+
+[node name="Panel" type="Panel" parent="Center"]
+custom_minimum_size = Vector2(500, 450)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
 alignment = 1
 
-[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+[node name="Title" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 40
 text = "MISSION COMPLETE"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Center/Panel/VBox"]
 layout_mode = 2
 
-[node name="KillsLabel" type="Label" parent="Panel/VBoxContainer"]
+[node name="Kills" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Zombies Eliminated: 0"
+theme_override_font_sizes/font_size = 22
+text = "Enemies Eliminated: 0"
 horizontal_alignment = 1
 
-[node name="HeadshotsLabel" type="Label" parent="Panel/VBoxContainer"]
+[node name="Headshots" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 22
 text = "Headshots: 0"
 horizontal_alignment = 1
 
-[node name="AccuracyLabel" type="Label" parent="Panel/VBoxContainer"]
+[node name="Accuracy" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 22
 text = "Accuracy: 0%"
 horizontal_alignment = 1
 
-[node name="CoinsLabel" type="Label" parent="Panel/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="Center/Panel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
-theme_override_font_sizes/font_size = 18
-text = "Reward: 0 Coins"
+
+[node name="CashLabel" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "Reward: +$0 CASH"
 horizontal_alignment = 1
 
-[node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
+[node name="Spacer" type="Control" parent="Center/Panel/VBox"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/VBoxContainer"]
+[node name="NextButton" parent="Center/Panel/VBox" instance=ExtResource("2_btn")]
 layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
+custom_minimum_size = Vector2(0, 50)
+text = "CONTINUE"
 
-[node name="NextButton" type="Button" parent="Panel/VBoxContainer/ButtonsHBox"]
-custom_minimum_size = Vector2(105, 40)
+[node name="ReplayButton" parent="Center/Panel/VBox" instance=ExtResource("2_btn")]
 layout_mode = 2
-text = "NEXT"
+custom_minimum_size = Vector2(0, 50)
+text = "REPLAY MISSION"
 
-[node name="ReplayButton" type="Button" parent="Panel/VBoxContainer/ButtonsHBox"]
-custom_minimum_size = Vector2(100, 40)
-layout_mode = 2
-text = "REPLAY"
-
-[node name="MenuButton" type="Button" parent="Panel/VBoxContainer/ButtonsHBox"]
-custom_minimum_size = Vector2(115, 40)
-layout_mode = 2
-text = "MISSIONS"
-
-[connection signal="pressed" from="Panel/VBoxContainer/ButtonsHBox/NextButton" to="." method="_on_next_button_pressed"]
-[connection signal="pressed" from="Panel/VBoxContainer/ButtonsHBox/ReplayButton" to="." method="_on_replay_button_pressed"]
-[connection signal="pressed" from="Panel/VBoxContainer/ButtonsHBox/MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="pressed" from="Center/Panel/VBox/NextButton" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="Center/Panel/VBox/ReplayButton" to="." method="_on_replay_pressed"]
 

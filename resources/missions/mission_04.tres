@@ -5,15 +5,15 @@
 [resource]
 script = ExtResource("1_m1s2d")
 mission_id = "mission_04"
-display_name = "Infestation"
-description = "High density of variants detected in this sector."
-objective_type = 0
-target_count = 40
-wave_count = 1
-reward_coins = 350
+display_name = "Rat King"
+description = "The abandoned train yard is overrun with infected animals. Dogs and rats swarm from every direction."
+objective_type = 1
+target_count = 0
+wave_count = 3
+reward_cash = 1250
 scene_path = "res://scenes/environments/AbandonedTrain.tscn"
-location_name = "Industrial Complex - Reactor Zone"
-difficulty_stars = 4
-recommended_loadout = "Remington 870 / Heavy M4A1"
+location_name = "Abandoned Train Yard - Track 9"
+difficulty_stars = 2
+recommended_loadout = "M4A1 Sentinel / Remington 870"
 unlock_requirement_id = "mission_03"
-spawn_config = [{"type": "normal", "weight": 0.4}, {"type": "fast", "weight": 0.4}, {"type": "heavy", "weight": 0.2}]
+spawn_config = [{"type": "dog", "weight": 0.6}, {"type": "fast", "weight": 0.4}]

@@ -42,6 +42,9 @@ move_right={
 }
 
 [autoload]
+
+AdManager="*res://scripts/Core/AdManager.gd"
+BannerAdManager="*res://scripts/Core/BannerAdManager.gd"
 SaveManager="*res://scripts/SaveManager.gd"
 MissionManager="*res://scripts/MissionManager.gd"
 AudioManager="*res://scripts/AudioManager.gd"

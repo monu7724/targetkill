@@ -354,7 +354,7 @@ func _on_died():
 		
 	var save_mgr = get_node_or_null("/root/SaveManager")
 	if save_mgr:
-		save_mgr.add_coins(reward_on_kill)
+		save_mgr.add_cash(reward_on_kill)
 		
 	var mission_mgr = get_node_or_null("/root/MissionManager")
 	if mission_mgr:

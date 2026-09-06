@@ -5,15 +5,15 @@
 [resource]
 script = ExtResource("1_m1s2d")
 mission_id = "mission_03"
-display_name = "Last Block"
-description = "Hold your ground against multiple waves of survivors."
-objective_type = 1
-target_count = 0
+display_name = "Crossfire"
+description = "Mixed infected at the railway station. Zombies and dogs attack from multiple platforms. Hold your ground."
+objective_type = 0
+target_count = 22
 wave_count = 3
-reward_coins = 200
+reward_cash = 1000
 scene_path = "res://scenes/environments/RailwayStation.tscn"
-location_name = "Railway Freight Yard - Track 4"
-difficulty_stars = 3
-recommended_loadout = "M4A1 Sentinel / Remington 870"
+location_name = "Railway Station - Platform 3"
+difficulty_stars = 2
+recommended_loadout = "M4A1 Sentinel"
 unlock_requirement_id = "mission_02"
-spawn_config = [{"type": "normal", "weight": 0.6}, {"type": "fast", "weight": 0.3}, {"type": "heavy", "weight": 0.1}]
+spawn_config = [{"type": "normal", "weight": 0.5}, {"type": "dog", "weight": 0.5}]

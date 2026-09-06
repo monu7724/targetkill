@@ -5,15 +5,15 @@
 [resource]
 script = ExtResource("1_m1s2d")
 mission_id = "mission_05"
-display_name = "Nightmare"
-description = "The source of the infestation. Defeat the Alpha."
-objective_type = 2
-target_count = 1
-wave_count = 1
-reward_coins = 1000
-scene_path = "res://scenes/environments/FinalLockdown.tscn"
-location_name = "Sector Zero - Command Center"
-difficulty_stars = 5
-recommended_loadout = "Remington 870 Shotgun & Sentinel"
+display_name = "Containment Breach"
+description = "The industrial zone perimeter has collapsed. Mixed infected flooding through. Eliminate all threats."
+objective_type = 0
+target_count = 30
+wave_count = 3
+reward_cash = 1500
+scene_path = "res://scenes/environments/DarkIndustrial.tscn"
+location_name = "Industrial Zone - Sector 4"
+difficulty_stars = 3
+recommended_loadout = "M4A1 Sentinel / Remington 870"
 unlock_requirement_id = "mission_04"
-spawn_config = [{"type": "boss", "weight": 1.0}]
+spawn_config = [{"type": "normal", "weight": 0.4}, {"type": "fast", "weight": 0.3}, {"type": "dog", "weight": 0.3}]

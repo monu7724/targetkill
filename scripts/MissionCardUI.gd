@@ -2,29 +2,29 @@ extends PanelContainer
 
 signal mission_selected(data: MissionData)
 
-@onready var title_label = $MarginContainer/VBoxContainer/Title
-@onready var location_label = $MarginContainer/VBoxContainer/Location
-@onready var stars_label = $MarginContainer/VBoxContainer/Stars
-@onready var desc_label = $MarginContainer/VBoxContainer/Description
-@onready var reward_label = $MarginContainer/VBoxContainer/Reward
-@onready var play_button = $MarginContainer/VBoxContainer/PlayButton
+@onready var title_label = $HBox/VBox/Title
+@onready var obj_label = $HBox/VBox/Objective
+@onready var reward_label = $HBox/VBox/Reward
+@onready var status_label = $HBox/VBox/Status
+@onready var play_button = $HBox/Margin/PlayButton
 
 var mission_data: MissionData
 
 func setup(data: MissionData):
 	mission_data = data
 	title_label.text = data.display_name
-	if location_label:
-		location_label.text = "📍 " + (data.location_name if "location_name" in data and data.location_name != "" else "Sector Zone")
-	if stars_label:
-		var stars_count = data.difficulty_stars if "difficulty_stars" in data else 1
-		var stars_str = ""
-		for i in range(5):
-			stars_str += "★" if i < stars_count else "☆"
-		stars_label.text = "Difficulty: " + stars_str
-		
-	desc_label.text = data.description
-	reward_label.text = "Reward: " + str(data.reward_coins) + " Coins"
+	
+	var obj_text = "Eliminate hostile contacts."
+	match data.objective_type:
+		MissionData.ObjectiveType.KILL_COUNT:
+			obj_text = "Eliminate %d infected hosts." % data.target_count
+		MissionData.ObjectiveType.SURVIVE_WAVES:
+			obj_text = "Survive %d hostile waves." % data.wave_count
+		MissionData.ObjectiveType.BOSS_KILL:
+			obj_text = "Neutralize the Sector Apex Alpha specimen."
+	obj_label.text = "Objective: " + obj_text
+	
+	reward_label.text = "REWARD: $" + str(data.reward_cash)
 	
 	var is_unlocked = true
 	if data.unlock_requirement_id != "":
@@ -32,21 +32,35 @@ func setup(data: MissionData):
 		if save_mgr:
 			is_unlocked = save_mgr.is_mission_completed(data.unlock_requirement_id)
 	
-	play_button.disabled = not is_unlocked
+	play_button.disabled = false
 	if not is_unlocked:
-		modulate = Color(0.5, 0.5, 0.5, 0.8)
-		play_button.text = "LOCKED"
+		modulate = Color(0.6, 0.6, 0.6, 0.9)
+		status_label.text = "STATUS: LOCKED"
+		status_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
+		play_button.text = "WATCH AD"
 	else:
 		modulate = Color(1.0, 1.0, 1.0, 1.0)
 		var save_mgr = get_node_or_null("/root/SaveManager")
 		var is_completed = save_mgr.is_mission_completed(data.mission_id) if save_mgr else false
 		if is_completed:
-			play_button.text = "BRIEFING (COMPLETED)"
+			status_label.text = "STATUS: COMPLETED"
+			status_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.3))
+			play_button.text = "REPLAY"
 		else:
-			play_button.text = "MISSION BRIEFING"
+			status_label.text = "STATUS: ACTIVE"
+			status_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+			play_button.text = "DEPLOY"
 
 func _on_play_button_pressed():
 	var audio_mgr = get_node_or_null("/root/AudioManager")
 	if audio_mgr: audio_mgr.play_ui_click()
+	
+	if play_button.text == "WATCH AD":
+		print("[AdMob] Show Rewarded Ad to unlock mission")
+		var save_mgr = get_node_or_null("/root/SaveManager")
+		if save_mgr and mission_data.unlock_requirement_id != "":
+			save_mgr.complete_mission(mission_data.unlock_requirement_id)
+			setup(mission_data)
+		return
+		
 	mission_selected.emit(mission_data)
-

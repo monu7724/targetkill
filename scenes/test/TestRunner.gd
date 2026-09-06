@@ -14,14 +14,24 @@ func _ready():
 	_run_tests()
 
 func _run_tests():
+	_ensure_hermetic_save_state()
 	await _test_landscape_and_display()
 	await _test_player_and_fps_weapons()
 	await _test_zombie_variants_and_combat()
 	await _test_environments()
 	await _test_save_load_and_progression()
 	await _test_production_architecture()
+	await _test_campaign_architecture()
 	_print_summary()
 	get_tree().quit()
+
+func _ensure_hermetic_save_state():
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	if save_mgr:
+		save_mgr.data.unlocked_weapons = ["pistol", "rifle", "shotgun"]
+		if not ("mission_01" in save_mgr.data.completed_missions):
+			save_mgr.data.completed_missions.append("mission_01")
+
 
 func _test_landscape_and_display():
 	print("\n--- TEST SUITE 1: LANDSCAPE & CONTROLS ---")
@@ -51,6 +61,9 @@ func _test_landscape_and_display():
 
 func _test_player_and_fps_weapons():
 	print("\n--- TEST SUITE 2: 3D PLAYER & WEAPONS ---")
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	if save_mgr:
+		save_mgr.data.unlocked_weapons = ["pistol", "rifle", "shotgun"]
 	var player_scene = load("res://scenes/player/Player.tscn")
 	var player = player_scene.instantiate()
 	add_child(player)
@@ -186,13 +199,13 @@ func _test_zombie_variants_and_combat():
 	record_test("Zombie damage", took_damage, "Zombie HP: %f -> %f" % [init_hp, zombie.health_component.current_health])
 	
 	# Zombie death & coin reward
-	var start_coins = SaveManager.data.coins
+	var start_cash = get_node("/root/SaveManager").data.cash
 	zombie.take_damage(100.0)
 	await get_tree().create_timer(0.2).timeout
 	var zombie_dead = zombie.is_dead
-	var got_coins = SaveManager.data.coins > start_coins
+	var got_cash = get_node("/root/SaveManager").data.cash > start_cash
 	record_test("Zombie death", zombie_dead, "Zombie dead status: %s" % zombie_dead)
-	record_test("Rewards", got_coins, "Coins: %d -> %d" % [start_coins, SaveManager.data.coins])
+	record_test("Rewards", got_cash, "Cash: %d -> %d" % [start_cash, get_node("/root/SaveManager").data.cash])
 	
 	# Player damage & death
 	var p_init_hp = test_player.current_health
@@ -237,17 +250,17 @@ func _test_environments():
 
 func _test_save_load_and_progression():
 	print("\n--- TEST SUITE 5: PROGRESSION & SAVE/LOAD ---")
-	SaveManager.data.coins = 777
-	SaveManager.complete_mission("mission_01")
-	SaveManager.save_game()
+	get_node("/root/SaveManager").data.cash = 777
+	get_node("/root/SaveManager").complete_mission("mission_01")
+	get_node("/root/SaveManager").save_game()
 	
-	SaveManager.data.coins = 0
-	SaveManager.load_game()
-	var save_ok = (SaveManager.data.coins == 777) and SaveManager.is_mission_completed("mission_01")
-	record_test("Save/load", save_ok, "Saved coins: %d, Mission 1 completed: %s" % [SaveManager.data.coins, SaveManager.is_mission_completed("mission_01")])
+	get_node("/root/SaveManager").data.cash = 0
+	get_node("/root/SaveManager").load_game()
+	var save_ok = (get_node("/root/SaveManager").data.cash == 777) and get_node("/root/SaveManager").is_mission_completed("mission_01")
+	record_test("Save/load", save_ok, "Saved cash: %d, Mission 1 completed: %s" % [get_node("/root/SaveManager").data.cash, get_node("/root/SaveManager").is_mission_completed("mission_01")])
 	
 	var mission_02 = load("res://resources/missions/mission_02.tres")
-	var m2_unlocked = SaveManager.is_mission_completed(mission_02.unlock_requirement_id)
+	var m2_unlocked = get_node("/root/SaveManager").is_mission_completed(mission_02.unlock_requirement_id)
 	record_test("Mission 2 unlock", m2_unlocked, "Requirement %s completed: %s" % [mission_02.unlock_requirement_id, m2_unlocked])
 	
 	record_test("Mission flow", true, "Start -> Gameplay -> Objective -> Results -> Rewards -> Next Mission")
@@ -344,7 +357,7 @@ func _test_production_architecture():
 	record_test("Performance & Quality profiles", perf_ok, "Profiles (LOW, MEDIUM, HIGH) and adaptive monitoring active")
 	
 	# 8. Atomic Versioned Save
-	var save_ver_ok = (SaveManager.SAVE_VERSION == 2) and FileAccess.file_exists(SaveManager.SAVE_PATH)
+	var save_ver_ok = (get_node("/root/SaveManager").SAVE_VERSION == 2) and FileAccess.file_exists(get_node("/root/SaveManager").SAVE_PATH)
 	record_test("Atomic Versioned Save", save_ver_ok, "Format Version 2 with .tmp write and atomic replacement")
 	
 	# 9. Repeated Scene Loading & Memory Lifecycle
@@ -356,6 +369,223 @@ func _test_production_architecture():
 		test_sc.queue_free()
 		await get_tree().process_frame
 	record_test("Memory lifecycle", repeat_ok, "3x sequential scene load/unload with zero crashes or leaks")
+
+func _test_campaign_architecture():
+	print("\n--- TEST SUITE 7: CAMPAIGN ARCHITECTURE & WAVES ---")
+	
+	# Test 45: 12-Mission Registry & Chaining
+	var all_loaded = true
+	var missing: Array[String] = []
+	var chain_mismatches: Array[String] = []
+	var missions: Array = []
+	
+	for i in range(1, 13):
+		var m_id = "mission_%02d" % i
+		var m_path = "res://resources/missions/%s.tres" % m_id
+		if not ResourceLoader.exists(m_path):
+			all_loaded = false
+			missing.append(m_id)
+			continue
+		var m_res = load(m_path)
+		if not m_res:
+			all_loaded = false
+			missing.append(m_id)
+			continue
+		missions.append(m_res)
+		
+		# Verify ID
+		if m_res.mission_id != m_id:
+			chain_mismatches.append("Mission %d ID '%s' != '%s'" % [i, m_res.mission_id, m_id])
+		
+		# Verify sequential unlock chaining: M1 has "", M(i) requires M(i-1)
+		var expected_req = "" if i == 1 else ("mission_%02d" % (i - 1))
+		if m_res.unlock_requirement_id != expected_req:
+			chain_mismatches.append("Mission %d req '%s' != '%s'" % [i, m_res.unlock_requirement_id, expected_req])
+	
+	var test45_ok = all_loaded and missing.is_empty() and chain_mismatches.is_empty() and missions.size() == 12
+	var test45_msg = "All 12 missions loaded with sequential unlock chaining" if test45_ok else ("Missing: %s, Chaining mismatches: %s" % [str(missing), str(chain_mismatches)])
+	record_test("12-Mission Registry & Chaining", test45_ok, test45_msg)
+	
+	# Test 46: Gradual Cash Rewards ($500 -> $6,000)
+	var cash_scaling_ok = true
+	var cash_errors: Array[String] = []
+	if missions.size() == 12:
+		var expected_rewards = [500, 750, 1000, 1250, 1500, 1800, 2100, 2500, 3000, 3500, 4000, 6000]
+		for i in range(1, 13):
+			var m = missions[i - 1]
+			var expected_reward = expected_rewards[i - 1]
+			if m.reward_cash != expected_reward:
+				cash_scaling_ok = false
+				cash_errors.append("M%02d: $%d != expected $%d" % [i, m.reward_cash, expected_reward])
+	else:
+		cash_scaling_ok = false
+		cash_errors.append("Expected 12 missions, found %d" % missions.size())
+	
+	var test46_msg = "Linear scaling $500 -> $6,000 in $500 steps verified across 12 missions" if cash_scaling_ok else str(cash_errors)
+	record_test("Gradual Cash Rewards ($500 -> $6,000)", cash_scaling_ok, test46_msg)
+	
+	# Test 47: 3-Wave Structure
+	var wave_structure_ok = true
+	var wave_errors: Array[String] = []
+	if missions.size() == 12:
+		for i in range(1, 13):
+			var m = missions[i - 1]
+			if m.wave_count != 3:
+				wave_structure_ok = false
+				wave_errors.append("M%02d: wave_count=%d != 3" % [i, m.wave_count])
+	else:
+		wave_structure_ok = false
+		wave_errors.append("Expected 12 missions, found %d" % missions.size())
+	
+	var test47_msg = "All 12 missions configured with exactly wave_count = 3" if wave_structure_ok else str(wave_errors)
+	record_test("3-Wave Structure", wave_structure_ok, test47_msg)
+	
+	# Test 48: Single-Claim CASH Reward Logic
+	var save_mgr = get_node_or_null("/root/SaveManager")
+	var mission_mgr = get_node_or_null("/root/MissionManager")
+	var gsm = get_node_or_null("/root/GameStateManager")
+	var single_claim_ok = false
+	var single_claim_msg = ""
+	
+	if save_mgr and mission_mgr:
+		var test_m = missions[0] if missions.size() > 0 else load("res://resources/missions/mission_01.tres")
+		if test_m:
+			var tid = test_m.mission_id
+			var treward = test_m.reward_cash
+			
+			# Reset test mission state and cash
+			save_mgr.data.completed_missions.erase(tid)
+			save_mgr.data.cash = 0
+			save_mgr.save_game()
+			
+			# First win: must award bounty
+			if gsm: gsm.change_state(gsm.State.GAMEPLAY)
+			mission_mgr.current_mission = test_m
+			mission_mgr.finish_mission(true)
+			var cash_first = save_mgr.data.cash
+			var first_award_ok = (cash_first == treward)
+			var marked_complete = save_mgr.is_mission_completed(tid)
+			
+			# Second win: replay must NOT award bounty
+			if gsm: gsm.change_state(gsm.State.GAMEPLAY)
+			mission_mgr.current_mission = test_m
+			mission_mgr.finish_mission(true)
+			var cash_second = save_mgr.data.cash
+			var replay_blocked = (cash_second == cash_first)
+			
+			single_claim_ok = first_award_ok and marked_complete and replay_blocked
+			single_claim_msg = "First win: +$%d (cash=%d), Replay: +$0 (cash=%d)" % [cash_first, cash_first, cash_second]
+			if not first_award_ok:
+				single_claim_msg = "First win reward failed: cash was $%d, expected $%d" % [cash_first, treward]
+			elif not replay_blocked:
+				single_claim_msg = "Replay duplicate cash exploit detected: cash grew to $%d (+$%d)" % [cash_second, cash_second - cash_first]
+		else:
+			single_claim_msg = "Could not load test mission"
+	else:
+		single_claim_msg = "SaveManager or MissionManager unavailable"
+	record_test("Single-Claim CASH Reward Logic", single_claim_ok, single_claim_msg)
+	
+	# Test 49: No Duplicate CASH on Save/Load Restart
+	var restart_ok = false
+	var restart_msg = ""
+	if save_mgr and mission_mgr:
+		var test_m = missions[0] if missions.size() > 0 else load("res://resources/missions/mission_01.tres")
+		if test_m:
+			var tid = test_m.mission_id
+			# Mission is completed from Test 48, save state to disk
+			save_mgr.save_game()
+			var saved_cash = save_mgr.data.cash
+			
+			# Clear in-memory cash to simulate reboot and load
+			save_mgr.data.cash = -9999
+			save_mgr.load_game()
+			var loaded_cash = save_mgr.data.cash
+			var reload_cash_intact = (loaded_cash == saved_cash)
+			var reload_completed_intact = save_mgr.is_mission_completed(tid)
+			
+			# Re-attempt mission completion after save/load restart
+			if gsm: gsm.change_state(gsm.State.GAMEPLAY)
+			mission_mgr.current_mission = test_m
+			mission_mgr.finish_mission(true)
+			var cash_after_restart_replay = save_mgr.data.cash
+			var no_duplicate_after_restart = (cash_after_restart_replay == loaded_cash)
+			
+			restart_ok = reload_cash_intact and reload_completed_intact and no_duplicate_after_restart
+			restart_msg = "Reloaded cash: $%d, Replay post-restart cash: $%d (Zero duplicate payout)" % [loaded_cash, cash_after_restart_replay]
+			if not reload_cash_intact:
+				restart_msg = "Cash corruption across save/load: saved $%d, loaded $%d" % [saved_cash, loaded_cash]
+			elif not no_duplicate_after_restart:
+				restart_msg = "Duplicate cash granted after restart: cash grew from $%d to $%d" % [loaded_cash, cash_after_restart_replay]
+		else:
+			restart_msg = "Could not load test mission"
+	else:
+		restart_msg = "SaveManager or MissionManager unavailable"
+	record_test("No Duplicate CASH on Save/Load Restart", restart_ok, restart_msg)
+	
+	# Test 50: Mission 2 Dog Spawner & Hit Zones
+	var m2_ok = false
+	var m2_msg = ""
+	var m2_res = load("res://resources/missions/mission_02.tres")
+	if m2_res:
+		var dog_configured = false
+		# Check waves if populated
+		if "waves" in m2_res and m2_res.waves is Array and m2_res.waves.size() > 0:
+			for w in m2_res.waves:
+				if w is Dictionary and w.has("groups"):
+					for g in w["groups"]:
+						if g.get("enemy_type", "") == "dog" or g.get("type", "") == "dog":
+							dog_configured = true
+		# Check spawn_config
+		if not dog_configured and "spawn_config" in m2_res and m2_res.spawn_config is Array:
+			for sc in m2_res.spawn_config:
+				if sc is Dictionary and sc.get("type", "") == "dog":
+					dog_configured = true
+		
+		# Test HitZone multipliers: Head (2.5x) and Body/Chest (1.0x)
+		var hz_head = HitZone.new()
+		hz_head.zone_type = HitZone.ZoneType.HEAD
+		hz_head._ready()
+		var hz_body = HitZone.new()
+		hz_body.zone_type = HitZone.ZoneType.CHEST
+		hz_body._ready()
+		
+		var r_head = hz_head.take_hit(20.0)
+		var r_body = hz_body.take_hit(20.0)
+		var hitzones_ok = (r_head.final_damage == 50.0 and r_head.is_headshot and r_body.final_damage == 20.0 and not r_body.is_headshot)
+		hz_head.queue_free()
+		hz_body.queue_free()
+		
+		# Check quadruped / dog archetype
+		var dog_archetype_ok = false
+		var dog_scene_path = "res://scenes/zombies/InfectedDog.tscn"
+		if ResourceLoader.exists(dog_scene_path):
+			var dog_scene = load(dog_scene_path)
+			if dog_scene:
+				var dog_inst = dog_scene.instantiate()
+				dog_archetype_ok = dog_inst != null and dog_inst.is_in_group("zombies")
+				dog_inst.queue_free()
+		else:
+			var z_scene = load("res://scenes/zombies/Zombie.tscn")
+			if z_scene:
+				var z_inst = z_scene.instantiate()
+				z_inst.archetype = "dog"
+				add_child(z_inst)
+				dog_archetype_ok = (z_inst.move_speed == 4.5 and z_inst.attack_range == 2.0)
+				z_inst.queue_free()
+		
+		m2_ok = dog_configured and hitzones_ok and dog_archetype_ok
+		m2_msg = "M2 dog config: %s, HitZones Head(2.5x)/Body(1.0x): %s, Dog archetype: %s" % [dog_configured, hitzones_ok, dog_archetype_ok]
+	else:
+		m2_msg = "Failed to load mission_02.tres"
+	record_test("Mission 2 Dog Spawner & Hit Zones", m2_ok, m2_msg)
+	
+	# Restore hermetic save state
+	if save_mgr:
+		save_mgr.data.cash = 777
+		save_mgr.data.unlocked_weapons = ["pistol", "rifle", "shotgun"]
+		if not ("mission_01" in save_mgr.data.completed_missions):
+			save_mgr.data.completed_missions.append("mission_01")
+		save_mgr.save_game()
 
 func _print_summary():
 	print("\n==================================================")

@@ -1,0 +1,264 @@
+Godot Engine v4.5.1.stable.official.f62fdbde1 - https://godotengine.org
+
+[AdManager] Initialized. Rewarded Ads ready.
+[BannerAdManager] Initialized.
+[223 ms] [BOOT:01] SaveManager initialized in 1 ms (Cash: 50, Completed: ["mission_01"])
+[223 ms] [BOOT:02] MissionManager ready.
+[223 ms] [BOOT:03] AudioManager ready.
+[223 ms] [BOOT:04] QualityManager ready (Device: Linux, Profile: ANDROID_BALANCED, Vulkan: false)
+[231 ms] [BOOT:07] LoadingManager ready.
+==================================================
+STARTING SECTOR ZERO: LOCKDOWN RUNTIME GAMEPLAY TESTS
+==================================================
+
+--- TEST SUITE 1: LANDSCAPE & CONTROLS ---
+[PASS] Landscape mode - Viewport: 1280x720, Orient: 0, Aspect: expand
+[PASS] Touch controls - Joystick: true, Fire: true, Reload: true, Switch: true, Look: true, Pause: true
+
+--- TEST SUITE 2: 3D PLAYER & WEAPONS ---
+[WEAPON_DEBUG] unlocked_ids: ["pistol", "rifle", "shotgun"]
+[WEAPON_DEBUG] all_possible_weapons count: 14
+[WEAPON_DEBUG] checking: pistol in unlocked: true
+[WEAPON_DEBUG] LOADING: pistol from res://resources/weapons/pistol.tres
+[WEAPON_DEBUG] checking: rifle in unlocked: true
+[WEAPON_DEBUG] LOADING: rifle from res://resources/weapons/rifle.tres
+[WEAPON_DEBUG] checking: shotgun in unlocked: true
+[WEAPON_DEBUG] LOADING: shotgun from res://resources/weapons/shotgun.tres
+[WEAPON_DEBUG] checking: heavy_gun in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m134 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpg7 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpd in unlocked: false
+[WEAPON_DEBUG] checking: heavy_mg42 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_l86 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m249 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_pkm in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m60 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m2browning in unlocked: false
+[WEAPON_DEBUG] checking: heavy_flamethrower in unlocked: false
+[WEAPON_DEBUG] TOTAL weapons loaded: 3
+[GameStateManager] State transition: BOOT -> GAMEPLAY
+[PASS] 3D player - Soldier Mesh: res://assets/3d/characters/player_soldier.glb::ArrayMesh_5l3a7
+[PASS] FPS Arms presentation - Arms Mesh: res://assets/3d/weapons/fps_arms.glb::ArrayMesh_77qtl
+[PASS] Movement - Velocity: (0.0, 0.0, -2.4)
+[PASS] Look - Camera rot x: 0.038397
+[PASS] 3D weapons - Loaded 3/3 weapons
+[PASS] Fire - Pistol ammo: 12 -> 11
+[PASS] Reload - Ammo after reload: 12 / 12
+[PASS] Weapon switch - Switched to: M4A1 Sentinel then Remington 870
+[PASS] Viewmodel lighting - ViewmodelLight: true, FrontFillLight: true
+[PASS] Touch aim pitch - Pre: 0.038315, Post: -0.057678 (Pitch up is negative x)
+[PASS] Camera recoil kick - Kicked: true, Recoil recovered in physics process
+[PASS] Muzzle flash light - MuzzleLight OmniLight3D present
+[PASS] Reticle and hitmarker - 4-pip Crosshair and 4-tick Hitmarker verified
+[PASS] Modal UI isolation - Pause blocked during game over; controls isolated
+
+--- TEST SUITE 3: ZOMBIE AI & COMBAT ---
+[PASS] 3D zombies - All 4 variants (Normal, Fast, Heavy, Boss) load distinct 3D models
+[WEAPON_DEBUG] unlocked_ids: ["pistol", "rifle", "shotgun"]
+[WEAPON_DEBUG] all_possible_weapons count: 14
+[WEAPON_DEBUG] checking: pistol in unlocked: true
+[WEAPON_DEBUG] LOADING: pistol from res://resources/weapons/pistol.tres
+[WEAPON_DEBUG] checking: rifle in unlocked: true
+[WEAPON_DEBUG] LOADING: rifle from res://resources/weapons/rifle.tres
+[WEAPON_DEBUG] checking: shotgun in unlocked: true
+[WEAPON_DEBUG] LOADING: shotgun from res://resources/weapons/shotgun.tres
+[WEAPON_DEBUG] checking: heavy_gun in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m134 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpg7 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpd in unlocked: false
+[WEAPON_DEBUG] checking: heavy_mg42 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_l86 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m249 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_pkm in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m60 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m2browning in unlocked: false
+[WEAPON_DEBUG] checking: heavy_flamethrower in unlocked: false
+[WEAPON_DEBUG] TOTAL weapons loaded: 3
+[PASS] Zombie AI - Zombie chasing player, velocity: (0.0, 0.0, 1.4)
+[PASS] Zombie damage - Zombie HP: 50.000000 -> 25.000000
+[PASS] Zombie death - Zombie dead status: true
+[PASS] Rewards - Cash: 50 -> 60
+[PASS] Player damage - Player HP: 100.000000 -> 80.000000
+[PASS] Player death - Player is_dead: true
+
+--- TEST SUITE 4: REALISTIC ENVIRONMENTS ---
+WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
+     at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)
+     GDScript backtrace (most recent call first):
+         [0] _test_environments (res://scenes/test/TestRunner.gd:234)
+         [1] _run_tests (res://scenes/test/TestRunner.gd:21)
+         [2] _test_zombie_variants_and_combat (res://scenes/test/TestRunner.gd:219)
+[PASS] Airport environment - Scene: res://scenes/environments/AirportTerminal.tscn, GLB Node: AirportTerminalGLB
+[PASS] Railway environment - Scene: res://scenes/environments/RailwayStation.tscn, GLB Node: RailwayStationGLB
+[PASS] Train environment - Scene: res://scenes/environments/AbandonedTrain.tscn, GLB Node: TrainCarriageGLB
+[PASS] Industrial environment - Scene: res://scenes/environments/DarkIndustrial.tscn, GLB Node: DarkIndustrialGLB
+[PASS] Final Lockdown - Scene: res://scenes/environments/FinalLockdown.tscn, GLB Node: BossArenaGLB
+[PASS] Lighting - DirectionalLight3D, Omni emergency beacons, mobile fog, Quality profiles
+[PASS] Materials/textures - PBR materials with Albedo, Roughness, Metallic, Normal, Emission
+[PASS] VFX - Blood splatter, impact debris, muzzle flash, camera shake
+[PASS] Audio - Weapons, zombies, reload, impacts, footsteps, UI, ambience
+
+--- TEST SUITE 5: PROGRESSION & SAVE/LOAD ---
+[PASS] Save/load - Saved cash: 777, Mission 1 completed: true
+[PASS] Mission 2 unlock - Requirement mission_01 completed: true
+[PASS] Mission flow - Start -> Gameplay -> Objective -> Results -> Rewards -> Next Mission
+
+--- TEST SUITE 6: PRODUCTION ARCHITECTURE & AAA MODULES ---
+[GameStateManager] State transition: GAMEPLAY -> BOOT
+[GameStateManager] State transition: BOOT -> MAIN_MENU
+[GameStateManager] State transition: MAIN_MENU -> MISSION_SELECT
+[GameStateManager] State transition: MISSION_SELECT -> GAMEPLAY
+[GameStateManager] State transition: GAMEPLAY -> PAUSED
+[GameStateManager] State transition: PAUSED -> GAMEPLAY
+[GameStateManager] State transition: GAMEPLAY -> MISSION_COMPLETE
+[PASS] State transitions - BOOT -> MAIN_MENU -> MISSION_SELECT -> GAMEPLAY -> PAUSE -> RESUME -> COMPLETE
+[PASS] Hit zones & multipliers - Head: 2.5x (50.0), Chest: 1.0x (20.0), Arm: 0.7x (14.0)
+[PASS] Advanced Zombie AI - States defined; Heavy shot triggers AIState.STAGGER
+[PASS] Zombie Director - Tension curve verified: Escalates with fast and heavy variants
+[PASS] VFX object pooling - Pre-allocated blood & concrete pools: 16 instances
+[PASS] Loading & crash recovery - Async threaded loader active with graceful error fallback
+[PASS] Performance & Quality profiles - Profiles (LOW, MEDIUM, HIGH) and adaptive monitoring active
+[PASS] Atomic Versioned Save - Format Version 2 with .tmp write and atomic replacement
+[WEAPON_DEBUG] unlocked_ids: ["pistol", "rifle", "shotgun"]
+[WEAPON_DEBUG] all_possible_weapons count: 14
+[WEAPON_DEBUG] checking: pistol in unlocked: true
+[WEAPON_DEBUG] LOADING: pistol from res://resources/weapons/pistol.tres
+[WEAPON_DEBUG] checking: rifle in unlocked: true
+[WEAPON_DEBUG] LOADING: rifle from res://resources/weapons/rifle.tres
+[WEAPON_DEBUG] checking: shotgun in unlocked: true
+[WEAPON_DEBUG] LOADING: shotgun from res://resources/weapons/shotgun.tres
+[WEAPON_DEBUG] checking: heavy_gun in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m134 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpg7 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpd in unlocked: false
+[WEAPON_DEBUG] checking: heavy_mg42 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_l86 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m249 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_pkm in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m60 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m2browning in unlocked: false
+[WEAPON_DEBUG] checking: heavy_flamethrower in unlocked: false
+[WEAPON_DEBUG] TOTAL weapons loaded: 3
+[GameStateManager] State transition: MISSION_COMPLETE -> GAMEPLAY
+[WEAPON_DEBUG] unlocked_ids: ["pistol", "rifle", "shotgun"]
+[WEAPON_DEBUG] all_possible_weapons count: 14
+[WEAPON_DEBUG] checking: pistol in unlocked: true
+[WEAPON_DEBUG] LOADING: pistol from res://resources/weapons/pistol.tres
+[WEAPON_DEBUG] checking: rifle in unlocked: true
+[WEAPON_DEBUG] LOADING: rifle from res://resources/weapons/rifle.tres
+[WEAPON_DEBUG] checking: shotgun in unlocked: true
+[WEAPON_DEBUG] LOADING: shotgun from res://resources/weapons/shotgun.tres
+[WEAPON_DEBUG] checking: heavy_gun in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m134 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpg7 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpd in unlocked: false
+[WEAPON_DEBUG] checking: heavy_mg42 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_l86 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m249 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_pkm in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m60 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m2browning in unlocked: false
+[WEAPON_DEBUG] checking: heavy_flamethrower in unlocked: false
+[WEAPON_DEBUG] TOTAL weapons loaded: 3
+[WEAPON_DEBUG] unlocked_ids: ["pistol", "rifle", "shotgun"]
+[WEAPON_DEBUG] all_possible_weapons count: 14
+[WEAPON_DEBUG] checking: pistol in unlocked: true
+[WEAPON_DEBUG] LOADING: pistol from res://resources/weapons/pistol.tres
+[WEAPON_DEBUG] checking: rifle in unlocked: true
+[WEAPON_DEBUG] LOADING: rifle from res://resources/weapons/rifle.tres
+[WEAPON_DEBUG] checking: shotgun in unlocked: true
+[WEAPON_DEBUG] LOADING: shotgun from res://resources/weapons/shotgun.tres
+[WEAPON_DEBUG] checking: heavy_gun in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m134 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpg7 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_rpd in unlocked: false
+[WEAPON_DEBUG] checking: heavy_mg42 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_l86 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m249 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_pkm in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m60 in unlocked: false
+[WEAPON_DEBUG] checking: heavy_m2browning in unlocked: false
+[WEAPON_DEBUG] checking: heavy_flamethrower in unlocked: false
+[WEAPON_DEBUG] TOTAL weapons loaded: 3
+[PASS] Memory lifecycle - 3x sequential scene load/unload with zero crashes or leaks
+
+--- TEST SUITE 7: CAMPAIGN ARCHITECTURE & WAVES ---
+[FAIL] 12-Mission Registry & Chaining - Missing: ["mission_06", "mission_07", "mission_08", "mission_09", "mission_10", "mission_11", "mission_12"], Chaining mismatches: []
+[FAIL] Gradual Cash Rewards ($500 -> $6,000) - ["Expected 12 missions, found 5"]
+[FAIL] 3-Wave Structure - ["Expected 12 missions, found 5"]
+[GameStateManager] State transition: GAMEPLAY -> MISSION_COMPLETE
+[3915 ms] [MISSION:COMPLETE] Mission succeeded: First Contact (Kills: 1, Accuracy: 0%, Cash Awarded: 50)
+[GameStateManager] State transition: MISSION_COMPLETE -> GAMEPLAY
+[GameStateManager] State transition: GAMEPLAY -> MISSION_COMPLETE
+[3915 ms] [MISSION:COMPLETE] Mission succeeded: First Contact (Kills: 1, Accuracy: 0%, Cash Awarded: 0)
+[PASS] Single-Claim CASH Reward Logic - First win: +$50 (cash=50), Replay: +$0 (cash=50)
+[GameStateManager] State transition: MISSION_COMPLETE -> GAMEPLAY
+[GameStateManager] State transition: GAMEPLAY -> MISSION_COMPLETE
+[3916 ms] [MISSION:COMPLETE] Mission succeeded: First Contact (Kills: 1, Accuracy: 0%, Cash Awarded: 0)
+[PASS] No Duplicate CASH on Save/Load Restart - Reloaded cash: $50, Replay post-restart cash: $50 (Zero duplicate payout)
+SCRIPT ERROR: Invalid access to property or key 'speed' on a base object of type 'CharacterBody3D (Zombie.gd)'.
+          at: _test_campaign_architecture (res://scenes/test/TestRunner.gd:572)
+          GDScript backtrace (most recent call first):
+              [0] _test_campaign_architecture (res://scenes/test/TestRunner.gd:572)
+              [1] _run_tests (res://scenes/test/TestRunner.gd:24)
+              [2] _test_production_architecture (res://scenes/test/TestRunner.gd:371)
+
+==================================================
+FINAL VERIFICATION SUMMARY
+==================================================
+Landscape mode             : PASS
+Touch controls             : PASS
+3D player                  : PASS
+FPS Arms presentation      : PASS
+Movement                   : PASS
+Look                       : PASS
+3D weapons                 : PASS
+Fire                       : PASS
+Reload                     : PASS
+Weapon switch              : PASS
+Viewmodel lighting         : PASS
+Touch aim pitch            : PASS
+Camera recoil kick         : PASS
+Muzzle flash light         : PASS
+Reticle and hitmarker      : PASS
+Modal UI isolation         : PASS
+3D zombies                 : PASS
+Zombie AI                  : PASS
+Zombie damage              : PASS
+Zombie death               : PASS
+Rewards                    : PASS
+Player damage              : PASS
+Player death               : PASS
+Airport environment        : PASS
+Railway environment        : PASS
+Train environment          : PASS
+Industrial environment     : PASS
+Final Lockdown             : PASS
+Lighting                   : PASS
+Materials/textures         : PASS
+VFX                        : PASS
+Audio                      : PASS
+Save/load                  : PASS
+Mission 2 unlock           : PASS
+Mission flow               : PASS
+State transitions          : PASS
+Hit zones & multipliers    : PASS
+Advanced Zombie AI         : PASS
+Zombie Director            : PASS
+VFX object pooling         : PASS
+Loading & crash recovery   : PASS
+Performance & Quality profiles : PASS
+Atomic Versioned Save      : PASS
+Memory lifecycle           : PASS
+12-Mission Registry & Chaining : FAIL
+Gradual Cash Rewards ($500 -> $6,000) : FAIL
+3-Wave Structure           : FAIL
+Single-Claim CASH Reward Logic : PASS
+No Duplicate CASH on Save/Load Restart : PASS
+==================================================
+TOTAL: 46 / 49 PASSED
+==================================================
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2514)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:795)

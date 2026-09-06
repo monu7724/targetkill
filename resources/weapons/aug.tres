@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "aug"
+display_name = "AUG A3"
+base_damage = 24.0
+headshot_multiplier = 2.0
+base_fire_rate = 0.11
+base_mag_size = 30
+base_reserve_ammo = 180
+base_reload_time = 3.0
+spread = 0.018
+recoil = 0.7
+range = 140.0
+pellet_count = 1
+is_automatic = true
+muzzle_fx = "rifle"
+sound_set = "rifle"
+upgrade_cost_damage = 135
+upgrade_cost_mag = 100
+upgrade_cost_reload = 120

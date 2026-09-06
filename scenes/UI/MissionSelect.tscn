@@ -46,11 +46,11 @@ theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
 text = "SECTOR ZERO: OPERATIONS"
 vertical_alignment = 1
 
-[node name="CoinsLabel" type="Label" parent="TopBar"]
+[node name="CashLabel" type="Label" parent="TopBar"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 theme_override_colors/font_color = Color(0.4, 0.9, 0.4, 1)
-text = "COINS: 0"
+text = "CASH: 0"
 vertical_alignment = 1
 
 [node name="UpgradeButton" type="Button" parent="TopBar"]
@@ -158,7 +158,7 @@ text = "RECOMMENDED LOADOUT: USP-45 Tactical"
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.4, 0.9, 0.4, 1)
-text = "MISSION REWARD: 100 COINS"
+text = "MISSION REWARD: 100 CASH"
 
 [node name="Spacer" type="Control" parent="BriefingModal/ModalPanel/Margin/VBox"]
 layout_mode = 2
@@ -187,3 +187,27 @@ text = "CANCEL"
 [connection signal="pressed" from="TopBar/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="BriefingModal/ModalPanel/Margin/VBox/ButtonGroup/DeployButton" to="." method="_on_deploy_button_pressed"]
 [connection signal="pressed" from="BriefingModal/ModalPanel/Margin/VBox/ButtonGroup/CloseModalButton" to="." method="_on_close_briefing_button_pressed"]
+
+[node name="AdMobBanner" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -60.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.1, 0.1, 0.1, 0.95)
+
+[node name="Label" type="Label" parent="AdMobBanner"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 18
+text = "Google AdMob Banner Space (320x50)"
+horizontal_alignment = 1
+vertical_alignment = 1

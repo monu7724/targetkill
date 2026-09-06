@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/WeaponData.gd" id="1_w3s4d"]
+
+[resource]
+script = ExtResource("1_w3s4d")
+weapon_id = "famas"
+display_name = "FAMAS F1"
+base_damage = 20.0
+headshot_multiplier = 2.0
+base_fire_rate = 0.08
+base_mag_size = 25
+base_reserve_ammo = 200
+base_reload_time = 2.5
+spread = 0.02
+recoil = 0.9
+range = 100.0
+pellet_count = 1
+is_automatic = true
+muzzle_fx = "rifle"
+sound_set = "rifle"
+upgrade_cost_damage = 110
+upgrade_cost_mag = 120
+upgrade_cost_reload = 90

@@ -11,7 +11,7 @@ extends Control
 @onready var briefing_lore = $BriefingModal/ModalPanel/Margin/VBox/BriefingLore
 @onready var briefing_loadout = $BriefingModal/ModalPanel/Margin/VBox/BriefingLoadout
 @onready var briefing_reward = $BriefingModal/ModalPanel/Margin/VBox/BriefingReward
-@onready var coins_label = $TopBar/CoinsLabel
+@onready var cash_label = $TopBar/CashLabel
 
 var selected_mission: MissionData = null
 
@@ -29,8 +29,8 @@ func _ready():
 		game_state_mgr.change_state(game_state_mgr.State.MISSION_SELECT)
 		
 	var save_mgr = get_node_or_null("/root/SaveManager")
-	if save_mgr and coins_label:
-		coins_label.text = "COINS: %d" % save_mgr.data.coins
+	if save_mgr and cash_label:
+		cash_label.text = "CASH: %d" % save_mgr.data.cash
 		
 	if briefing_modal:
 		briefing_modal.visible = false
@@ -80,7 +80,7 @@ func _on_mission_selected(data: MissionData):
 	
 	briefing_lore.text = data.description
 	briefing_loadout.text = "RECOMMENDED LOADOUT: " + (data.recommended_loadout if "recommended_loadout" in data and data.recommended_loadout != "" else "Standard Issue Rifle")
-	briefing_reward.text = "MISSION BOUNTY: %d COINS" % data.reward_coins
+	briefing_reward.text = "MISSION BOUNTY: %d CASH" % data.reward_cash
 	
 	briefing_modal.modulate.a = 0.0
 	briefing_modal.visible = true
@@ -109,7 +109,7 @@ func _on_upgrade_button_pressed():
 	var game_state_mgr = get_node_or_null("/root/GameStateManager")
 	if game_state_mgr:
 		game_state_mgr.change_state(game_state_mgr.State.UPGRADES)
-	get_tree().change_scene_to_file("res://scenes/UI/UpgradeUI.tscn")
+	get_tree().change_scene_to_file("res://scenes/UI/ArmoryUI.tscn")
 
 func _on_settings_button_pressed():
 	var audio_mgr = get_node_or_null("/root/AudioManager")

@@ -96,3 +96,18 @@ All sound effects were synthesized using physical modeling / PCM wav generators 
 ## 4. Engine & Code
 - **Godot Engine:** MIT License (Copyright (c) 2014-present Godot Engine contributors).
 - **Game Scripts:** Original code for Sector Zero: Lockdown (MIT License).
+
+### 1.2 Missing Production 3D Assets (Placeholders Used)
+The following weapon 3D models requested in the design spec were not integrated into this prototype version because verified CC0 / MIT licensed assets could not be reliably sourced without violating commercial copyrights. They currently fall back to the generic `rifle.glb` or `shotgun.glb`.
+
+| Target Asset | Fallback Model Used | Status | Reason |
+| :--- | :--- | :--- | :--- |
+| AK-47 Vanguard | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| SCAR-L Operator | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| G36 Tactical | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| FAMAS F1 | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| AUG A3 | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| MP5 Spec Ops | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| SPAS-12 Combat | `shotgun.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| SVD Dragunov | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |
+| M249 SAW | `rifle.glb` | MISSING | No legal CC0 high-quality equivalent available. |

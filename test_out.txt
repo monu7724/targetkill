@@ -1,0 +1,138 @@
+Godot Engine v4.5.1.stable.official.f62fdbde1 - https://godotengine.org
+
+[AdManager] Initialized. Rewarded Ads ready.
+[BannerAdManager] Initialized.
+[231 ms] [BOOT:01] SaveManager initialized in 1 ms (Cash: 777, Completed: ["mission_01"])
+[231 ms] [BOOT:02] MissionManager ready.
+[231 ms] [BOOT:03] AudioManager ready.
+[231 ms] [BOOT:04] QualityManager ready (Device: Linux, Profile: ANDROID_BALANCED, Vulkan: false)
+[239 ms] [BOOT:07] LoadingManager ready.
+==================================================
+STARTING SECTOR ZERO: LOCKDOWN RUNTIME GAMEPLAY TESTS
+==================================================
+
+--- TEST SUITE 1: LANDSCAPE & CONTROLS ---
+[PASS] Landscape mode - Viewport: 1280x720, Orient: 0, Aspect: expand
+[PASS] Touch controls - Joystick: true, Fire: true, Reload: true, Switch: true, Look: true, Pause: true
+
+--- TEST SUITE 2: 3D PLAYER & WEAPONS ---
+[GameStateManager] State transition: BOOT -> GAMEPLAY
+[PASS] 3D player - Soldier Mesh: res://assets/3d/characters/player_soldier.glb::ArrayMesh_5l3a7
+[PASS] FPS Arms presentation - Arms Mesh: res://assets/3d/weapons/fps_arms.glb::ArrayMesh_77qtl
+[FAIL] Movement - Velocity: (0.0, 0.0, 0.0)
+[PASS] Look - Camera rot x: 0.038397
+[FAIL] 3D weapons - Loaded 1/3 weapons
+[PASS] Fire - Pistol ammo: 12 -> 11
+[PASS] Reload - Ammo after reload: 12 / 12
+[FAIL] Weapon switch - Switched to: USP-45 then USP-45
+[PASS] Viewmodel lighting - ViewmodelLight: true, FrontFillLight: true
+[PASS] Touch aim pitch - Pre: 0.038315, Post: -0.057678 (Pitch up is negative x)
+[PASS] Camera recoil kick - Kicked: true, Recoil recovered in physics process
+[PASS] Muzzle flash light - MuzzleLight OmniLight3D present
+[PASS] Reticle and hitmarker - 4-pip Crosshair and 4-tick Hitmarker verified
+[PASS] Modal UI isolation - Pause blocked during game over; controls isolated
+
+--- TEST SUITE 3: ZOMBIE AI & COMBAT ---
+[PASS] 3D zombies - All 4 variants (Normal, Fast, Heavy, Boss) load distinct 3D models
+[PASS] Zombie AI - Zombie chasing player, velocity: (0.0, 0.0, 1.4)
+[PASS] Zombie damage - Zombie HP: 50.000000 -> 25.000000
+[PASS] Zombie death - Zombie dead status: true
+[PASS] Rewards - Cash: 777 -> 787
+[PASS] Player damage - Player HP: 100.000000 -> 80.000000
+[PASS] Player death - Player is_dead: true
+
+--- TEST SUITE 4: REALISTIC ENVIRONMENTS ---
+WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
+     at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)
+     GDScript backtrace (most recent call first):
+         [0] _test_environments (res://scenes/test/TestRunner.gd:221)
+         [1] _run_tests (res://scenes/test/TestRunner.gd:20)
+         [2] _test_zombie_variants_and_combat (res://scenes/test/TestRunner.gd:206)
+[PASS] Airport environment - Scene: res://scenes/environments/AirportTerminal.tscn, GLB Node: AirportTerminalGLB
+[PASS] Railway environment - Scene: res://scenes/environments/RailwayStation.tscn, GLB Node: RailwayStationGLB
+[PASS] Train environment - Scene: res://scenes/environments/AbandonedTrain.tscn, GLB Node: TrainCarriageGLB
+[PASS] Industrial environment - Scene: res://scenes/environments/DarkIndustrial.tscn, GLB Node: DarkIndustrialGLB
+[PASS] Final Lockdown - Scene: res://scenes/environments/FinalLockdown.tscn, GLB Node: BossArenaGLB
+[PASS] Lighting - DirectionalLight3D, Omni emergency beacons, mobile fog, Quality profiles
+[PASS] Materials/textures - PBR materials with Albedo, Roughness, Metallic, Normal, Emission
+[PASS] VFX - Blood splatter, impact debris, muzzle flash, camera shake
+[PASS] Audio - Weapons, zombies, reload, impacts, footsteps, UI, ambience
+
+--- TEST SUITE 5: PROGRESSION & SAVE/LOAD ---
+[PASS] Save/load - Saved cash: 777, Mission 1 completed: true
+[PASS] Mission 2 unlock - Requirement mission_01 completed: true
+[PASS] Mission flow - Start -> Gameplay -> Objective -> Results -> Rewards -> Next Mission
+
+--- TEST SUITE 6: PRODUCTION ARCHITECTURE & AAA MODULES ---
+[GameStateManager] State transition: GAMEPLAY -> BOOT
+[GameStateManager] State transition: BOOT -> MAIN_MENU
+[GameStateManager] State transition: MAIN_MENU -> MISSION_SELECT
+[GameStateManager] State transition: MISSION_SELECT -> GAMEPLAY
+[GameStateManager] State transition: GAMEPLAY -> PAUSED
+[GameStateManager] State transition: PAUSED -> GAMEPLAY
+[GameStateManager] State transition: GAMEPLAY -> MISSION_COMPLETE
+[PASS] State transitions - BOOT -> MAIN_MENU -> MISSION_SELECT -> GAMEPLAY -> PAUSE -> RESUME -> COMPLETE
+[PASS] Hit zones & multipliers - Head: 2.5x (50.0), Chest: 1.0x (20.0), Arm: 0.7x (14.0)
+[PASS] Advanced Zombie AI - States defined; Heavy shot triggers AIState.STAGGER
+[PASS] Zombie Director - Tension curve verified: Escalates with fast and heavy variants
+[PASS] VFX object pooling - Pre-allocated blood & concrete pools: 16 instances
+[PASS] Loading & crash recovery - Async threaded loader active with graceful error fallback
+[PASS] Performance & Quality profiles - Profiles (LOW, MEDIUM, HIGH) and adaptive monitoring active
+[PASS] Atomic Versioned Save - Format Version 2 with .tmp write and atomic replacement
+[GameStateManager] State transition: MISSION_COMPLETE -> GAMEPLAY
+[PASS] Memory lifecycle - 3x sequential scene load/unload with zero crashes or leaks
+
+==================================================
+FINAL VERIFICATION SUMMARY
+==================================================
+Landscape mode             : PASS
+Touch controls             : PASS
+3D player                  : PASS
+FPS Arms presentation      : PASS
+Movement                   : FAIL
+Look                       : PASS
+3D weapons                 : FAIL
+Fire                       : PASS
+Reload                     : PASS
+Weapon switch              : FAIL
+Viewmodel lighting         : PASS
+Touch aim pitch            : PASS
+Camera recoil kick         : PASS
+Muzzle flash light         : PASS
+Reticle and hitmarker      : PASS
+Modal UI isolation         : PASS
+3D zombies                 : PASS
+Zombie AI                  : PASS
+Zombie damage              : PASS
+Zombie death               : PASS
+Rewards                    : PASS
+Player damage              : PASS
+Player death               : PASS
+Airport environment        : PASS
+Railway environment        : PASS
+Train environment          : PASS
+Industrial environment     : PASS
+Final Lockdown             : PASS
+Lighting                   : PASS
+Materials/textures         : PASS
+VFX                        : PASS
+Audio                      : PASS
+Save/load                  : PASS
+Mission 2 unlock           : PASS
+Mission flow               : PASS
+State transitions          : PASS
+Hit zones & multipliers    : PASS
+Advanced Zombie AI         : PASS
+Zombie Director            : PASS
+VFX object pooling         : PASS
+Loading & crash recovery   : PASS
+Performance & Quality profiles : PASS
+Atomic Versioned Save      : PASS
+Memory lifecycle           : PASS
+==================================================
+TOTAL: 41 / 44 PASSED
+==================================================
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2514)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:795)

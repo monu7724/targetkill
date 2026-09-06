@@ -7,7 +7,7 @@ const SAVE_VERSION = 2
 
 var data = {
 	"version": SAVE_VERSION,
-	"coins": 0,
+	"cash": 0,
 	"completed_missions": [],
 	"unlocked_weapons": ["pistol", "rifle", "shotgun"],
 	"is_first_launch": true,
@@ -29,7 +29,7 @@ var data = {
 func _ready():
 	var t0 = Time.get_ticks_msec()
 	load_game()
-	print("[%d ms] [BOOT:01] SaveManager initialized in %d ms (Coins: %d, Completed: %s)" % [Time.get_ticks_msec(), Time.get_ticks_msec() - t0, data.coins, str(data.completed_missions)])
+	print("[%d ms] [BOOT:01] SaveManager initialized in %d ms (Cash: %d, Completed: %s)" % [Time.get_ticks_msec(), Time.get_ticks_msec() - t0, data.cash, str(data.completed_missions)])
 
 func save_game():
 	# Atomic Save Process: Write to .tmp first, then atomically replace
@@ -88,7 +88,7 @@ func _load_from_path(path: String) -> bool:
 func _merge_data(loaded_data: Dictionary):
 	for key in data.keys():
 		if loaded_data.has(key):
-			if key in ["coins", "version", "selected_quality"]:
+			if key in ["cash", "version", "selected_quality"]:
 				data[key] = int(loaded_data[key])
 			elif key == "weapon_upgrades" and loaded_data[key] is Dictionary:
 				for w_id in data[key].keys():
@@ -101,12 +101,12 @@ func _merge_data(loaded_data: Dictionary):
 			elif typeof(data[key]) == typeof(loaded_data[key]):
 				data[key] = loaded_data[key]
 
-func add_coins(amount: int):
-	data.coins = max(0, data.coins + amount)
+func add_cash(amount: int):
+	data.cash = max(0, data.cash + amount)
 	save_game()
 	var event_bus = get_node_or_null("/root/EventBus")
 	if event_bus:
-		event_bus.coins_changed.emit(data.coins)
+		event_bus.cash_changed.emit(data.cash)
 
 func complete_mission(mission_id: String):
 	if not mission_id in data.completed_missions:
