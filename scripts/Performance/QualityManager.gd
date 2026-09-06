@@ -37,15 +37,12 @@ func detect_device_capabilities() -> Dictionary:
 	info["refresh_rate"] = DisplayServer.screen_get_refresh_rate()
 	info["static_ram_mb"] = OS.get_static_memory_usage() / (1024.0 * 1024.0)
 	
+	var cpu_count = OS.get_processor_count()
 	var recommended = Profile.ANDROID_BALANCED
-	if not info["is_vulkan"]:
-		var ver_str = str(info["os_version"]).to_lower()
-		if "10" in ver_str or "9" in ver_str or "8" in ver_str or "7" in ver_str:
-			recommended = Profile.ANDROID_LEGACY
-		else:
-			recommended = Profile.ANDROID_BALANCED
+	if cpu_count <= 2 or not info["is_vulkan"]:
+		recommended = Profile.ANDROID_LEGACY
 	else:
-		recommended = Profile.ANDROID_HIGH
+		recommended = Profile.ANDROID_BALANCED
 		
 	info["recommended_profile"] = recommended
 	return info
