@@ -1,0 +1,55 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://assets_tests/CityPropsTest.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/external/city_props/glb/concrete_jersey_barrier_01_large.glb" id="2_barrier"]
+[ext_resource type="PackedScene" path="res://assets/external/city_props/glb/barrel_02_big_red.glb" id="3_barrel"]
+[ext_resource type="PackedScene" path="res://assets/external/city_props/glb/fire_hydrant_01.glb" id="4_hydrant"]
+[ext_resource type="PackedScene" path="res://assets/external/city_props/glb/bus_stop.glb" id="5_busstop"]
+[ext_resource type="PackedScene" path="res://assets/external/city_props/glb/traffic_light_01_base_large_black.glb" id="6_trafficlight"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.38, 0.55, 0.78, 1)
+sky_horizon_color = Color(0.72, 0.78, 0.84, 1)
+ground_bottom_color = Color(0.2, 0.2, 0.2, 1)
+ground_horizon_color = Color(0.72, 0.78, 0.84, 1)
+
+[sub_resource type="Sky" id="Sky_res"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_day"]
+background_mode = 2
+sky = SubResource("Sky_res")
+ambient_light_source = 2
+ambient_light_color = Color(0.8, 0.85, 0.9, 1)
+ambient_light_energy = 0.8
+
+[node name="CityPropsTest" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_day")
+
+[node name="SunLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 5, 0)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 2.2
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 2.5, 6)
+current = true
+
+[node name="Prop_Barrier" parent="." instance=ExtResource("2_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
+
+[node name="Prop_Barrel" parent="." instance=ExtResource("3_barrel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
+
+[node name="Prop_Hydrant" parent="." instance=ExtResource("4_hydrant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+
+[node name="Prop_BusStop" parent="." instance=ExtResource("5_busstop")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 0)
+
+[node name="Prop_TrafficLight" parent="." instance=ExtResource("6_trafficlight")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, -1.5)

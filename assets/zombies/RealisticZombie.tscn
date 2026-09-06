@@ -1,0 +1,93 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://assets/zombies/RealisticZombie.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/HealthComponent.gd" id="2_health"]
+[ext_resource type="Script" path="res://scripts/Combat/HitZone.gd" id="3_hitzone"]
+[ext_resource type="PackedScene" path="res://assets/external/vitruvian/zombie_realistic_human.glb" id="4_model"]
+[ext_resource type="AudioStream" path="res://audio/zombies/sfx_zombie_growl.wav" id="5_sfx_growl"]
+[ext_resource type="AudioStream" path="res://audio/zombies/sfx_zombie_attack.wav" id="6_sfx_attack"]
+[ext_resource type="AudioStream" path="res://audio/zombies/sfx_zombie_death.wav" id="7_sfx_death"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_root"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_head"]
+radius = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chest"]
+size = Vector3(0.5, 0.45, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_legs"]
+size = Vector3(0.42, 0.85, 0.3)
+
+[node name="RealisticZombie" type="CharacterBody3D" groups=["zombies"]]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_root")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.5
+target_desired_distance = 0.5
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 60.0
+
+[node name="SfxGrowl" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("5_sfx_growl")
+max_distance = 15.0
+
+[node name="SfxAttack" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("6_sfx_attack")
+max_distance = 8.0
+
+[node name="SfxDeath" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("7_sfx_death")
+max_distance = 12.0
+
+[node name="SfxTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="SkeletalModel" parent="." instance=ExtResource("4_model")]
+
+[node name="HeadHitZone" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("3_hitzone")
+zone_type = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HeadHitZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58, 0)
+shape = SubResource("SphereShape3D_head")
+
+[node name="ChestHitZone" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("3_hitzone")
+zone_type = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChestHitZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+shape = SubResource("BoxShape3D_chest")
+
+[node name="LegsHitZone" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("3_hitzone")
+zone_type = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LegsHitZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_legs")
+
+[connection signal="timeout" from="SfxTimer" to="." method="_on_sfx_timer_timeout"]

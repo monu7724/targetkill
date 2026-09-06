@@ -39,9 +39,9 @@ func spawn_ground_blood_decal(pos: Vector3):
 	mat.metallic = 0.0
 	decal.material_override = mat
 	
+	add_child(decal)
 	decal.global_position = Vector3(pos.x, 0.02, pos.z)
 	decal.rotation.y = randf_range(0, TAU)
-	add_child(decal)
 	
 	# Keep decal alive for 25s, then fade out
 	var tw = create_tween()
@@ -58,4 +58,4 @@ func _process(delta: float):
 	# Pulse emergency alert beacon
 	if alert_strobe and alert_strobe is Light3D:
 		var pulse = (sin(time * strobe_pulse_speed) * 0.5 + 0.5)
-		alert_strobe.light_energy = 0.6 + pulse * 2.8
+		alert_strobe.light_energy = 0.1 + pulse * 0.4

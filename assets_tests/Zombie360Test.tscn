@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://assets_tests/Zombie360Test.gd" id="1_test_script"]
+[ext_resource type="Material" path="res://assets/external/polyhaven/materials/mat_poly_concrete.tres" id="2_concrete"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://assets/zombies/RealisticZombie.tscn" id="4_zombie"]
+
+[sub_resource type="Environment" id="Environment_daylight"]
+background_mode = 1
+background_color = Color(0.53, 0.65, 0.8, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.75, 0.82, 0.9, 1)
+ambient_light_energy = 0.85
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(30, 30)
+
+[node name="Zombie360Test" type="Node3D"]
+script = ExtResource("1_test_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_daylight")
+
+[node name="SunLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 10, 0)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_ground")
+material_override = ExtResource("2_concrete")
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Zombies" type="Node3D" parent="."]
+
+[node name="ZombieFront" parent="Zombies" instance=ExtResource("4_zombie")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+
+[node name="ZombieBack" parent="Zombies" instance=ExtResource("4_zombie")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 8)
+
+[node name="ZombieLeft" parent="Zombies" instance=ExtResource("4_zombie")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -8, 0, 0)
+
+[node name="ZombieRight" parent="Zombies" instance=ExtResource("4_zombie")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 8, 0, 0)

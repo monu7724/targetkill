@@ -323,7 +323,7 @@ func _physics_process(delta):
 	global_position.z = clamp(global_position.z, -move_limit, move_limit)
 	
 	# Figure-8 Lissajous breathing & walk sway
-	var vel_ratio = clamp(velocity.length() / move_speed, 0.0, 1.0)
+	var vel_ratio = clamp(velocity.length() / move_speed, 0.0, 1.0) if move_speed > 0.001 else 0.0
 	var breath_x = sin(time * breathing_speed * 0.7) * breathing_amount * 0.7
 	var breath_y = sin(time * breathing_speed * 1.4) * breathing_amount
 	var walk_bob_x = cos(time * bob_speed * 0.5) * bob_amount * 0.6 * vel_ratio

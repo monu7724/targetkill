@@ -4,3 +4,5 @@
 tools/blender/generated/
 __pycache__/
 *.pyc
+.env*
+assets/ai_generated/**/*.glb

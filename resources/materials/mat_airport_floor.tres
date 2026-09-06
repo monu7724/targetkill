@@ -2,6 +2,6 @@
 [ext_resource type="Texture2D" path="res://textures/pbr/tex_airport_tile.png" id="1_tex"]
 [resource]
 albedo_texture = ExtResource("1_tex")
-metallic = 0.10
-roughness = 0.25
+metallic = 0.05
+roughness = 0.50
 uv1_scale = Vector3(4, 4, 1)
