@@ -99,20 +99,16 @@ func _init():
 	var event_bus = root.get_node_or_null("/root/EventBus")
 	var gm_ok = false
 	if event_bus:
-		var wave_received = {"wave": 0, "total": 0}
-		var cb = func(w, t):
-			wave_received.wave = w
-			wave_received.total = t
+		var waves_seen = []
+		var cb = func(w, t): waves_seen.append([w, t])
 		event_bus.wave_started.connect(cb)
 		
 		var gm = Node3D.new()
 		gm.set_script(load("res://scripts/GameManager.gd"))
 		gm.mission = m2
-		gm.spawn_points = []
 		root.add_child(gm)
-		gm.start_next_wave()
 		
-		gm_ok = (wave_received.wave == 1 and wave_received.total == 3 and gm.current_wave == 1)
+		gm_ok = (waves_seen.size() >= 1 and waves_seen[0][0] == 1 and waves_seen[0][1] == 3 and gm.current_wave == 1)
 		
 		event_bus.wave_started.disconnect(cb)
 		gm.queue_free()
